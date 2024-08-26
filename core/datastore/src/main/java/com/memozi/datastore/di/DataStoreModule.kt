@@ -20,10 +20,10 @@ object DataStoreModule {
     @Singleton
     fun providesUserDataStore(
         @ApplicationContext context: Context,
-        userDataSerializer: MemoziLocalDataSerializer,
+        userDataSerializer: MemoziLocalDataSerializer
     ): DataStore<MemoziLocalData> =
         DataStoreFactory.create(
-            serializer = userDataSerializer,
+            serializer = userDataSerializer
         ) {
             context.dataStoreFile("userdata.json")
         }
