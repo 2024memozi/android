@@ -19,3 +19,5 @@ rootProject.name = "memozi"
 include(":app")
 include(":core:common")
 include(":core:buildconfig")
+include(":core:network")
+include(":core:datastore")
