@@ -1,9 +1,9 @@
-package com.record.convention
+package com.memozi.convention
 
 import com.android.build.api.dsl.CommonExtension
-import com.record.convention.extension.getBundle
-import com.record.convention.extension.implementation
-import com.record.convention.extension.libs
+import com.memozi.convention.extension.getBundle
+import com.memozi.convention.extension.implementation
+import com.memozi.convention.extension.libs
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
 

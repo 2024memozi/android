@@ -1,8 +1,8 @@
-import com.record.convention.extension.getLibrary
-import com.record.convention.extension.implementation
-import com.record.convention.extension.ksp
-import com.record.convention.extension.kspTest
-import com.record.convention.extension.libs
+import com.memozi.convention.extension.getLibrary
+import com.memozi.convention.extension.implementation
+import com.memozi.convention.extension.ksp
+import com.memozi.convention.extension.kspTest
+import com.memozi.convention.extension.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies

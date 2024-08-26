@@ -1,10 +1,10 @@
 import com.android.build.api.dsl.ApplicationExtension
-import com.record.convention.configureAndroidCompose
-import com.record.convention.configureKotlinAndroid
-import com.record.convention.extension.getLibrary
-import com.record.convention.extension.getVersion
-import com.record.convention.extension.implementation
-import com.record.convention.extension.libs
+import com.memozi.convention.configureAndroidCompose
+import com.memozi.convention.configureKotlinAndroid
+import com.memozi.convention.extension.getLibrary
+import com.memozi.convention.extension.getVersion
+import com.memozi.convention.extension.implementation
+import com.memozi.convention.extension.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure

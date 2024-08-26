@@ -1,8 +1,8 @@
-package com.record.convention
+package com.memozi.convention
 
 import com.android.build.api.dsl.CommonExtension
-import com.record.convention.extension.getVersion
-import com.record.convention.extension.libs
+import com.memozi.convention.extension.getVersion
+import com.memozi.convention.extension.libs
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.getByType
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget

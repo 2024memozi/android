@@ -1,4 +1,4 @@
-package com.record.convention.extension
+package com.memozi.convention.extension
 
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalog

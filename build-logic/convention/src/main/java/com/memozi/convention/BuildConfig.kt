@@ -1,4 +1,4 @@
-package com.record.convention
+package com.memozi.convention
 
 import com.android.build.api.dsl.CommonExtension
 import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties

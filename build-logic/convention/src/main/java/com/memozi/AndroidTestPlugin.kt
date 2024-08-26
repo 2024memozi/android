@@ -1,8 +1,8 @@
 import com.android.build.api.dsl.LibraryExtension
-import com.record.convention.extension.androidTestImplementation
-import com.record.convention.extension.debugImplementation
-import com.record.convention.extension.getLibrary
-import com.record.convention.extension.implementation
+import com.memozi.convention.extension.androidTestImplementation
+import com.memozi.convention.extension.debugImplementation
+import com.memozi.convention.extension.getLibrary
+import com.memozi.convention.extension.implementation
 import com.record.convention.extension.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project

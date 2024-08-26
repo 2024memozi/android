@@ -1,9 +1,9 @@
 import com.android.build.gradle.LibraryExtension
-import com.record.convention.configureKotlinAndroid
-import com.record.convention.configureKotlinCoroutine
-import com.record.convention.extension.getLibrary
-import com.record.convention.extension.implementation
-import com.record.convention.extension.libs
+import com.memozi.convention.configureKotlinAndroid
+import com.memozi.convention.configureKotlinCoroutine
+import com.memozi.convention.extension.getLibrary
+import com.memozi.convention.extension.implementation
+import com.memozi.convention.extension.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure

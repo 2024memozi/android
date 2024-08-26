@@ -1,4 +1,4 @@
-package com.record.convention.extension
+package com.memozi.convention.extension
 
 import org.gradle.api.artifacts.ExternalModuleDependencyBundle
 import org.gradle.api.artifacts.MinimalExternalModuleDependency

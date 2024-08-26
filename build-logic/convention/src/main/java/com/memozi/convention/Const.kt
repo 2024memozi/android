@@ -1,4 +1,4 @@
-package com.record.convention
+package com.memozi.convention
 
 import org.gradle.api.JavaVersion
 

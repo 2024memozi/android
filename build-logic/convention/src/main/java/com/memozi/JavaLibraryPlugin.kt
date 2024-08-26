@@ -1,8 +1,8 @@
-import com.record.convention.Const
-import com.record.convention.extension.getLibrary
-import com.record.convention.extension.getVersion
-import com.record.convention.extension.implementation
-import com.record.convention.extension.libs
+import com.memozi.convention.Const
+import com.memozi.convention.extension.getLibrary
+import com.memozi.convention.extension.getVersion
+import com.memozi.convention.extension.implementation
+import com.memozi.convention.extension.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginExtension
