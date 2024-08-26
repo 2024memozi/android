@@ -5,7 +5,7 @@ import com.memozi.domain.repository.MemoziRepository
 import javax.inject.Inject
 
 class PostMemoziUseCase @Inject constructor(
-    private val memoziRepository: MemoziRepository,
+    private val memoziRepository: MemoziRepository
 ) {
     suspend operator fun invoke(memozi: Memozi) = memoziRepository.postMemozi(memozi)
 }
