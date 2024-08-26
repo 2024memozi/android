@@ -22,3 +22,6 @@ dependencyResolutionManagement {
 }
 rootProject.name = "memozi"
 include(":app")
+include(":core")
+include(":core:datastore")
+include(":core:common")
