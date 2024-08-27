@@ -1,0 +1,30 @@
+digraph {
+  graph [label="memozi\n ",labelloc=t,fontsize=30,ranksep=1.4];
+  node [style=filled, fillcolor="#bbbbbb"];
+  rankdir=TB;
+
+  # Projects
+
+  ":app" [shape=box, fillcolor="#baffc9"];
+  ":core:buildconfig" [fillcolor="#baffc9"];
+  ":core:common" [fillcolor="#baffc9"];
+  ":core:datastore" [fillcolor="#baffc9"];
+  ":core:designsystem" [fillcolor="#baffc9"];
+  ":core:network" [fillcolor="#baffc9"];
+  ":core:ui" [fillcolor="#baffc9"];
+
+  {rank = same; ":app";}
+
+  # Dependencies
+
+  ":app" -> ":core:common" [style=dotted]
+  ":app" -> ":core:designsystem" [style=dotted]
+  ":app" -> ":core:buildconfig" [style=dotted]
+  ":app" -> ":core:datastore" [style=dotted]
+  ":app" -> ":core:network" [style=dotted]
+  ":core:datastore" -> ":core:common" [style=dotted]
+  ":core:buildconfig" -> ":core:common" [style=dotted]
+  ":core:designsystem" -> ":core:ui" [style=dotted]
+  ":core:network" -> ":core:datastore" [style=dotted]
+  ":core:network" -> ":core:common" [style=dotted]
+}
