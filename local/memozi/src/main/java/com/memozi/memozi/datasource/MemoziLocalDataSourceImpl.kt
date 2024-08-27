@@ -2,8 +2,8 @@ package com.memozi.memozi.datasource
 
 import android.util.Log
 import androidx.datastore.core.DataStore
-import com.memozi.data.source.local.MemoziLocalDataSource
 import com.memozi.datastore.MemoziLocalData
+import com.memozi.memozi.source.local.MemoziLocalDataSource
 import kotlinx.coroutines.flow.Flow
 import java.io.IOException
 import javax.inject.Inject

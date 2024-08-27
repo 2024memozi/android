@@ -1,7 +1,7 @@
 package com.memozi.memozi.di
 
-import com.memozi.data.source.local.MemoziLocalDataSource
 import com.memozi.memozi.datasource.MemoziLocalDataSourceImpl
+import com.memozi.memozi.source.local.MemoziLocalDataSource
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

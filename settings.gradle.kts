@@ -24,6 +24,12 @@ include(":core:datastore")
 include(":core:ui")
 include(":core:designsystem")
 include(":core:model")
-include(":domain")
-include(":data")
+
+//domain
+include(":domain:memozi")
+
+//data
+include(":data:memozi")
+
+//local
 include(":local:memozi")
