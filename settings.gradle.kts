@@ -25,11 +25,14 @@ include(":core:ui")
 include(":core:designsystem")
 include(":core:model")
 
-//domain
+// domain
 include(":domain:memozi")
 
-//data
+// data
 include(":data:memozi")
 
-//local
+// local
 include(":local:memozi")
+
+// feature
+include(":feature:memo")
