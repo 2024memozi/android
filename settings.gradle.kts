@@ -37,3 +37,4 @@ include(":local:memozi")
 // feature
 include(":feature:memo")
 include(":feature:login")
+include(":feature:navigator")
