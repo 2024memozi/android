@@ -25,5 +25,5 @@ fun NavGraphBuilder.loginNavGraph(
 }
 
 object LoginRoute {
-    const val route = "mypage"
+    const val route = "login"
 }
