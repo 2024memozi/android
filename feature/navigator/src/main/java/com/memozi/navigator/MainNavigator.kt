@@ -8,6 +8,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.memozi.login.navigation.LoginRoute
 import com.memozi.memo.navigation.MemoRoute
+import com.memozi.onboarding.navigation.OnboardingRoute
 
 internal class MainNavigator(
     val navController: NavHostController
@@ -19,6 +20,14 @@ internal class MainNavigator(
 
     fun navigateLogin() {
         navController.navigate(LoginRoute.route) {
+            popUpTo(navController.graph.id) {
+                inclusive = true
+            }
+        }
+    }
+
+    fun navigateOnboarding() {
+        navController.navigate(OnboardingRoute.route) {
             popUpTo(navController.graph.id) {
                 inclusive = true
             }

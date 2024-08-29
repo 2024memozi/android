@@ -13,6 +13,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.memozi.login.navigation.loginNavGraph
 import com.memozi.memo.navigation.memoNavGraph
+import com.memozi.onboarding.navigation.onboardingNavGraph
 
 @Composable
 internal fun MainScreen(
@@ -35,6 +36,9 @@ internal fun MainScreen(
                 exitTransition = { ExitTransition.None }
             ) {
                 loginNavGraph(
+                    padding = innerPadding
+                )
+                onboardingNavGraph(
                     padding = innerPadding
                 )
                 memoNavGraph(
