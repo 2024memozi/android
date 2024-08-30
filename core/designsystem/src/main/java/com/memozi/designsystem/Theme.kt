@@ -10,6 +10,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
 @Stable
@@ -50,7 +51,10 @@ class MemoziColors(
     red: Color,
 
     // Kakao
-    kakao: Color
+    kakao: Color,
+
+    // gradient
+    gradientBrush: Brush
 ) {
     var mainPink by mutableStateOf(mainPink)
         private set
@@ -110,13 +114,17 @@ class MemoziColors(
     var kakao by mutableStateOf(kakao)
         private set
 
+    var gradientBrush by mutableStateOf(gradientBrush)
+        private set
+
     fun copy(): MemoziColors = MemoziColors(
         mainPink, mainPurple, mainPurple02,
         purple, pink, blue01, blue02, yellowGreen01, yellowGreen02, yellow01, yellow02, orange,
         black, white, loginBlack, black20,
         gray01, gray02, gray03, gray04, gray05, gray06, gray07,
         cautionRed, red,
-        kakao
+        kakao,
+        gradientBrush
     )
 
     fun update(other: MemoziColors) {
@@ -146,6 +154,7 @@ class MemoziColors(
         cautionRed = other.cautionRed
         red = other.red
         kakao = other.kakao
+        gradientBrush = other.gradientBrush
     }
 }
 
@@ -186,14 +195,16 @@ fun MemoziDarkColor(
     red: Color = Red,
 
     // Kakao
-    kakao: Color = Kakao
+    kakao: Color = Kakao,
+    gradientBrush: Brush = GradientBrush
+
 ) = MemoziColors(
     mainPink, mainPurple, mainPurple02,
     purple, pink, blue01, blue02, yellowGreen01, yellowGreen02, yellow01, yellow02, orange,
     black, white, loginBlack, black20,
     gray01, gray02, gray03, gray04, gray05, gray06, gray07,
     cautionRed, red,
-    kakao
+    kakao, gradientBrush
 )
 
 private val LocalMemoziColors =
@@ -214,7 +225,7 @@ object MemoziTheme {
 }
 
 @Composable
-fun provideMemoziColorsAndTypography(
+fun ProvideMemoziColorsAndTypography(
     colors: MemoziColors,
     typography: MemoziTypography,
     content: @Composable () -> Unit
@@ -235,7 +246,7 @@ fun provideMemoziColorsAndTypography(
 fun MemoziTheme(content: @Composable () -> Unit) {
     val colors = MemoziDarkColor()
     val typography = MemoziTypography()
-    provideMemoziColorsAndTypography(colors, typography) {
+    ProvideMemoziColorsAndTypography(colors, typography) {
         MaterialTheme(content = content)
     }
 }

@@ -1,6 +1,8 @@
 package com.memozi.designsystem
 
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+
 // Main
 val MainPink = Color(0xFFE3ADB2)
 val MainPurple = Color(0xFFBFBCE7)
@@ -40,3 +42,11 @@ val Red = Color(0xFFE60000)
 
 // Kakao
 val Kakao = Color(0xFFFEE500)
+
+// gradient
+val GradientBrush = Brush.verticalGradient(
+    colors = listOf(
+        MainPink,
+        MainPurple
+    )
+)
