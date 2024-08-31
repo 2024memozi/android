@@ -1,7 +1,6 @@
 package com.memozi.component.top
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.memozi.designsystem.MemoziTheme
+import com.memozi.ui.extension.customClickable
 
 @Composable
 fun MemoziTopAppbar(
@@ -45,18 +45,12 @@ fun MemoziTopAppbar(
             Text(
                 text = btnText,
                 style = MemoziTheme.typography.appnameBold13,
-                modifier = Modifier.clickable {
-                    navigateToFirst()
-                }
+                modifier = Modifier.customClickable(onClick = navigateToFirst)
             )
             Text(text = " | ", style = MemoziTheme.typography.appnameBold13)
             Text(
                 text = "설정",
-                modifier = Modifier
-                    .padding(end = 21.dp)
-                    .clickable {
-                        navigateToSetting()
-                    },
+                modifier = Modifier.customClickable(onClick = navigateToSetting),
                 style = MemoziTheme.typography.appnameBold13
             )
         }
