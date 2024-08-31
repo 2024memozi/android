@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.memozi.feature)
+    alias(libs.plugins.memozi.android.hilt)
 }
 
 android {
