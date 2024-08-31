@@ -16,3 +16,5 @@ local.properties
 /build-logic/convention/build/resources/main/META-INF
 /build-logic/convention/build
 /.idea/migrations.xml
+*.bin
+/.idea/inspectionProfiles/Project_Default.xml
