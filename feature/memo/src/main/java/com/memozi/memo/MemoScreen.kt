@@ -10,9 +10,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -22,10 +25,6 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,32 +34,63 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
+import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.memozi.component.textfield.MemoziSearchTextField
 import com.memozi.component.top.MemoziBackGround
 import com.memozi.component.top.MemoziTopAppbar
 import com.memozi.designsystem.MemoziTheme
 import com.memozi.designsystem.R
 import com.memozi.ui.extension.customClickable
+import com.memozi.ui.lifecycle.LaunchedEffectWithLifecycle
+import kotlinx.coroutines.flow.collectLatest
 import kotlin.math.absoluteValue
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MemoRoute(
     padding: PaddingValues,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: MemoViewModel = hiltViewModel(),
+    navigateMemoDetail: (Int) -> Unit = {},
+    navigateToCategory: (Int) -> Unit = {},
+    navigateSetting: () -> Unit = {}
 ) {
-    val pagerState = rememberPagerState(initialPage = 0, pageCount = { 3 })
+    val pagerState =
+        rememberPagerState(initialPage = 0, pageCount = { dummyMemoCategoriesItems().size + 1 })
+    val navigationBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+
+    LaunchedEffectWithLifecycle() {
+        viewModel.sideEffect.collectLatest { sideEffect ->
+            when (sideEffect) {
+                is MemoSideEffect.NavigateToMemo -> {
+                    navigateMemoDetail(sideEffect.memoId)
+                }
+
+                is MemoSideEffect.NavigateToCategory -> {
+                    navigateToCategory(sideEffect.categoryId)
+                }
+
+                MemoSideEffect.NavigateToSettings -> {
+                    navigateSetting()
+                }
+            }
+        }
+    }
+
     MemoziBackGround()
     Column {
         MemoziTopAppbar(
+            navigateToSetting = navigateSetting,
             innerComposable = {
                 MemoziSearchTextField(
                     modifier = Modifier
@@ -69,7 +99,12 @@ fun MemoRoute(
                 )
             }
         )
-        MemoziViewPager(pagerState, modifier = Modifier.padding(top = 15.dp))
+        MemoziHorizontalPager(
+            pagerState,
+            category = dummyMemoCategoriesItems(),
+            modifier = Modifier.padding(top = 15.dp)
+        )
+
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -80,28 +115,43 @@ fun MemoRoute(
                 pagerState
             )
             Spacer(modifier = Modifier.height(16.dp))
-            MemoList(memoItems = dummyMemoItems())
-            Spacer(modifier = Modifier.height(8.dp))
+            MemoList(
+                memoItems = dummyMemoItems(),
+                bottomPaddingValue = PaddingValues(bottom = 8.dp + navigationBarHeight)
+            )
         }
     }
+    MemoFloatingButton()
+}
+
+@Composable
+fun MemoFloatingButton(
+    navigateMemoAdd: () -> Unit = {}
+) {
+    val navigationBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
     Box(
         modifier = Modifier
             .fillMaxSize(),
         contentAlignment = Alignment.BottomEnd
     ) {
-        FloatingActionButton(
-            onClick = { /* TODO: Navigate to add memo screen */ },
-            shape = CircleShape,
+        Box(
             modifier = Modifier
-                .padding(16.dp)
-                .background(Color.Transparent),
-            containerColor = MemoziTheme.colors.mainPurple02,
-            contentColor = MemoziTheme.colors.white,
-            elevation = FloatingActionButtonDefaults.elevation(0.dp)
+                .padding(bottom = 51.dp + navigationBarHeight)
+                .padding(end = 8.dp)
+                .background(Color.Transparent)
+                .width(55.dp)
+                .height(55.dp)
+                .customClickable(rippleEnabled = false) { navigateMemoAdd() } // 나중에 커스텀 clickable 추가
+                .background(
+                    color = MemoziTheme.colors.mainPurple02,
+                    shape = CircleShape
+                )
         ) {
             Icon(
-                imageVector = Icons.Default.Add,
-                contentDescription = "Add Memo"
+                painterResource(id = R.drawable.ic_plus_white_34),
+                contentDescription = "Add Memo",
+                tint = MemoziTheme.colors.white,
+                modifier = Modifier.align(Alignment.Center)
             )
         }
     }
@@ -110,9 +160,10 @@ fun MemoRoute(
 @SuppressLint("RestrictedApi")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun MemoziViewPager(
+fun MemoziHorizontalPager(
     pagerState: PagerState,
-    modifier: Modifier
+    modifier: Modifier,
+    category: List<CategoryItem>
 ) {
     HorizontalPager(
         state = pagerState,
@@ -143,32 +194,39 @@ fun MemoziViewPager(
                 }
                 .background(shape = RoundedCornerShape(8.dp), color = Color.Transparent)
         ) {
-            MemoziCategory(
-                painterResource(id = R.drawable.img_memozi_category_1),
-                "카테고리",
-                MemoziTheme.colors.white
-            )
+            if (page == category.size) {
+                MemoziCategoryAdd()
+            } else {
+                MemoziCategory(
+                    imageURL = category[page].imageUrl,
+                    title = category[page].name,
+                    titleColor = Color(android.graphics.Color.parseColor(category[page].textColor))
+                )
+            }
         }
     }
 }
 
 @Composable
 fun MemoziCategory(
-    painter: Painter,
+    imageURL: String,
     title: String,
     titleColor: Color
 ) {
     Box {
-        Image(
-            painter = painter,
-            contentDescription = null,
-            contentScale = ContentScale.FillBounds,
-            modifier = Modifier
-                .fillMaxSize()
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(imageURL)
+                .crossfade(true)
+                .build(),
+//            placeholder = painterResource(R.drawable.ic), 로딩화면 필요시 변경
+            contentDescription = "카테고리",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
         )
         Text(
             text = title,
-            style = MemoziTheme.typography.ssuLight13,
+            style = MemoziTheme.typography.ssuLight11,
             color = titleColor,
             textAlign = TextAlign.End,
             modifier = Modifier
@@ -176,6 +234,37 @@ fun MemoziCategory(
                 .align(Alignment.BottomEnd)
                 .padding(bottom = 8.dp)
                 .padding(horizontal = 9.dp)
+        )
+    }
+}
+
+@Composable
+fun MemoziCategoryAdd() {
+    Box(
+        modifier = Modifier.customClickable(onClick = {}),
+        contentAlignment = Alignment.Center
+    ) {
+        Image(
+            painterResource(id = R.drawable.img_category_add),
+            contentDescription = null,
+            contentScale = ContentScale.FillBounds,
+            modifier = Modifier
+                .fillMaxSize()
+        )
+        Text(
+            text = "새 카테고리 추가",
+            style = MemoziTheme.typography.ssuLight11,
+            color = MemoziTheme.colors.white,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 8.dp)
+        )
+        Icon(
+            painter = painterResource(id = R.drawable.ic_plus_white_34),
+            tint = MemoziTheme.colors.white,
+            contentDescription = "카테고리추가"
         )
     }
 }
@@ -221,35 +310,18 @@ fun MemoziHorizontalPagerIndicator(
     }
 }
 
-data class MemoItem(val title: String, val content: String, val date: String)
-
-fun dummyMemoItems(): List<MemoItem> {
-    return listOf(
-        MemoItem("Memo Title 1", "This is the content of memo 1", "2024-08-31"),
-        MemoItem("Memo Title 2", "This is the content of memo 2", "2024-08-31"),
-        MemoItem("Memo Title 2", "This is the content of memo 2", "2024-08-31"),
-        MemoItem("Memo Title 2", "This is the content of memo 2", "2024-08-31"),
-        MemoItem("Memo Title 2", "This is the content of memo 2", "2024-08-31"),
-        MemoItem("Memo Title 2", "This is the content of memo 2", "2024-08-31"),
-        MemoItem("Memo Title 2", "This is the content of memo 2", "2024-08-31"),
-        MemoItem("Memo Title 3", "This is the content of memo 3", "2024-08-31")
-        // Add more items as needed
-    )
-}
-
 @Composable
-fun MemoList(memoItems: List<MemoItem>) {
+fun MemoList(memoItems: List<MemoItem>, bottomPaddingValue: PaddingValues) {
     Box(
         modifier = Modifier
             .padding(horizontal = 16.dp)
-            .padding(bottom = 8.dp)
+            .padding(bottomPaddingValue)
             .shadow(4.dp, shape = RoundedCornerShape(8.dp)) // elevation 효과를 위해 shadow 추가
             .background(color = MemoziTheme.colors.white, shape = RoundedCornerShape(8.dp))
     ) {
         LazyColumn(
             modifier = Modifier
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+                .fillMaxSize()
         ) {
             items(memoItems.size) { index ->
                 if (memoItems.size > 1 && index != memoItems.size - 1) {
@@ -274,7 +346,6 @@ fun MemoItemCard(memo: MemoItem) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp)
             .background(color = MemoziTheme.colors.white, shape = RoundedCornerShape(8.dp))
             .padding(16.dp)
     ) {
@@ -304,6 +375,42 @@ fun MemoItemCard(memo: MemoItem) {
             color = MemoziTheme.colors.gray05
         )
     }
+}
+
+data class MemoItem(val title: String, val content: String, val date: String)
+
+fun dummyMemoItems(): List<MemoItem> {
+    return listOf(
+        MemoItem("Memo Title 1", "This is the content of memo 1", "2024-08-31"),
+        MemoItem("Memo Title 2", "This is the content of memo 2", "2024-08-31"),
+        MemoItem("Memo Title 2", "This is the content of memo 2", "2024-08-31"),
+        MemoItem("Memo Title 2", "This is the content of memo 2", "2024-08-31"),
+        MemoItem("Memo Title 2", "This is the content of memo 2", "2024-08-31"),
+        MemoItem("Memo Title 2", "This is the content of memo 2", "2024-08-31"),
+        MemoItem("Memo Title 2", "This is the content of memo 2", "2024-08-31"),
+        MemoItem("Memo Title 3", "This is the content of memo 3", "2024-08-31")
+    )
+}
+
+data class CategoryItem(
+    val imageUrl: String,
+    val name: String,
+    val textColor: String
+)
+
+fun dummyMemoCategoriesItems(): List<CategoryItem> {
+    return listOf(
+        CategoryItem(
+            imageUrl = "https://github.com/user-attachments/assets/2473834b-2be4-4584-b143-7e7269a6607c",
+            name = "카테고리 1",
+            textColor = "#FFFFFF"
+        ),
+        CategoryItem(
+            imageUrl = "https://github.com/user-attachments/assets/6cf10fec-27cb-4367-ba97-40c937fbb92c",
+            name = "카테고리 2",
+            textColor = "#FF0000"
+        )
+    )
 }
 
 @Composable
