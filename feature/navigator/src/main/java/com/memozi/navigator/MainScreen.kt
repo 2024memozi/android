@@ -38,7 +38,10 @@ internal fun MainScreen(
                     padding = innerPadding
                 )
                 memoNavGraph(
-                    padding = innerPadding
+                    padding = innerPadding,
+                    navigateToMemoDetail = {},
+                    navigateToCategory = {},
+                    navigateToSetting = navigator::navigateSetting
                 )
             }
         }

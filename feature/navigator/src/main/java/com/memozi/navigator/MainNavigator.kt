@@ -33,6 +33,12 @@ internal class MainNavigator(
         }
     }
 
+    fun navigateSetting() {
+        navController.navigate(MemoRoute.route) {
+            // todo 나중에 stetting으로 Route 변경
+        }
+    }
+
     fun popBackStackIfNotLogin() {
         if (!isSameCurrentDestination(LoginRoute.route)) {
             navController.popBackStack()

@@ -2,6 +2,7 @@ package com.memozi.login.navigation
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
@@ -13,7 +14,7 @@ fun NavController.navigateLogin(navOptions: NavOptions) {
 }
 
 fun NavGraphBuilder.loginNavGraph(
-    padding: PaddingValues,
+    padding: PaddingValues = PaddingValues(0.dp),
     modifier: Modifier = Modifier
 ) {
     composable(route = LoginRoute.route) {
