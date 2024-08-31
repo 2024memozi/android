@@ -6,3 +6,7 @@ plugins {
 android {
     namespace = "com.memozi.memo"
 }
+
+dependencies{
+    implementation(projects.domain.memo)
+}
