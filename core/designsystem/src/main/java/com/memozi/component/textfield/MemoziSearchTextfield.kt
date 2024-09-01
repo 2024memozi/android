@@ -58,7 +58,7 @@ fun MemoziSearchTextField(
                 .height(26.dp)
                 .width(26.dp)
                 .padding(start = 8.dp),
-            painter = painterResource(id = R.drawable.ic_serach),
+            painter = painterResource(id = R.drawable.ic_search),
             contentDescription = null
         )
 
