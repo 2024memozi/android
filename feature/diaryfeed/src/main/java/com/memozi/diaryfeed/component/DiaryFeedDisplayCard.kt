@@ -21,7 +21,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.memozi.designsystem.MemoziTheme
-import com.memozi.diaryfeed.R
+import com.memozi.designsystem.R
 
 @Composable
 fun DiaryFeedDisplayCard() {
@@ -73,7 +73,7 @@ fun DiaryFeedDisplayCard() {
                             day = 8,
                             dayOfWeek = "금요일",
                             diaryContent = "일본이 너무 가고싶은 날이다. 얼른 종강이 왔으면 좋겠다.",
-                            imageId = com.memozi.designsystem.R.drawable.img_diary_feed_dummy_photo
+                            imageId = R.drawable.img_diary_feed_dummy_photo
                         )
                     }
                 }
