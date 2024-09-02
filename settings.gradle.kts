@@ -34,8 +34,11 @@ include(":data:memozi")
 // local
 include(":local:memozi")
 
+// remote
+include(":remote:memozi")
+
 // feature
 include(":feature:memo")
 include(":feature:login")
 include(":feature:navigator")
-include(":remote:memozi")
+include(":feature:diaryfeed")

@@ -1,8 +1,8 @@
 package com.memozi.component.top
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
@@ -11,22 +11,25 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.memozi.designsystem.MemoziTheme
 
 @Composable
-fun MemoziBackGround() {
+fun MemoziBackground(
+    topWeight: Float = 17f,
+    bottomWeight: Float = 50f
+) {
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
-        Box(
+        Spacer(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(17f)
+                .weight(topWeight)
                 .background(
                     brush = MemoziTheme.colors.gradientBrush
                 )
         )
-        Box(
+        Spacer(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(50f)
+                .weight(bottomWeight)
                 .background(
                     color = MemoziTheme.colors.white
                 )
@@ -38,6 +41,6 @@ fun MemoziBackGround() {
 @Composable
 private fun PrviewMemoziBackGround() {
     MemoziTheme {
-        MemoziBackGround()
+        MemoziBackground()
     }
 }
