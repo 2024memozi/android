@@ -103,7 +103,7 @@ fun MemoCategoryScreen() {
 @Composable
 fun ImageAndColorPicker() {
     val (selectedColorIndex, setSelectedColorIndex) = remember { mutableStateOf(-1) }
-
+    val (selectedTextColorIndex, setSelectedTextColorIndex) = remember { mutableStateOf(-1) }
     Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
         Text(text = "사진 배경", style = MemoziTheme.typography.ngBold14)
         Spacer(modifier = Modifier.height(8.dp))
@@ -153,7 +153,7 @@ fun ImageAndColorPicker() {
         Spacer(modifier = Modifier.height(8.dp))
         // Unified Color Picker Grid with spacing between rows
         LazyVerticalGrid(
-            columns = GridCells.Fixed(7),
+            columns = GridCells.Adaptive(minSize = 40.dp),
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(8.dp), // Space between rows
             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -187,7 +187,7 @@ fun ImageAndColorPicker() {
                         .size(40.dp)
                         .border(
                             width = 1.dp,
-                            color = if (color == MemoziTheme.colors.white) MemoziTheme.colors.gray02 else borderColor,
+                            color = if (color == MemoziTheme.colors.white && selectedColorIndex != index) MemoziTheme.colors.gray02 else borderColor,
                             shape = CircleShape
                         )
                         .background(color = color, shape = CircleShape)
@@ -213,7 +213,7 @@ fun ImageAndColorPicker() {
 
             textColors.forEachIndexed { index, color ->
                 val borderColor =
-                    if (selectedColorIndex == index + 12) { // Adjust index for text colors
+                    if (selectedTextColorIndex == index) {
                         MemoziTheme.colors.cautionRed
                     } else {
                         Color.Transparent
@@ -224,12 +224,12 @@ fun ImageAndColorPicker() {
                         .size(40.dp)
                         .border(
                             width = 1.dp,
-                            color = if (color == MemoziTheme.colors.white) MemoziTheme.colors.gray02 else borderColor,
+                            color = if (color == MemoziTheme.colors.white && selectedTextColorIndex != index) MemoziTheme.colors.gray02 else borderColor,
                             shape = CircleShape
                         )
                         .background(color = color, shape = CircleShape)
                         .customClickable {
-                            setSelectedColorIndex(index + 12) // Update selected index for text colors
+                            setSelectedTextColorIndex(index)
                         }
                 )
             }

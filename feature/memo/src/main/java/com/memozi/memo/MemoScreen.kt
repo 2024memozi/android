@@ -178,17 +178,26 @@ fun MemoziHorizontalPager(
     category: List<CategoryItem>,
     navigateToCategoryAdd: () -> Unit
 ) {
+    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
+    val padding = 0.288f * screenWidth // 104/360
+
     HorizontalPager(
         state = pagerState,
         modifier = modifier,
-        contentPadding = PaddingValues(horizontal = 104.dp)
+        contentPadding = PaddingValues(horizontal = padding)
     ) { page ->
         val pageOffset =
             ((pagerState.currentPage - page) + pagerState.currentPageOffsetFraction).absoluteValue
+
+        val itemWidth =
+            if (page == pagerState.currentPage) 0.422f * screenWidth else 0.35f * screenWidth
+        val itemHeight =
+            if (page == pagerState.currentPage) 0.244f * screenWidth else 0.2f * screenWidth
+
         Box(
             modifier = Modifier
-                .width(152.dp)
-                .height(88.dp)
+                .width(itemWidth)
+                .height(itemHeight)
                 .graphicsLayer {
                     lerp(
                         start = 0.78f,
@@ -196,12 +205,6 @@ fun MemoziHorizontalPager(
                         fraction = 1f - pageOffset.coerceIn(0f, 1f)
                     ).also { scale ->
                         scaleX = scale
-                    }
-                    lerp(
-                        start = 0.9f,
-                        stop = 1f,
-                        fraction = 1f - pageOffset.coerceIn(0f, 1f)
-                    ).also { scale ->
                         scaleY = scale
                     }
                 }
@@ -267,21 +270,22 @@ fun MemoziCategoryAdd(navigateToCategoryAdd: () -> Unit) {
             modifier = Modifier
                 .fillMaxSize()
         )
-        Text(
-            text = "새 카테고리 추가",
-            style = MemoziTheme.typography.ssuLight11,
-            color = MemoziTheme.colors.white,
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 8.dp)
-        )
-        Icon(
-            painter = painterResource(id = R.drawable.ic_plus_white_34),
-            tint = MemoziTheme.colors.white,
-            contentDescription = "카테고리추가"
-        )
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_plus_white_34),
+                tint = MemoziTheme.colors.white,
+                contentDescription = "카테고리추가"
+            )
+            Spacer(modifier = Modifier.height(3.dp))
+            Text(
+                text = "새 카테고리 추가",
+                style = MemoziTheme.typography.ssuLight11,
+                color = MemoziTheme.colors.white,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
+        }
     }
 }
 
