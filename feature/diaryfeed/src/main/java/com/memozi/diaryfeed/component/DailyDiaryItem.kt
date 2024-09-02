@@ -18,7 +18,15 @@ import com.memozi.designsystem.MemoziTheme
 import com.memozi.designsystem.R
 
 @Composable
-fun DailyDiaryItem() {
+fun DailyDiaryItem(
+    year: Int,
+    month: Int,
+    day: Int,
+    dayOfWeek: String,
+    diaryContent: String,
+    imageId: Int? = null,
+    location: String? = null
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -26,31 +34,35 @@ fun DailyDiaryItem() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "2023년 11월 10일 | 금요일",
+            text = "{$year}년 {$month}월 {$day}일 | {$dayOfWeek}",
             modifier = Modifier.padding(top = 16.dp, bottom = 6.dp),
             style = MemoziTheme.typography.ssuLight12
         )
-        Image(
-            painter = painterResource(id = R.drawable.img_diary_feed_dummy_photo),
-            contentDescription = null,
-            modifier = Modifier.padding(bottom = 6.dp)
-        )
-        Row(
-            modifier = Modifier.padding(bottom = 8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+        if (imageId != null) {
             Image(
-                painter = painterResource(id = R.drawable.ic_diary_feed_location),
+                painter = painterResource(id = imageId),
                 contentDescription = null,
-                modifier = Modifier.padding(end = 2.dp)
-            )
-            Text(
-                text = "일본 도쿄",
-                style = MemoziTheme.typography.ngReg8
+                modifier = Modifier.padding(bottom = 6.dp)
             )
         }
+        if (location != null) {
+            Row(
+                modifier = Modifier.padding(bottom = 8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_diary_feed_location),
+                    contentDescription = null,
+                    modifier = Modifier.padding(end = 2.dp)
+                )
+                Text(
+                    text = location,
+                    style = MemoziTheme.typography.ngReg8
+                )
+            }
+        }
         Text(
-            text = "일본이 너무 가고싶은 날이다. 얼른 종강이 왔으면 좋겠다.",
+            text = diaryContent,
             modifier = Modifier.padding(bottom = 16.dp),
             style = MemoziTheme.typography.ngReg12_140
         )
