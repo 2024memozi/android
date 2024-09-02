@@ -104,7 +104,7 @@ fun DiaryFeedTopAppBar() {
         Spacer(Modifier.weight(1f))
         Text(
             text = "메모",
-            modifier = Modifier.clickable { /* TODO : 메모 페이지로 이동 */ },
+            modifier = Modifier.clickable { /* 메모 페이지로 이동 */ },
             style = MemoziTheme.typography.ssuLight13
         )
         Image(
@@ -113,7 +113,7 @@ fun DiaryFeedTopAppBar() {
         )
         Text(
             text = "설정",
-            modifier = Modifier.clickable { /* TODO : 설정 페이지로 이동 */ },
+            modifier = Modifier.clickable { /* 설정 페이지로 이동 */ },
             style = MemoziTheme.typography.ssuLight13
         )
     }
