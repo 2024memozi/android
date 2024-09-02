@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.memozi.component.top.MemoziBackGround
+import com.memozi.component.top.MemoziBackground
 import com.memozi.designsystem.MemoziTheme
 import com.memozi.designsystem.R
 import com.memozi.diaryfeed.component.DiaryFeedDisplayCard
@@ -32,7 +32,7 @@ fun DiaryFeedScreen() {
     var isDiaryWritten by remember { mutableStateOf(false) }
     var isDiaryExist by remember { mutableStateOf(true) }
 
-    MemoziBackGround()
+    MemoziBackground()
 
     Column(
         modifier = Modifier
