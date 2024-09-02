@@ -18,4 +18,8 @@ class MemoViewModel @Inject constructor() : BaseViewModel<MemoState, MemoSideEff
     fun navigateCategory(categoryId: Int) {
         postSideEffect(MemoSideEffect.NavigateToCategory(categoryId))
     }
+
+    fun navigateCategoryAdd() {
+        postSideEffect(MemoSideEffect.NavigateToCategoryAdd)
+    }
 }

@@ -8,6 +8,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.memozi.memo.MemoRoute
+import com.memozi.memo.screen.MemoCategoryScreen
 
 fun NavController.navigateMemo(navOptions: NavOptions) {
     navigate(MemoRoute.route, navOptions)
@@ -18,6 +19,7 @@ fun NavGraphBuilder.memoNavGraph(
     modifier: Modifier = Modifier,
     navigateToMemoDetail: (Int) -> Unit = {},
     navigateToCategory: (Int) -> Unit = {},
+    navigateToCategoryAdd: () -> Unit = {},
     navigateToSetting: () -> Unit = {}
 ) {
     composable(route = MemoRoute.route) {
@@ -26,14 +28,17 @@ fun NavGraphBuilder.memoNavGraph(
             modifier = modifier,
             navigateMemoDetail = navigateToMemoDetail,
             navigateToCategory = navigateToCategory,
+            navigateToCategoryAdd = navigateToCategoryAdd,
             navigateSetting = navigateToSetting
         )
     }
-    composable(route = MemoRoute.detail) {
+    composable(route = MemoRoute.categoryAdd) {
+        MemoCategoryScreen()
     }
 }
 
 object MemoRoute {
     const val route = "memo"
+    const val categoryAdd = "catrgoryAdd"
     const val detail = "memodetail"
 }

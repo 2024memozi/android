@@ -41,6 +41,7 @@ internal fun MainScreen(
                     padding = innerPadding,
                     navigateToMemoDetail = {},
                     navigateToCategory = {},
+                    navigateToCategoryAdd = navigator::navigateCategoryAdd,
                     navigateToSetting = navigator::navigateSetting
                 )
             }

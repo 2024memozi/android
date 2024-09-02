@@ -35,12 +35,14 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.times
 import androidx.compose.ui.util.lerp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
@@ -50,6 +52,10 @@ import com.memozi.component.top.MemoziBackGround
 import com.memozi.component.top.MemoziTopAppbar
 import com.memozi.designsystem.MemoziTheme
 import com.memozi.designsystem.R
+import com.memozi.memo.model.CategoryItem
+import com.memozi.memo.model.MemoItem
+import com.memozi.memo.model.dummyMemoCategoriesItems
+import com.memozi.memo.model.dummyMemoItems
 import com.memozi.ui.extension.customClickable
 import com.memozi.ui.lifecycle.LaunchedEffectWithLifecycle
 import kotlinx.coroutines.flow.collectLatest
@@ -63,6 +69,7 @@ fun MemoRoute(
     viewModel: MemoViewModel = hiltViewModel(),
     navigateMemoDetail: (Int) -> Unit = {},
     navigateToCategory: (Int) -> Unit = {},
+    navigateToCategoryAdd: () -> Unit = {},
     navigateSetting: () -> Unit = {}
 ) {
     val pagerState =
@@ -78,6 +85,10 @@ fun MemoRoute(
 
                 is MemoSideEffect.NavigateToCategory -> {
                     navigateToCategory(sideEffect.categoryId)
+                }
+
+                is MemoSideEffect.NavigateToCategoryAdd -> {
+                    navigateToCategoryAdd()
                 }
 
                 MemoSideEffect.NavigateToSettings -> {
@@ -102,7 +113,8 @@ fun MemoRoute(
         MemoziHorizontalPager(
             pagerState,
             category = dummyMemoCategoriesItems(),
-            modifier = Modifier.padding(top = 15.dp)
+            modifier = Modifier.padding(top = 15.dp),
+            navigateToCategoryAdd = { viewModel.navigateCategoryAdd() }
         )
 
         Column(
@@ -163,7 +175,8 @@ fun MemoFloatingButton(
 fun MemoziHorizontalPager(
     pagerState: PagerState,
     modifier: Modifier,
-    category: List<CategoryItem>
+    category: List<CategoryItem>,
+    navigateToCategoryAdd: () -> Unit
 ) {
     HorizontalPager(
         state = pagerState,
@@ -195,7 +208,7 @@ fun MemoziHorizontalPager(
                 .background(shape = RoundedCornerShape(8.dp), color = Color.Transparent)
         ) {
             if (page == category.size) {
-                MemoziCategoryAdd()
+                MemoziCategoryAdd(navigateToCategoryAdd = navigateToCategoryAdd)
             } else {
                 MemoziCategory(
                     imageURL = category[page].imageUrl,
@@ -223,7 +236,9 @@ fun MemoziCategory(
 //            placeholder = painterResource(R.drawable.ic), 로딩화면 필요시 변경
             contentDescription = "카테고리",
             contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
+                .clip(RoundedCornerShape(14.dp))
         )
         Text(
             text = title,
@@ -240,9 +255,9 @@ fun MemoziCategory(
 }
 
 @Composable
-fun MemoziCategoryAdd() {
+fun MemoziCategoryAdd(navigateToCategoryAdd: () -> Unit) {
     Box(
-        modifier = Modifier.customClickable(onClick = {}),
+        modifier = Modifier.customClickable(onClick = { navigateToCategoryAdd() }),
         contentAlignment = Alignment.Center
     ) {
         Image(
@@ -377,8 +392,6 @@ fun MemoItemCard(memo: MemoItem) {
         )
     }
 }
-
-
 
 @Composable
 @Preview

@@ -33,6 +33,11 @@ internal class MainNavigator(
         }
     }
 
+    fun navigateCategoryAdd() {
+        navController.navigate(MemoRoute.categoryAdd) {
+        }
+    }
+
     fun navigateSetting() {
         navController.navigate(MemoRoute.route) {
             // todo 나중에 stetting으로 Route 변경

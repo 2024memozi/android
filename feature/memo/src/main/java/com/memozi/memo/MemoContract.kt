@@ -10,5 +10,6 @@ data class MemoState(
 sealed interface MemoSideEffect : SideEffect {
     data class NavigateToMemo(val memoId: Int) : MemoSideEffect
     data class NavigateToCategory(val categoryId: Int) : MemoSideEffect
+    data object NavigateToCategoryAdd : MemoSideEffect
     data object NavigateToSettings : MemoSideEffect
 }
