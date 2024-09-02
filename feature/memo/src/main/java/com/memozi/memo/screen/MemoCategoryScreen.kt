@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -17,24 +18,30 @@ import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.memozi.component.button.MemoziButton
 import com.memozi.designsystem.MemoziTheme
+import com.memozi.designsystem.R
 import com.memozi.memo.MemoziCategory
 import com.memozi.ui.extension.customClickable
 
@@ -75,17 +82,7 @@ fun MemoCategoryScreen() {
             title = "",
             titleColor = MemoziTheme.colors.white
         )
-
-        // Text Field for Category Name
-        TextField(
-            value = "", // Add state management for the text field
-            onValueChange = {},
-            label = { Text(text = "카테고리 이름") },
-            maxLines = 1,
-            modifier = Modifier
-                .padding(horizontal = 16.dp, vertical = 8.dp)
-                .fillMaxWidth()
-        )
+        CategoryTextField()
 
         // Color Picker and Image Selection Grid
         ImageAndColorPicker()
@@ -97,6 +94,80 @@ fun MemoCategoryScreen() {
         horizontalArrangement = Arrangement.End
     ) {
         MemoziButton()
+    }
+}
+
+@Composable
+fun CategoryTextField(
+    onValueChange: (String) -> Unit = { _ -> }
+) {
+    var text by remember { mutableStateOf("2") }
+    val maxCharCount = 10
+    val isError = text.isEmpty()
+
+    Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+        Spacer(modifier = Modifier.height(32.dp))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(21.dp)
+        ) {
+            BasicTextField(
+                value = text,
+                onValueChange = {
+                    if (it.length <= maxCharCount && !it.contains(" ")) {
+                        text = it
+                        onValueChange(text)
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .wrapContentHeight(Alignment.CenterVertically),
+                textStyle = MemoziTheme.typography.ngReg15.copy(MemoziTheme.colors.black),
+                decorationBox = { innerTextField ->
+                    if (text.isEmpty()) {
+                        Text(
+                            text = "카테고리 이름",
+                            style = MemoziTheme.typography.ngReg15.copy(MemoziTheme.colors.gray05)
+                        )
+                    }
+                    innerTextField()
+                }
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            Text(
+                text = "${text.length}/$maxCharCount",
+                modifier = Modifier.fillMaxHeight(),
+                style = MemoziTheme.typography.ngReg15.copy(color = MemoziTheme.colors.gray04),
+                textAlign = TextAlign.End
+            )
+
+            if (text.isNotEmpty()) {
+                Spacer(modifier = Modifier.width(8.dp))
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_x_white_13),
+                    tint = Color.Unspecified,
+                    contentDescription = "삭제버튼",
+                    modifier = Modifier
+                        .customClickable { text = "" }
+                )
+            }
+        }
+        Spacer(
+            modifier = Modifier
+                .height(1.dp)
+                .fillMaxWidth()
+                .padding(end = if (text.isNotEmpty()) 16.dp else 0.dp)
+                .shadow(elevation = 1.dp)
+                .background(color = if (isError) MemoziTheme.colors.red else Color.Transparent)
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        if (text.isEmpty()) {
+            Text(
+                text = "카테고리 이름을 입력해주세요!",
+                style = MemoziTheme.typography.ngReg8.copy(color = MemoziTheme.colors.red)
+            )
+        }
     }
 }
 
@@ -126,7 +197,7 @@ fun ImageAndColorPicker() {
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
-                            painter = painterResource(id = com.memozi.designsystem.R.drawable.ic_camera_gray_24),
+                            painter = painterResource(id = R.drawable.ic_camera_gray_24),
                             contentDescription = "Camera Icon",
                             tint = MemoziTheme.colors.white
                         )
@@ -212,12 +283,11 @@ fun ImageAndColorPicker() {
             )
 
             textColors.forEachIndexed { index, color ->
-                val borderColor =
-                    if (selectedTextColorIndex == index) {
-                        MemoziTheme.colors.cautionRed
-                    } else {
-                        Color.Transparent
-                    }
+                val borderColor = if (selectedTextColorIndex == index) {
+                    MemoziTheme.colors.cautionRed
+                } else {
+                    Color.Transparent
+                }
 
                 Box(
                     modifier = Modifier
@@ -240,39 +310,6 @@ fun ImageAndColorPicker() {
 // Function to open image picker
 fun openImagePicker() {
     // Implement image picker functionality
-}
-
-@Composable
-fun MemoziButton(
-    modifier: Modifier = Modifier,
-    text: String = "저장",
-    textColor: Color = MemoziTheme.colors.white,
-    clickEvent: () -> Unit = {},
-    enabled: Boolean = true
-) {
-    Column(
-        modifier = modifier
-            .height(26.dp)
-            .width(67.dp)
-            .background(
-                color = if (enabled) MemoziTheme.colors.mainPurple else MemoziTheme.colors.gray02,
-                shape = RoundedCornerShape(8.dp)
-            )
-            .customClickable {
-                if (enabled) clickEvent()
-            },
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = text,
-            style = MemoziTheme.typography.ssuLight12,
-            color = textColor,
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-        )
-    }
 }
 
 @Preview
