@@ -31,6 +31,7 @@ fun DiaryFeedScreen() {
     var calendarSelectedState by remember { mutableStateOf(false) }
     var isDiaryWritten by remember { mutableStateOf(false) }
     var isDiaryExist by remember { mutableStateOf(true) }
+    var userName by remember { mutableStateOf("홍길동") }
 
     MemoziBackground()
 
@@ -41,7 +42,7 @@ fun DiaryFeedScreen() {
     ) {
         DiaryFeedTopAppBar()
 
-        DiaryFeedGreeting()
+        DiaryFeedGreeting(userName = userName)
 
         Row(
             modifier = Modifier

@@ -45,6 +45,8 @@ fun DiaryFeedWriteCard(
         mutableStateOf(diaryContent.isNotEmpty())
     }
 
+    val maxDiaryLength = 100
+
     ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
@@ -87,41 +89,29 @@ fun DiaryFeedWriteCard(
                     BasicTextField(
                         value = diaryContent,
                         onValueChange = { newContent ->
-                            diaryContent = newContent
+                            if (newContent.length <= 100) {
+                                diaryContent = newContent
+                            }
                         },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 8.dp, vertical = 16.dp),
-                        textStyle = MemoziTheme.typography.ngReg12_140.copy(color = Color.Black) // 텍스트 색상 설정
+                        textStyle = MemoziTheme.typography.ngReg12_140.copy(color = Color.Black)
                     )
-                    Row {
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_diary_feed_camera),
-                            contentDescription = null,
-                            modifier = Modifier.align(Alignment.Bottom)
-                        )
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_diary_feed_gallery),
-                            contentDescription = null,
-                            modifier = Modifier.align(Alignment.Bottom)
-                        )
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_diary_feed_pin),
-                            contentDescription = null,
-                            modifier = Modifier.align(Alignment.Bottom)
-                        )
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_diary_feed_random),
-                            contentDescription = null,
-                            modifier = Modifier.align(Alignment.Bottom)
-                        )
+                    Row(
+                        verticalAlignment = Alignment.Bottom
+                    ) {
+                        DiaryFeedWriteOption(id = R.drawable.ic_diary_feed_camera)
+                        DiaryFeedWriteOption(id = R.drawable.ic_diary_feed_gallery)
+                        DiaryFeedWriteOption(id = R.drawable.ic_diary_feed_pin)
+                        DiaryFeedWriteOption(id = R.drawable.ic_diary_feed_random)
                         Spacer(modifier = Modifier.weight(1f))
                         Text(
                             text = buildAnnotatedString {
                                 withStyle(
                                     style = SpanStyle(brush = MemoziTheme.colors.gradientBrush)
                                 ) {
-                                    append("100")
+                                    append("${maxDiaryLength - diaryContent.length}")
                                 }
                             },
                             modifier = Modifier
@@ -154,5 +144,17 @@ fun DiaryFeedWriteCard(
                 }
             }
         }
+    )
+}
+
+@Composable
+fun DiaryFeedWriteOption(
+    id: Int,
+    onClick: () -> Unit = {}
+) {
+    Image(
+        painter = painterResource(id = id),
+        contentDescription = null,
+        modifier = Modifier.clickable { onClick() }
     )
 }
