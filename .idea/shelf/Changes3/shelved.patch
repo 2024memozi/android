@@ -1,0 +1,22 @@
+Index: core/designsystem/src/main/res/drawable/ic_x_white.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/core/designsystem/src/main/res/drawable/ic_x_white.xml b/core/designsystem/src/main/res/drawable/ic_x_white.xml
+new file mode 100644
+--- /dev/null	(date 1725289023709)
++++ b/core/designsystem/src/main/res/drawable/ic_x_white.xml	(date 1725289023709)
+@@ -0,0 +1,12 @@
++<vector xmlns:android="http://schemas.android.com/apk/res/android"
++    android:width="24dp"
++    android:height="24dp"
++    android:viewportWidth="24"
++    android:viewportHeight="24">
++  <path
++      android:pathData="M12,12m-4,4a5.657,5.657 90,1 1,8 -8a5.657,5.657 90,1 1,-8 8"
++      android:fillColor="#898989"/>
++  <path
++      android:pathData="M13.961,14.682L12.156,12.877L10.35,14.682C10.254,14.778 10.125,14.832 9.989,14.832C9.854,14.832 9.724,14.778 9.628,14.682C9.532,14.587 9.478,14.457 9.478,14.321C9.478,14.186 9.532,14.056 9.628,13.96L11.434,12.155L9.628,10.349C9.532,10.253 9.478,10.123 9.478,9.988C9.478,9.853 9.532,9.723 9.628,9.627C9.724,9.531 9.854,9.477 9.989,9.477C10.125,9.477 10.254,9.531 10.35,9.627L12.156,11.432L13.961,9.627C14.057,9.531 14.187,9.477 14.322,9.477C14.458,9.477 14.588,9.531 14.684,9.627C14.779,9.723 14.833,9.853 14.833,9.988C14.833,10.123 14.779,10.253 14.684,10.349L12.878,12.155L14.684,13.96C14.779,14.056 14.833,14.186 14.833,14.321C14.833,14.457 14.779,14.587 14.684,14.682C14.588,14.778 14.458,14.832 14.322,14.832C14.187,14.832 14.057,14.778 13.961,14.682Z"
++      android:fillColor="#ffffff"/>
++</vector>
