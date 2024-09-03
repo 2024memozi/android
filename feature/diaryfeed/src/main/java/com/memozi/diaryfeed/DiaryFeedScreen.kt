@@ -151,7 +151,6 @@ fun DiaryFeedGreeting(
                 }
             }
         )
-
     }
 }
 
@@ -170,8 +169,11 @@ fun SelectDisplayType(
     ) {
         Image(
             painter =
-            if (listSelectedState) painterResource(id = R.drawable.ic_diary_feed_list_selected)
-            else painterResource(id = R.drawable.ic_diary_feed_list_not_selected),
+            if (listSelectedState) {
+                painterResource(id = R.drawable.ic_diary_feed_list_selected)
+            } else {
+                painterResource(id = R.drawable.ic_diary_feed_list_not_selected)
+            },
             contentDescription = null,
             modifier = Modifier.clickable {
                 onChangedListSelectedState(true)
@@ -184,8 +186,11 @@ fun SelectDisplayType(
         )
         Image(
             painter =
-            if (calendarSelectedState) painterResource(id = R.drawable.ic_diary_feed_calendar_selected)
-            else painterResource(id = R.drawable.ic_diary_feed_calendar_not_selected),
+            if (calendarSelectedState) {
+                painterResource(id = R.drawable.ic_diary_feed_calendar_selected)
+            } else {
+                painterResource(id = R.drawable.ic_diary_feed_calendar_not_selected)
+            },
             contentDescription = null,
             modifier = Modifier.clickable {
                 onChangedListSelectedState(false)
@@ -371,9 +376,7 @@ fun DiaryFeedDisplayCard() {
                         )
                     }
                 }
-
             }
-
         }
     )
 }
