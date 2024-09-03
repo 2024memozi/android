@@ -29,15 +29,19 @@ include(":core:model")
 // domain
 include(":domain:memozi")
 include(":domain:memo")
+include(":domain:auth")
+include(":domain:oauth")
 
 // data
 include(":data:memozi")
-
+include(":data:auth")
+include(":data:oauth")
 // local
 include(":local:memozi")
 
 // remote
 include(":remote:memozi")
+include(":remote:auth")
 
 // feature
 include(":feature:memo")
