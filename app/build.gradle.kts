@@ -19,5 +19,6 @@ dependencies {
     implementation(projects.feature.login)
     implementation(projects.data.auth)
     implementation(projects.data.oauth)
+    implementation(projects.remote.auth)
     implementation(libs.kakao.login)
 }
