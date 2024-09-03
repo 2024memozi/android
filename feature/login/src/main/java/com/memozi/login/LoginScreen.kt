@@ -54,6 +54,7 @@ fun LoginRoute(
                 LoginSideEffect.StartLogin -> {
                     oAuthInteractor.loginByKakao().onSuccess {
                         Log.d("카카카오 메인", "LoginRoute: $it")
+                        viewModel.signIn(it.accessToken)
                     }
                 }
             }
