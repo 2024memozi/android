@@ -1,5 +1,7 @@
 package com.memozi.login
 
+import android.util.Log
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -16,21 +18,48 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.memozi.designsystem.Kakao
 import com.memozi.designsystem.MemoziTheme
 import com.memozi.designsystem.R
+import dagger.hilt.android.EntryPointAccessors
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun LoginRoute(
     padding: PaddingValues,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: LoginViewModel = hiltViewModel()
 ) {
-    LoginScreen()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current as ComponentActivity
+    val entryPoint = EntryPointAccessors.fromActivity<OAuthEntryPoint>(context)
+    val oAuthInteractor = entryPoint.getOAuthInteractor()
+
+    LaunchedEffect(Unit) {
+        viewModel.sideEffect.collectLatest { sideeffect ->
+            when (sideeffect) {
+                is LoginSideEffect.LoginError -> TODO()
+                LoginSideEffect.LoginSuccess -> TODO()
+                LoginSideEffect.LoginToSignUp -> TODO()
+                LoginSideEffect.StartLogin -> {
+                    oAuthInteractor.loginByKakao().onSuccess {
+                        Log.d("카카카오 메인", "LoginRoute: $it")
+                    }
+                }
+            }
+        }
+    }
+    LoginScreen { viewModel.startKakaoLogin() }
 }
 
 @Composable
@@ -59,7 +88,7 @@ fun SplashScreen() {
 }
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(kakaoButtonEvent: () -> Unit = {}) {
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -84,7 +113,7 @@ fun LoginScreen() {
                 .weight(256f)
         )
         Button(
-            onClick = { /*TODO*/ },
+            onClick = { kakaoButtonEvent() },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp)
