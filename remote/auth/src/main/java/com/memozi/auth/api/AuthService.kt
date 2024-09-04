@@ -1,11 +1,13 @@
 package com.memozi.auth.api
 
-import retrofit2.http.GET
-import retrofit2.http.Query
+import com.memozi.auth.model.request.RequestSignInDto
+import com.memozi.auth.model.response.ResponseSignInDto
+import retrofit2.http.Body
+import retrofit2.http.POST
 
 interface AuthService {
-    @GET("/oauth2/authorization/kakao")
+    @POST("/oauth2/kakao/login")
     suspend fun signIn(
-        @Query("code") code: String
-    ): String
+        @Body accessToken: RequestSignInDto
+    ): ResponseSignInDto
 }

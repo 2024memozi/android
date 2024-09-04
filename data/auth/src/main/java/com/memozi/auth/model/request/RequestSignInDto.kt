@@ -5,6 +5,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class RequestSignInDto(
-    @SerialName("code")
-    val code: String
+    @SerialName("accessToken")
+    val accessToken: String
 )
