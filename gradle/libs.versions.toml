@@ -80,6 +80,7 @@ jsoup = "1.13.1"
 kakao-login = "2.19.0"
 process-pheonix = "2.1.2"
 preference = "1.2.1"
+junitKtx = "1.2.1"
 
 [plugins]
 # Gradle Plugins
@@ -215,6 +216,7 @@ lottie = { group = "com.airbnb.android", name = "lottie", version.ref = "lottie"
 jsoup = { group = "org.jsoup", name = "jsoup", version.ref = "jsoup" }
 kakao-login = { group = "com.kakao.sdk", name = "v2-user", version.ref = "kakao-login" }
 process-phoenix = { module = "com.jakewharton:process-phoenix", version.ref = "process-pheonix" }
+androidx-junit-ktx = { group = "androidx.test.ext", name = "junit-ktx", version.ref = "junitKtx" }
 
 [bundles]
 firebase = ["firebase-analytics", "firebase-database", "firebase-messaging", "firebase-remoteConfig"]

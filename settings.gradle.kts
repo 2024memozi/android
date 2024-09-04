@@ -27,6 +27,7 @@ include(":core:model")
 
 // domain
 include(":domain:memozi")
+include(":domain:memo")
 
 // data
 include(":data:memozi")
@@ -34,9 +35,11 @@ include(":data:memozi")
 // local
 include(":local:memozi")
 
+// remote
+include(":remote:memozi")
+
 // feature
 include(":feature:memo")
 include(":feature:login")
 include(":feature:navigator")
-include(":remote:memozi")
-include(":domain:memo")
+include(":feature:diaryfeed")
