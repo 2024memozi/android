@@ -3,6 +3,7 @@ package com.memozi.login
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.memozi.auth.repository.AuthRepository
+import com.memozi.model.AuthEntity
 import com.memozi.model.exception.ApiError
 import com.memozi.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,7 +23,7 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             authRepository.signIn(socialToken)
                 .onSuccess {
-                    Log.d("카카오로그인 signIn", "signIn: $it")
+                    authRepository.saveLocalData(AuthEntity(it.accessToken, it.refreshToken))
                 }.onFailure {
                     when (it) {
                         is ApiError -> Log.e("실패", it.message)
