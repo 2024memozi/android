@@ -108,6 +108,7 @@ memozi-java-library = { id = "memozi.java.library", version = "unspecified" }
 memozi-feature = { id = "memozi.feature", version = "unspecified" }
 memozi-data = { id = "memozi.data", version = "unspecified" }
 memozi-remote = { id = "memozi.remote", version = "unspecified" }
+memozi-local = { id = "memozi.local", version = "unspecified" }
 memozi-plugin-android-test = { id = "memozi.plugin.android.test", version = "unspecified" }
 memozi-plugin-test = { id = "memozi.plugin.test", version = "unspecified" }
 memozi-plugin-build-config = { id = "memozi.plugin.build.config", version = "unspecified" }

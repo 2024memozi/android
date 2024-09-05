@@ -72,5 +72,10 @@ gradlePlugin {
             id = "memozi.remote"
             implementationClass = "MemoziRemotePlugin"
         }
+
+        register("memoziLocal") {
+            id = "memozi.local"
+            implementationClass = "MemoziLocalPlugin"
+        }
     }
 }
