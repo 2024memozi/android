@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -49,7 +50,7 @@ fun LoginRoute(
         viewModel.sideEffect.collectLatest { sideeffect ->
             when (sideeffect) {
                 is LoginSideEffect.LoginError -> TODO()
-                LoginSideEffect.LoginSuccess -> TODO()
+                LoginSideEffect.LoginSuccess -> {}
                 LoginSideEffect.LoginToSignUp -> TODO()
                 LoginSideEffect.StartLogin -> {
                     oAuthInteractor.loginByKakao().onSuccess {
@@ -91,7 +92,9 @@ fun SplashScreen() {
 @Composable
 fun LoginScreen(kakaoButtonEvent: () -> Unit = {}) {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = MemoziTheme.colors.white),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(
@@ -106,7 +109,10 @@ fun LoginScreen(kakaoButtonEvent: () -> Unit = {}) {
         Spacer(modifier = Modifier.height(12.dp))
         Image(
             painter = painterResource(id = R.drawable.img_logo),
-            contentDescription = "로고에용~"
+            contentDescription = "로고에용~",
+            modifier = Modifier
+                .fillMaxWidth(0.28f)
+                .aspectRatio(1f)
         )
         Box(
             modifier = Modifier
