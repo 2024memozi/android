@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.memozi.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.memozi.android.hilt)
 }
 
 android {
@@ -14,4 +15,5 @@ dependencies {
     implementation(projects.core.datastore)
     implementation(projects.core.network)
     implementation(projects.feature.navigator)
+    implementation(projects.feature.memo)
 }

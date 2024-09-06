@@ -27,6 +27,7 @@ include(":core:model")
 
 // domain
 include(":domain:memozi")
+include(":domain:memo")
 
 // data
 include(":data:memozi")
