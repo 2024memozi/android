@@ -228,7 +228,7 @@ fun MemoziHorizontalPager(
 @Composable
 fun MemoziCategory(
     modifier: Modifier = Modifier,
-    imageURL: String,
+    imageURL: String?,
     title: String,
     titleColor: Color,
 ) {
