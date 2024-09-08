@@ -22,7 +22,6 @@ interface CategoryService {
         @Query("sort") sort: List<String>
     ): ResponseCategory
 
-
     @POST("/category")
     suspend fun postCategory(
         @Query("name") name: String,
@@ -30,6 +29,4 @@ interface CategoryService {
         @Query("bgColorId") bgColorId: Int,
         @Query("txtColorId") txtColorId: Int
     ): Unit
-
-
 }

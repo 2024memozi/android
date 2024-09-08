@@ -17,4 +17,3 @@ interface MemoRepository {
 
     suspend fun getCategorySearch(): Result<List<Category>>
 }
-

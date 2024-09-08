@@ -1,6 +1,5 @@
 package com.memozi.memo
 
-import com.memozi.memo.repository.MemoRepository
 import com.memozi.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject

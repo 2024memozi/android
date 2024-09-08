@@ -1,7 +1,6 @@
 package com.memozi.auth.api.di
 
 import com.memozi.auth.api.AuthService
-import com.memozi.network.di.Auth
 import com.memozi.network.di.NoneAuth
 import dagger.Module
 import dagger.Provides

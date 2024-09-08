@@ -2,7 +2,6 @@ package com.memozi.memo.datasource
 
 import com.memozi.memo.api.CategoryService
 import com.memozi.memo.source.remote.MemoRemoteDataSource
-import retrofit2.http.Query
 import javax.inject.Inject
 
 class MemoRemoteDataSourceImpl @Inject constructor(
@@ -17,5 +16,4 @@ class MemoRemoteDataSourceImpl @Inject constructor(
     ) {
         categoryService.postCategory(name, defaultImageUrl, bgColorId, txtColorId)
     }
-
 }

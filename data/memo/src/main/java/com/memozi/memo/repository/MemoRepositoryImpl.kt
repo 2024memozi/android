@@ -29,7 +29,7 @@ class MemoRepositoryImpl @Inject constructor(
         defaultImageUrl: String?,
         bgColorId: Int,
         txtColorId: Int
-    ){
+    ) {
         memoRemoteDataSource.postCategory(name, defaultImageUrl, bgColorId, txtColorId)
             .runCatching {
                 Log.d("postCategory", "postCategory: 성공")
@@ -39,5 +39,4 @@ class MemoRepositoryImpl @Inject constructor(
     override suspend fun getCategorySearch(): Result<List<Category>> {
         TODO("Not yet implemented")
     }
-
 }

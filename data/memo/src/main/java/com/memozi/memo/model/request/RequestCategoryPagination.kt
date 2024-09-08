@@ -10,4 +10,3 @@ data class RequestCategoryPagination(
     @SerialName("pageable")
     val pageable: RequestPageable
 )
-

@@ -1,9 +1,7 @@
 package com.memozi.memo.screen
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.memozi.memo.repository.MemoRepository
-import com.memozi.model.exception.ApiError
 import com.memozi.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -47,7 +45,6 @@ class CategoryViewModel @Inject constructor(
 //                }
 //            }
         }
-
     }
 
     fun navigateCategory(categoryId: Int) {

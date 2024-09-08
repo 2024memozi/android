@@ -4,7 +4,6 @@ import com.memozi.memo.model.Category
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-
 @Serializable
 data class ResponseCategory(
     @SerialName("name")

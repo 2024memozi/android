@@ -40,7 +40,7 @@ fun LoginRoute(
     padding: PaddingValues,
     modifier: Modifier = Modifier,
     viewModel: LoginViewModel = hiltViewModel(),
-    navigateMemo: () -> Unit = {},
+    navigateMemo: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current as ComponentActivity

@@ -12,5 +12,5 @@ data class RequestCategory(
     @SerialName("bgColorId")
     val bgColorId: Int,
     @SerialName("txtColorId")
-    val txtColorId: Int,
+    val txtColorId: Int
 )

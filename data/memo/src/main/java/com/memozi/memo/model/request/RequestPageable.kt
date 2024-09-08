@@ -12,4 +12,3 @@ data class RequestPageable(
     @SerialName("sort")
     val sort: List<String> = listOf("string")
 )
-

@@ -1,7 +1,5 @@
 package com.memozi.memo.source.remote
 
-import com.memozi.memo.model.Category
-
 interface MemoRemoteDataSource {
 //    suspend fun delCategory(categoryId: Int): Result<Unit>
 //    suspend fun putCategory(categoryId: Int): Result<Category>
@@ -17,4 +15,3 @@ interface MemoRemoteDataSource {
 
 //    suspend fun getCategorySearch(): Result<List<Category>>
 }
-
