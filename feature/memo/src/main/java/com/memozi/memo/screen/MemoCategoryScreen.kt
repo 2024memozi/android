@@ -39,6 +39,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.memozi.component.button.MemoziButton
 import com.memozi.designsystem.MemoziTheme
 import com.memozi.designsystem.R
@@ -46,7 +47,9 @@ import com.memozi.memo.MemoziCategory
 import com.memozi.ui.extension.customClickable
 
 @Composable
-fun MemoCategoryScreen() {
+fun MemoCategoryScreen(
+    viewModel: CategoryViewModel = hiltViewModel()
+) {
     val navigationBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
     Column(
@@ -93,7 +96,7 @@ fun MemoCategoryScreen() {
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.End
     ) {
-        MemoziButton()
+        MemoziButton(clickEvent = { viewModel.postCategory() })
     }
 }
 
