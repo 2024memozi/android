@@ -36,6 +36,7 @@ include(":domain:oauth")
 include(":data:memozi")
 include(":data:auth")
 include(":data:oauth")
+include(":data:memo")
 // local
 include(":local:memozi")
 
