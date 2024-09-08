@@ -6,6 +6,8 @@ import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.dataStoreFile
 import com.memozi.datastore.MemoziLocalData
 import com.memozi.datastore.MemoziLocalDataSerializer
+import com.memozi.datastore.token.AuthToken
+import com.memozi.datastore.token.TokenDataSerializer
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,5 +28,17 @@ object DataStoreModule {
             serializer = userDataSerializer
         ) {
             context.dataStoreFile("userdata.json")
+        }
+
+    @Provides
+    @Singleton
+    fun providesTokenDataStore(
+        @ApplicationContext context: Context,
+        tokenDataSerializer: TokenDataSerializer
+    ): DataStore<AuthToken> =
+        DataStoreFactory.create(
+            serializer = tokenDataSerializer
+        ) {
+            context.dataStoreFile("token.json")
         }
 }
