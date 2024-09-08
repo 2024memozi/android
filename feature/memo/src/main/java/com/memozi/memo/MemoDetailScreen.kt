@@ -45,7 +45,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun memoDetailScreen() {
+fun MemoDetailScreen() {
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
     var showBottomSheet by remember { mutableStateOf(false) }
@@ -254,7 +254,7 @@ fun memoDetailScreen() {
 private fun PrviewMemoziBackGround() {
     MemoziTheme {
         Box(modifier = Modifier.background(color = MemoziTheme.colors.white)) {
-            memoDetailScreen()
+            MemoDetailScreen()
         }
     }
 }
