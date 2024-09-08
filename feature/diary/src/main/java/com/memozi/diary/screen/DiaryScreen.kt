@@ -1,4 +1,4 @@
-package com.memozi.diary
+package com.memozi.diary.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -42,7 +42,10 @@ import com.memozi.designsystem.MemoziTheme
 import com.memozi.designsystem.R
 
 @Composable
-fun DiaryFeedScreen() {
+fun DiaryScreen(
+    navigateToMemo: () -> Unit = {},
+    navigateToSetting: () -> Unit = {}
+) {
     var listSelectedState by remember { mutableStateOf(true) }
     var calendarSelectedState by remember { mutableStateOf(false) }
     var diaryWriteState by remember { mutableStateOf(false) }
@@ -443,6 +446,6 @@ fun DailyDiaryItem(
 @Composable
 fun ShowDiaryFeedScreen() {
     MemoziTheme {
-        DiaryFeedScreen()
+        DiaryScreen()
     }
 }
