@@ -7,6 +7,6 @@ android {
     namespace = "com.memozi.memo"
 }
 
-dependencies{
+dependencies {
     implementation(projects.domain.memo)
 }
