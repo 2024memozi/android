@@ -1,4 +1,4 @@
-package com.memozi.diaryfeed
+package com.memozi.diary
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

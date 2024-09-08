@@ -3,5 +3,9 @@ plugins {
 }
 
 android {
-    namespace = "com.memozi.diaryfeed"
+    namespace = "com.memozi.diary"
+}
+
+dependencies {
+
 }

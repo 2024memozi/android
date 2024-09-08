@@ -47,5 +47,6 @@ include(":remote:auth")
 include(":feature:memo")
 include(":feature:login")
 include(":feature:navigator")
-include(":feature:diaryfeed")
+include(":feature:diary")
 include(":local:auth")
+
