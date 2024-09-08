@@ -1,8 +1,7 @@
-package com.memozi.auth.api.di
+package com.memozi.memo.di
 
-import com.memozi.auth.api.AuthService
+import com.memozi.memo.api.CategoryService
 import com.memozi.network.di.Auth
-import com.memozi.network.di.NoneAuth
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -12,9 +11,9 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object ApiModule {
+object CategoryApiModule {
     @Provides
     @Singleton
-    fun providesRecordyApi(@NoneAuth retrofit: Retrofit): AuthService =
-        retrofit.create(AuthService::class.java)
+    fun provideCategoryApi(@Auth retrofit: Retrofit): CategoryService =
+        retrofit.create(CategoryService::class.java)
 }

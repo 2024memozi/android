@@ -43,6 +43,7 @@ include(":local:memozi")
 // remote
 include(":remote:memozi")
 include(":remote:auth")
+include(":remote:memo")
 
 // feature
 include(":feature:memo")
