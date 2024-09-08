@@ -7,9 +7,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -32,86 +35,86 @@ import com.memozi.designsystem.R
 import com.memozi.memo.model.MemoItem
 import com.memozi.memo.model.dummyMemoItems
 
-// MemoItemCard에서 메모 제목, 내용, 날짜를 받아서 처리
 @Composable
 fun MemoItemCard(
     memoTitle: String,
     memoContent: String,
-    memoDate: String
+    memoDate: String,
 ) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth(),
-        shape = RoundedCornerShape(8.dp), // 모서리 radius
-        elevation = CardDefaults.cardElevation(4.dp), // elevation을 줘서 그림자 효과 적용
+        modifier =
+            Modifier
+                .fillMaxWidth(),
+        shape = RoundedCornerShape(8.dp),
+        elevation = CardDefaults.cardElevation(4.dp),
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color.White) // 흰색 배경
-                .padding(8.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .background(Color.White)
+                    .padding(8.dp),
         ) {
-            // 첫 번째 Row: 제목과 날짜
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween // 텍스트와 날짜를 양쪽에 배치
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Image(
                         painter = painterResource(id = R.drawable.ic_diary_feed_vertical_line_black),
-                        contentDescription = null
+                        contentDescription = null,
                     )
-                    Spacer(modifier = Modifier.width(8.dp)) // 아이콘과 텍스트 사이에 간격 추가
+                    Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = memoTitle,
                         style = MemoziTheme.typography.ngReg15,
-                        color = MemoziTheme.colors.black
+                        color = MemoziTheme.colors.black,
                     )
                 }
                 Text(
-                    text = memoDate, // 서버에서 받아온 날짜 사용
+                    text = memoDate,
                     style = MemoziTheme.typography.ngReg11,
-                    color = MemoziTheme.colors.black // 적절한 색상 적용
+                    color = MemoziTheme.colors.black,
                 )
             }
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // 두 번째: 메모 내용
             Text(
                 text = memoContent,
                 style = MemoziTheme.typography.ngReg13,
-                color = MemoziTheme.colors.black
+                color = MemoziTheme.colors.black,
             )
         }
     }
 }
 
-// memoSearchList에서 메모 제목, 내용, 날짜를 받아서 처리
 @Composable
 fun memoSearchList(dummyData: List<Pair<String, List<MemoItem>>>) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         dummyData.forEach { (title, memoItems) ->
             item {
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(top = 30.dp),
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
                         text = title,
                         style = MemoziTheme.typography.ngBold15,
-                        modifier = Modifier.alignByBaseline()
+                        modifier = Modifier.alignByBaseline(),
                     )
                     Spacer(modifier = Modifier.padding(end = 4.dp))
                     Text(
                         text = "카테고리에서 ${memoItems.size}개의 메모를 발견했습니다!",
                         style = MemoziTheme.typography.ngReg8,
-                        modifier = Modifier.alignByBaseline()
+                        modifier = Modifier.alignByBaseline(),
                     )
                 }
             }
@@ -120,54 +123,57 @@ fun memoSearchList(dummyData: List<Pair<String, List<MemoItem>>>) {
                 MemoItemCard(
                     memoTitle = memo.title,
                     memoContent = memo.content,
-                    memoDate = memo.date
+                    memoDate = memo.date,
                 )
             }
         }
     }
 }
 
-// MemoSearchScreen에서 dummyData에 메모 제목과 날짜 추가
 @Composable
 fun MemoSearchScreen() {
-    MemoziBackground()
+    MemoziBackground(topWeight = 10f, bottomWeight = 48f)
+    val navigationBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp)
-            .padding(top = 20.dp)
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(horizontal = 16.dp)
+                .padding(top = 20.dp + navigationBarHeight),
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 15.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             MemoziSearchTextField()
             Spacer(modifier = Modifier.width(16.dp))
             Text(
                 text = "취소",
                 style = MemoziTheme.typography.ssuLight13,
-                modifier = Modifier
-                    .align(Alignment.CenterVertically)
-                    .clickable {
-                        // 취소 버튼 클릭 시 동작
-                    }
+                modifier =
+                    Modifier
+                        .align(Alignment.CenterVertically)
+                        .clickable {
+                            // 취소 버튼 클릭 시 동작
+                        },
             )
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Dummy data using MemoItem class
-        val dummyData = listOf(
-            "투두 리스트" to dummyMemoItems(),
-            "구매 리스트" to dummyMemoItems().subList(0, 3)
-        )
+        val dummyData =
+            listOf(
+                "투두 리스트" to dummyMemoItems(),
+                "구매 리스트" to dummyMemoItems().subList(0, 3),
+            )
 
         memoSearchList(dummyData = dummyData)
     }
 }
-
-
 
 @Preview(showBackground = true)
 @Composable
