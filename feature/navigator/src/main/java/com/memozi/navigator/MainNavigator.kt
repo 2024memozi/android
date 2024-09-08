@@ -6,6 +6,7 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.memozi.diary.navigation.DiaryRoute
 import com.memozi.login.navigation.LoginRoute
 import com.memozi.memo.navigation.MemoRoute
 
@@ -30,6 +31,12 @@ internal class MainNavigator(
             popUpTo(navController.graph.id) {
                 inclusive = true
             }
+        }
+    }
+
+    fun navigateDiary() {
+        navController.navigate(DiaryRoute.route) {
+
         }
     }
 
