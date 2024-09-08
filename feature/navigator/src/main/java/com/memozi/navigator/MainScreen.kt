@@ -36,7 +36,8 @@ internal fun MainScreen(
                 exitTransition = { ExitTransition.None }
             ) {
                 loginNavGraph(
-                    padding = innerPadding
+                    padding = innerPadding,
+                    navigateMemo = navigator::navigateMemo,
                 )
                 memoNavGraph(
                     padding = innerPadding,
