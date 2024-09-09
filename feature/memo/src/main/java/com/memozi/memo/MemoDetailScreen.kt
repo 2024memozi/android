@@ -53,6 +53,8 @@ fun MemoDetailScreen() {
     var titleValue by remember { mutableStateOf("") }
     var memoValue by remember { mutableStateOf("") }
 
+    var isEnabled = titleValue.isNotEmpty() && memoValue.isNotEmpty()
+
     Column(
         modifier =
             Modifier
@@ -94,13 +96,14 @@ fun MemoDetailScreen() {
                         .width(68.dp)
                         .height(34.dp),
                 shape = RoundedCornerShape(8.dp),
+                enabled = isEnabled,  // 두 필드가 모두 입력되면 활성화
                 colors =
-                    ButtonDefaults.buttonColors(
-                        contentColor = MemoziTheme.colors.white,
-                        containerColor = MemoziTheme.colors.mainPurple,
-                        disabledContentColor = MemoziTheme.colors.white,
-                        disabledContainerColor = MemoziTheme.colors.gray02,
-                    ),
+                ButtonDefaults.buttonColors(
+                    contentColor = MemoziTheme.colors.white,
+                    containerColor = if (isEnabled) MemoziTheme.colors.mainPurple else MemoziTheme.colors.gray02, // 조건에 따른 색상 변경
+                    disabledContentColor = MemoziTheme.colors.white,
+                    disabledContainerColor = MemoziTheme.colors.gray02,
+                ),
                 contentPadding = PaddingValues(horizontal = 22.dp, vertical = 6.dp),
             ) {
                 Text(
@@ -143,7 +146,7 @@ fun MemoDetailScreen() {
                     .padding(top = 16.dp),
         ) {
             TextField(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize(1f),
                 value = memoValue,
                 onValueChange = { newValue -> memoValue = newValue },
                 placeholder = {
@@ -157,6 +160,8 @@ fun MemoDetailScreen() {
                     TextFieldDefaults.colors(
                         focusedContainerColor = Color.Transparent,
                         unfocusedContainerColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
                     ),
                 shape = RectangleShape,
             )
