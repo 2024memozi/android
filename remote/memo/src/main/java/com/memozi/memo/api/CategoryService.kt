@@ -1,5 +1,6 @@
 package com.memozi.memo.api
 
+import com.memozi.memo.model.request.RequestPageable
 import com.memozi.memo.model.response.ResponseCategory
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -17,10 +18,8 @@ interface CategoryService {
 
     @GET("/category")
     suspend fun getAllCategories(
-        @Query("page") page: Int,
-        @Query("size") size: Int,
-        @Query("sort") sort: List<String>
-    ): ResponseCategory
+        @Query("pageable") pageable: RequestPageable
+    ): List<ResponseCategory>
 
     @POST("/category")
     suspend fun postCategory(

@@ -7,7 +7,12 @@ interface MemoRepository {
     suspend fun putCategory(categoryId: Int): Result<Category>
     suspend fun getCategory(categoryId: Int): Result<Category>
 
-    suspend fun getCategory(): Result<List<Category>>
+    suspend fun getCategory(
+        page: Int,
+        size: Int,
+        sort: List<String>
+    ): Result<List<Category>>
+
     suspend fun postCategory(
         name: String,
         defaultImageUrl: String?,

@@ -2,7 +2,10 @@ package com.memozi.memo.repository
 
 import android.util.Log
 import com.memozi.memo.model.Category
+import com.memozi.memo.model.response.toDomain
 import com.memozi.memo.source.remote.MemoRemoteDataSource
+import com.memozi.model.exception.ApiError
+import retrofit2.HttpException
 import javax.inject.Inject
 
 class MemoRepositoryImpl @Inject constructor(
@@ -20,8 +23,24 @@ class MemoRepositoryImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override suspend fun getCategory(): Result<List<Category>> {
-        TODO("Not yet implemented")
+    override suspend fun getCategory(
+        page: Int,
+        size: Int,
+        sort: List<String>
+    ): Result<List<Category>> = runCatching {
+        memoRemoteDataSource.getCategory(page, size, sort)
+    }.mapCatching {
+        it.map { it.toDomain() }
+    }.recoverCatching { exception ->
+        when (exception) {
+            is HttpException -> {
+                throw ApiError(exception.message())
+            }
+
+            else -> {
+                throw exception
+            }
+        }
     }
 
     override suspend fun postCategory(

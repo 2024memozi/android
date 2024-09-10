@@ -28,6 +28,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,6 +46,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import androidx.compose.ui.util.lerp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.memozi.component.textfield.MemoziSearchTextField
@@ -52,9 +54,8 @@ import com.memozi.component.top.MemoziBackground
 import com.memozi.component.top.MemoziTopAppbar
 import com.memozi.designsystem.MemoziTheme
 import com.memozi.designsystem.R
-import com.memozi.memo.model.CategoryItem
+import com.memozi.memo.model.Category
 import com.memozi.memo.model.MemoItem
-import com.memozi.memo.model.dummyMemoCategoriesItems
 import com.memozi.memo.model.dummyMemoItems
 import com.memozi.ui.extension.customClickable
 import com.memozi.ui.lifecycle.LaunchedEffectWithLifecycle
@@ -70,13 +71,15 @@ fun MemoRoute(
     navigateMemoDetail: (Int) -> Unit = {},
     navigateToCategory: (Int) -> Unit = {},
     navigateToCategoryAdd: () -> Unit = {},
-    navigateSetting: () -> Unit = {},
+    navigateSetting: () -> Unit = {}
 ) {
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
     val pagerState =
-        rememberPagerState(initialPage = 0, pageCount = { dummyMemoCategoriesItems().size + 1 })
+        rememberPagerState(initialPage = 0, pageCount = { state.categoryList.size + 1 })
     val navigationBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
-    LaunchedEffectWithLifecycle {
+    LaunchedEffectWithLifecycle() {
+        viewModel.getCategory()
         viewModel.sideEffect.collectLatest { sideEffect ->
             when (sideEffect) {
                 is MemoSideEffect.NavigateToMemo -> {
@@ -104,34 +107,32 @@ fun MemoRoute(
             navigateToSetting = navigateSetting,
             innerComposable = {
                 MemoziSearchTextField(
-                    modifier =
-                        Modifier
-                            .height(40.dp)
-                            .padding(horizontal = 16.dp),
+                    modifier = Modifier
+                        .height(40.dp)
+                        .padding(horizontal = 16.dp)
                 )
-            },
+            }
         )
         MemoziHorizontalPager(
             pagerState,
-            category = dummyMemoCategoriesItems(),
+            category = state.categoryList,
             modifier = Modifier.padding(top = 15.dp),
-            navigateToCategoryAdd = { viewModel.navigateCategoryAdd() },
+            navigateToCategoryAdd = { viewModel.navigateCategoryAdd() }
         )
 
         Column(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             MemoziHorizontalPagerIndicator(
-                pagerState,
+                pagerState
             )
             Spacer(modifier = Modifier.height(16.dp))
             MemoList(
                 memoItems = dummyMemoItems(),
-                bottomPaddingValue = PaddingValues(bottom = 8.dp + navigationBarHeight),
+                bottomPaddingValue = PaddingValues(bottom = 8.dp + navigationBarHeight)
             )
         }
     }
@@ -139,33 +140,33 @@ fun MemoRoute(
 }
 
 @Composable
-fun MemoFloatingButton(navigateMemoAdd: () -> Unit = {}) {
+fun MemoFloatingButton(
+    navigateMemoAdd: () -> Unit = {}
+) {
     val navigationBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
     Box(
-        modifier =
-            Modifier
-                .fillMaxSize(),
-        contentAlignment = Alignment.BottomEnd,
+        modifier = Modifier
+            .fillMaxSize(),
+        contentAlignment = Alignment.BottomEnd
     ) {
         Box(
-            modifier =
-                Modifier
-                    .padding(bottom = 51.dp + navigationBarHeight)
-                    .padding(end = 8.dp)
-                    .background(Color.Transparent)
-                    .width(55.dp)
-                    .height(55.dp)
-                    .customClickable(rippleEnabled = false) { navigateMemoAdd() } // 나중에 커스텀 clickable 추가
-                    .background(
-                        color = MemoziTheme.colors.mainPurple02,
-                        shape = CircleShape,
-                    ),
+            modifier = Modifier
+                .padding(bottom = 51.dp + navigationBarHeight)
+                .padding(end = 8.dp)
+                .background(Color.Transparent)
+                .width(55.dp)
+                .height(55.dp)
+                .customClickable(rippleEnabled = false) { navigateMemoAdd() } // 나중에 커스텀 clickable 추가
+                .background(
+                    color = MemoziTheme.colors.mainPurple02,
+                    shape = CircleShape
+                )
         ) {
             Icon(
                 painterResource(id = R.drawable.ic_plus_white_34),
                 contentDescription = "Add Memo",
                 tint = MemoziTheme.colors.white,
-                modifier = Modifier.align(Alignment.Center),
+                modifier = Modifier.align(Alignment.Center)
             )
         }
     }
@@ -177,8 +178,8 @@ fun MemoFloatingButton(navigateMemoAdd: () -> Unit = {}) {
 fun MemoziHorizontalPager(
     pagerState: PagerState,
     modifier: Modifier,
-    category: List<CategoryItem>,
-    navigateToCategoryAdd: () -> Unit,
+    category: List<Category>,
+    navigateToCategoryAdd: () -> Unit
 ) {
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
     val padding = 0.288f * screenWidth // 104/360
@@ -186,7 +187,7 @@ fun MemoziHorizontalPager(
     HorizontalPager(
         state = pagerState,
         modifier = modifier,
-        contentPadding = PaddingValues(horizontal = padding),
+        contentPadding = PaddingValues(horizontal = padding)
     ) { page ->
         val pageOffset =
             ((pagerState.currentPage - page) + pagerState.currentPageOffsetFraction).absoluteValue
@@ -197,28 +198,28 @@ fun MemoziHorizontalPager(
             if (page == pagerState.currentPage) 0.244f * screenWidth else 0.2f * screenWidth
 
         Box(
-            modifier =
-                Modifier
-                    .width(itemWidth)
-                    .height(itemHeight)
-                    .graphicsLayer {
-                        lerp(
-                            start = 0.78f,
-                            stop = 1f,
-                            fraction = 1f - pageOffset.coerceIn(0f, 1f),
-                        ).also { scale ->
-                            scaleX = scale
-                            scaleY = scale
-                        }
-                    }.background(shape = RoundedCornerShape(8.dp), color = Color.Transparent),
+            modifier = Modifier
+                .width(itemWidth)
+                .height(itemHeight)
+                .graphicsLayer {
+                    lerp(
+                        start = 0.78f,
+                        stop = 1f,
+                        fraction = 1f - pageOffset.coerceIn(0f, 1f)
+                    ).also { scale ->
+                        scaleX = scale
+                        scaleY = scale
+                    }
+                }
+                .background(shape = RoundedCornerShape(8.dp), color = Color.Transparent)
         ) {
             if (page == category.size) {
                 MemoziCategoryAdd(navigateToCategoryAdd = navigateToCategoryAdd)
             } else {
                 MemoziCategory(
-                    imageURL = category[page].imageUrl,
+                    imageURL = category[page].representImage,
                     title = category[page].name,
-                    titleColor = Color(android.graphics.Color.parseColor(category[page].textColor)),
+                    titleColor = Color(android.graphics.Color.parseColor("#333333"))
                 )
             }
         }
@@ -228,37 +229,33 @@ fun MemoziHorizontalPager(
 @Composable
 fun MemoziCategory(
     modifier: Modifier = Modifier,
-    imageURL: String?,
+    imageURL: String,
     title: String,
-    titleColor: Color,
+    titleColor: Color
 ) {
     Box(modifier = modifier) {
         AsyncImage(
-            model =
-                ImageRequest
-                    .Builder(LocalContext.current)
-                    .data(imageURL)
-                    .crossfade(true)
-                    .build(),
-            //            placeholder = painterResource(R.drawable.ic), 로딩화면 필요시 변경
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(imageURL)
+                .crossfade(true)
+                .build(),
+//            placeholder = painterResource(R.drawable.ic), 로딩화면 필요시 변경
             contentDescription = "카테고리",
             contentScale = ContentScale.Crop,
-            modifier =
-                Modifier
-                    .fillMaxSize()
-                    .clip(RoundedCornerShape(14.dp)),
+            modifier = Modifier
+                .fillMaxSize()
+                .clip(RoundedCornerShape(14.dp))
         )
         Text(
             text = title,
             style = MemoziTheme.typography.ssuLight11,
             color = titleColor,
             textAlign = TextAlign.End,
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.BottomEnd)
-                    .padding(bottom = 8.dp)
-                    .padding(horizontal = 9.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomEnd)
+                .padding(bottom = 8.dp)
+                .padding(horizontal = 9.dp)
         )
     }
 }
@@ -267,21 +264,20 @@ fun MemoziCategory(
 fun MemoziCategoryAdd(navigateToCategoryAdd: () -> Unit) {
     Box(
         modifier = Modifier.customClickable(onClick = { navigateToCategoryAdd() }),
-        contentAlignment = Alignment.Center,
+        contentAlignment = Alignment.Center
     ) {
         Image(
             painterResource(id = R.drawable.img_category_add),
             contentDescription = null,
             contentScale = ContentScale.FillBounds,
-            modifier =
-                Modifier
-                    .fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
         )
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_plus_white_34),
                 tint = MemoziTheme.colors.white,
-                contentDescription = "카테고리추가",
+                contentDescription = "카테고리추가"
             )
             Spacer(modifier = Modifier.height(3.dp))
             Text(
@@ -289,9 +285,8 @@ fun MemoziCategoryAdd(navigateToCategoryAdd: () -> Unit) {
                 style = MemoziTheme.typography.ssuLight11,
                 color = MemoziTheme.colors.white,
                 textAlign = TextAlign.Center,
-                modifier =
-                    Modifier
-                        .fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
             )
         }
     }
@@ -311,61 +306,55 @@ fun MemoziHorizontalPagerIndicator(
     indicatorNotSelectedWidth: Dp = 6.dp,
     indicatorNotSelectedHeight: Dp = indicatorNotSelectedWidth,
     spacing: Dp = indicatorWidth,
-    indicatorShape: RoundedCornerShape = CircleShape,
+    indicatorShape: RoundedCornerShape = CircleShape
 ) {
     Row(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(spacing),
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         repeat(pageCount) { page ->
             val isSelected = page == pagerState.currentPage
             Box(
-                modifier =
-                    Modifier
-                        .size(
-                            width = if (isSelected) indicatorWidth else indicatorNotSelectedWidth,
-                            height = if (isSelected) indicatorHeight else indicatorNotSelectedHeight,
-                        ).clip(indicatorShape)
-                        .background(if (isSelected) activeColor else inactiveColor),
+                modifier = Modifier
+                    .size(
+                        width = if (isSelected) indicatorWidth else indicatorNotSelectedWidth,
+                        height = if (isSelected) indicatorHeight else indicatorNotSelectedHeight
+                    )
+                    .clip(indicatorShape)
+                    .background(if (isSelected) activeColor else inactiveColor)
             )
         }
         Icon(
             painter = painterResource(id = R.drawable.ic_edit),
             contentDescription = "edit",
-            modifier = Modifier.customClickable(onClick = navigateToEdit),
+            modifier = Modifier.customClickable(onClick = navigateToEdit)
         )
     }
 }
 
 @Composable
-fun MemoList(
-    memoItems: List<MemoItem>,
-    bottomPaddingValue: PaddingValues,
-) {
+fun MemoList(memoItems: List<MemoItem>, bottomPaddingValue: PaddingValues) {
     Box(
-        modifier =
-            Modifier
-                .padding(horizontal = 16.dp)
-                .padding(bottomPaddingValue)
-                .shadow(4.dp, shape = RoundedCornerShape(8.dp)) // elevation 효과를 위해 shadow 추가
-                .background(color = MemoziTheme.colors.white, shape = RoundedCornerShape(8.dp)),
+        modifier = Modifier
+            .padding(horizontal = 16.dp)
+            .padding(bottomPaddingValue)
+            .shadow(4.dp, shape = RoundedCornerShape(8.dp)) // elevation 효과를 위해 shadow 추가
+            .background(color = MemoziTheme.colors.white, shape = RoundedCornerShape(8.dp))
     ) {
         LazyColumn(
-            modifier =
-                Modifier
-                    .fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
         ) {
             items(memoItems.size) { index ->
                 if (memoItems.size > 1 && index != memoItems.size - 1) {
                     MemoItemCard(memoItems[index])
                     Box(
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .height(1.dp)
-                                .padding(horizontal = 8.dp)
-                                .shadow(1.dp, shape = RoundedCornerShape(2.dp)),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(1.dp)
+                            .padding(horizontal = 8.dp)
+                            .shadow(1.dp, shape = RoundedCornerShape(2.dp))
                     )
                 } else {
                     MemoItemCard(memoItems[index])
@@ -378,36 +367,35 @@ fun MemoList(
 @Composable
 fun MemoItemCard(memo: MemoItem) {
     Column(
-        modifier =
-            Modifier
-                .fillMaxWidth()
-                .background(color = MemoziTheme.colors.white, shape = RoundedCornerShape(8.dp))
-                .padding(16.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(color = MemoziTheme.colors.white, shape = RoundedCornerShape(8.dp))
+            .padding(16.dp)
     ) {
         Row {
             Text(
                 text = "|",
                 style = MemoziTheme.typography.ngReg15,
-                color = MemoziTheme.colors.gray07,
+                color = MemoziTheme.colors.gray07
             )
             Spacer(modifier = Modifier.width(4.dp))
             Text(
                 text = memo.title,
                 style = MemoziTheme.typography.ngReg15,
-                color = MemoziTheme.colors.black,
+                color = MemoziTheme.colors.black
             )
             Spacer(modifier = Modifier.weight(1f))
             Text(
                 text = memo.date,
                 style = MemoziTheme.typography.ngReg11,
-                color = MemoziTheme.colors.gray03,
+                color = MemoziTheme.colors.gray03
             )
         }
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = memo.content,
             style = MemoziTheme.typography.ssuLight12,
-            color = MemoziTheme.colors.gray05,
+            color = MemoziTheme.colors.gray05
         )
     }
 }
