@@ -10,21 +10,15 @@ data class ResponseCategory(
     val name: String,
     @SerialName("representImage")
     val representImage: String,
-    @SerialName("bgColor")
-    val bgColor: String,
     @SerialName("txtColor")
     val txtColor: String,
-    @SerialName("memos")
-    val memos: List<ResponseMemo>,
-    @SerialName("hasNext")
-    val hasNext: Boolean
+    @SerialName("memo")
+    val memo: List<ResponseMemo>
 )
 
 fun ResponseCategory.toDomain() = Category(
     name = name,
     representImage = representImage,
-    bgColor = bgColor,
     txtColor = txtColor,
-    memos = memos.map { it.toDomain() },
-    hasNext = hasNext
+    memo = memo.map { it.toDomain() }
 )
