@@ -48,7 +48,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.memozi.component.textfield.MemoziSearchTextField
-import com.memozi.component.top.MemoziBackGround
+import com.memozi.component.top.MemoziBackground
 import com.memozi.component.top.MemoziTopAppbar
 import com.memozi.designsystem.MemoziTheme
 import com.memozi.designsystem.R
@@ -98,7 +98,7 @@ fun MemoRoute(
         }
     }
 
-    MemoziBackGround()
+    MemoziBackground()
     Column {
         MemoziTopAppbar(
             navigateToSetting = navigateSetting,

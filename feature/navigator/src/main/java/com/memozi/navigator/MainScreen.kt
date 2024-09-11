@@ -39,7 +39,8 @@ internal fun MainScreen(
                     padding = innerPadding
                 )
                 onboardingNavGraph(
-                    padding = innerPadding
+                    padding = innerPadding,
+                    navigateHome = navigator::navigateMemo
                 )
                 memoNavGraph(
                     padding = innerPadding,

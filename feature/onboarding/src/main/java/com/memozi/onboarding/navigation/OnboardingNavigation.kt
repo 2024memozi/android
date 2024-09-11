@@ -13,13 +13,13 @@ fun NavController.navigateOnboarding(navOptions: NavOptions) {
 }
 
 fun NavGraphBuilder.onboardingNavGraph(
+    navigateHome: () -> Unit = {},
     padding: PaddingValues,
     modifier: Modifier = Modifier
 ) {
     composable(route = OnboardingRoute.route) {
         OnboardingRoute(
-            padding = padding,
-            modifier = modifier
+            navigateHome = navigateHome
         )
     }
 }

@@ -13,7 +13,7 @@ import com.memozi.onboarding.navigation.OnboardingRoute
 internal class MainNavigator(
     val navController: NavHostController
 ) {
-    val startDestination = LoginRoute.route
+    val startDestination = OnboardingRoute.route
     private val currentDestination: NavDestination?
         @Composable get() = navController
             .currentBackStackEntryAsState().value?.destination
