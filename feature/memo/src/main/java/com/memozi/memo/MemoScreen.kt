@@ -40,6 +40,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -230,7 +231,12 @@ fun MemoziCategory(
     modifier: Modifier = Modifier,
     imageURL: String,
     title: String,
-    titleColor: Color
+    titleColor: Color,
+    textStyle: TextStyle = MemoziTheme.typography.ssuLight11,
+    textModifier: Modifier = Modifier
+        .fillMaxWidth()
+        .padding(bottom = 8.dp)
+        .padding(horizontal = 9.dp)
 ) {
     Box(modifier = modifier) {
         AsyncImage(
@@ -247,14 +253,10 @@ fun MemoziCategory(
         )
         Text(
             text = title,
-            style = MemoziTheme.typography.ssuLight11,
+            style = textStyle,
             color = titleColor,
             textAlign = TextAlign.End,
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.BottomEnd)
-                .padding(bottom = 8.dp)
-                .padding(horizontal = 9.dp)
+            modifier = textModifier.align(Alignment.BottomEnd)
         )
     }
 }

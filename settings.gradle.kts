@@ -39,6 +39,7 @@ include(":data:oauth")
 include(":data:memo")
 // local
 include(":local:memozi")
+include(":local:auth")
 
 // remote
 include(":remote:memozi")
@@ -50,5 +51,3 @@ include(":feature:memo")
 include(":feature:login")
 include(":feature:navigator")
 include(":feature:diary")
-include(":local:auth")
-

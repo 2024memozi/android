@@ -18,7 +18,7 @@ interface MemoRepository {
         defaultImageUrl: String?,
         bgColorId: Int,
         txtColorId: Int
-    ): Unit
+    ): Result<Unit>
 
     suspend fun getCategorySearch(): Result<List<Category>>
 }

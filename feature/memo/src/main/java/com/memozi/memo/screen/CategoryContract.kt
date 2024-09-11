@@ -5,9 +5,10 @@ import com.memozi.ui.base.UiState
 
 data class CategoryState(
     val name: String = "",
-    val imageUrl: String = "",
-    val textColor: Int = 1,
+    val imageUrl: String = "https://github.com/user-attachments/assets/6443c2d2-c1f9-43a5-9d52-840a6b765fcb",
+    val textColor: String = "#000000",
     val bgColorId: Int = 0
+
 ) : UiState
 
 sealed interface CategorySideEffect : SideEffect {

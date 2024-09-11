@@ -1,5 +1,12 @@
 package com.memozi.memo.screen
 
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
+import android.provider.MediaStore
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -35,14 +42,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.memozi.component.button.MemoziButton
 import com.memozi.designsystem.MemoziTheme
 import com.memozi.designsystem.R
+import com.memozi.designsystem.Ssurround
 import com.memozi.memo.MemoziCategory
 import com.memozi.ui.extension.customClickable
 
@@ -51,6 +65,7 @@ fun MemoCategoryScreen(
     viewModel: CategoryViewModel = hiltViewModel()
 ) {
     val navigationBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+    val state = viewModel.uiState.collectAsStateWithLifecycle()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -79,15 +94,33 @@ fun MemoCategoryScreen(
                 .aspectRatio(2f)
                 .padding(top = 30.dp)
                 .padding(horizontal = 16.dp)
-                .background(color = MemoziTheme.colors.black, shape = RoundedCornerShape(14.dp)),
-            imageURL = "https://github.com/user-attachments/assets/6443c2d2-c1f9-43a5-9d52-840a6b765fcb",
-            title = "",
-            titleColor = MemoziTheme.colors.white
+                .background(
+                    color = MemoziTheme.colors.black,
+                    shape = RoundedCornerShape(14.dp)
+                ),
+            imageURL = state.value.imageUrl,
+            title = state.value.name,
+            titleColor = Color( android.graphics.Color.parseColor(state.value.textColor)),
+            textStyle = TextStyle(
+                fontFamily = Ssurround,
+                fontSize = 32.sp,
+                lineHeight = 35.sp, // 100%
+                letterSpacing = 0.sp
+            ),
+            textModifier = Modifier
+                .padding(bottom = 16.dp)
+                .padding(end = 16.dp),
         )
-        CategoryTextField()
+
+
+        CategoryTextField(onValueChange = { viewModel.updateName(it) })
 
         // Color Picker and Image Selection Grid
-        ImageAndColorPicker()
+        ImageAndColorPicker(
+            imageUri = state.value.imageUrl.toUri(),
+            updateUrl = { viewModel.updateImageUrl(it.toString()) },
+            updateTextColor = {viewModel.updateTextColor(it)}
+        )
     }
     Row(
         modifier = Modifier
@@ -101,9 +134,9 @@ fun MemoCategoryScreen(
 
 @Composable
 fun CategoryTextField(
-    onValueChange: (String) -> Unit = { _ -> }
+    onValueChange: (String) -> Unit = { }
 ) {
-    var text by remember { mutableStateOf("2") }
+    var text by remember { mutableStateOf("") }
     val maxCharCount = 10
     val isError = text.isEmpty()
 
@@ -174,12 +207,44 @@ fun CategoryTextField(
 }
 
 @Composable
-fun ImageAndColorPicker() {
+fun ImageAndColorPicker(
+    imageUri: Uri,
+    updateUrl: (Uri?) -> Unit = {},
+    updateTextColor:(Int)-> Unit={},
+    clickEvent: (Uri?) -> Unit = {}
+) {
     val (selectedColorIndex, setSelectedColorIndex) = remember { mutableStateOf(-1) }
     val (selectedTextColorIndex, setSelectedTextColorIndex) = remember { mutableStateOf(-1) }
+
+    val context = LocalContext.current
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val uri: Uri? = result.data?.data
+            updateUrl(uri)
+            clickEvent(uri) // Pass the selected image URI back to the parent function
+        }
+    }
+    val imageUrls = listOf(
+        "",
+        "https://memozi.s3.ap-northeast-2.amazonaws.com/uploads/182b72d4-b2dc-48cd-b29c-d3e783bcb8ef_img1.png",
+        "https://memozi.s3.ap-northeast-2.amazonaws.com/uploads/6623d807-ca63-47ec-9b72-9f5ef7ec0ad9_img2.png",
+        "https://memozi.s3.ap-northeast-2.amazonaws.com/uploads/931aeb54-f316-4032-adf1-0b275570f4a2_img3.png",
+        "https://memozi.s3.ap-northeast-2.amazonaws.com/uploads/0003d64c-e42b-490d-84d5-58eed8f7b550_img5.png",
+        "https://memozi.s3.ap-northeast-2.amazonaws.com/uploads/210a8361-9d77-4b2e-a8e2-26cf1ad1c74d_img1_%282%29.png",
+        "https://memozi.s3.ap-northeast-2.amazonaws.com/uploads/8b8b69b0-a0c6-40d6-8191-540ef896106c_testimg.png",
+        "https://memozi.s3.ap-northeast-2.amazonaws.com/uploads/e6124a22-cd95-4283-b772-7c79e2005b84_img7.png"
+    )
+
+    val colorImageUrls = listOf(
+        ""
+    )
+
     Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
         Text(text = "사진 배경", style = MemoziTheme.typography.ngBold14)
         Spacer(modifier = Modifier.height(8.dp))
+
         // Image Picker Grid
         LazyVerticalGrid(
             columns = GridCells.Fixed(4),
@@ -196,8 +261,14 @@ fun ImageAndColorPicker() {
                                 shape = RoundedCornerShape(4.dp)
                             )
                             .customClickable {
-                                // openImagePicker()
-                            }, // Trigger image picker
+                                val intent = Intent(
+                                    Intent.ACTION_PICK,
+                                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                                ).apply {
+                                    type = "image/*"
+                                }
+                                launcher.launch(intent)
+                            },
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
@@ -207,7 +278,6 @@ fun ImageAndColorPicker() {
                         )
                     }
                 } else {
-                    // For other indices, display images or placeholders
                     Box(
                         modifier = Modifier
                             .padding(4.dp)
@@ -217,15 +287,25 @@ fun ImageAndColorPicker() {
                                 shape = RoundedCornerShape(4.dp)
                             )
                             .customClickable {
-                                // Handle other image clicks if needed
+                                updateUrl(imageUrls[index].toUri())
                             }
-                    )
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.img_category_01 + index),
+                            contentDescription = "카테고리 선택",
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
                 }
             }
         }
+//
+
         Spacer(modifier = Modifier.height(16.dp))
         Text(text = "단색 배경", style = MemoziTheme.typography.ngBold14)
         Spacer(modifier = Modifier.height(8.dp))
+
         // Unified Color Picker Grid with spacing between rows
         LazyVerticalGrid(
             columns = GridCells.Adaptive(minSize = 40.dp),
@@ -250,7 +330,6 @@ fun ImageAndColorPicker() {
                     else -> Color.Transparent
                 }
 
-                // Set border color based on selection
                 val borderColor = if (selectedColorIndex == index) {
                     MemoziTheme.colors.cautionRed
                 } else {
@@ -272,7 +351,6 @@ fun ImageAndColorPicker() {
                 )
             }
         }
-
         Spacer(modifier = Modifier.height(16.dp))
         Text(text = "텍스트 색", style = MemoziTheme.typography.ngBold14)
         Spacer(modifier = Modifier.height(8.dp))
@@ -303,16 +381,13 @@ fun ImageAndColorPicker() {
                         )
                         .background(color = color, shape = CircleShape)
                         .customClickable {
+                            updateTextColor(index)
                             setSelectedTextColorIndex(index)
                         }
                 )
             }
         }
     }
-}
-
-// Function to open image picker
-fun openImagePicker() {
 }
 
 @Preview

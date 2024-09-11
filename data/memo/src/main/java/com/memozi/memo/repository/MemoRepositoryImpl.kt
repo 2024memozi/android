@@ -1,6 +1,5 @@
 package com.memozi.memo.repository
 
-import android.util.Log
 import com.memozi.memo.model.Category
 import com.memozi.memo.model.response.toDomain
 import com.memozi.memo.source.remote.MemoRemoteDataSource
@@ -48,11 +47,8 @@ class MemoRepositoryImpl @Inject constructor(
         defaultImageUrl: String?,
         bgColorId: Int,
         txtColorId: Int
-    ) {
+    ) = runCatching {
         memoRemoteDataSource.postCategory(name, defaultImageUrl, bgColorId, txtColorId)
-            .runCatching {
-                Log.d("postCategory", "postCategory: 성공")
-            }
     }
 
     override suspend fun getCategorySearch(): Result<List<Category>> {

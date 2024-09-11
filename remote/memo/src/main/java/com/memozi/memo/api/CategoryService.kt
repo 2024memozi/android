@@ -3,6 +3,7 @@ package com.memozi.memo.api
 import com.memozi.memo.model.request.RequestPageable
 import com.memozi.memo.model.response.ResponseCategory
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -21,6 +22,7 @@ interface CategoryService {
         @Query("pageable") pageable: RequestPageable
     ): List<ResponseCategory>
 
+    @Multipart
     @POST("/category")
     suspend fun postCategory(
         @Query("name") name: String,
