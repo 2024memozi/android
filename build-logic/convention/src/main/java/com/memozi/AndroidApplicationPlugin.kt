@@ -1,4 +1,5 @@
 import com.android.build.api.dsl.ApplicationExtension
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
 import com.memozi.convention.configureAndroidCompose
 import com.memozi.convention.configureKotlinAndroid
 import com.memozi.convention.extension.getLibrary
@@ -24,6 +25,7 @@ internal class AndroidApplicationPlugin : Plugin<Project> {
                     targetSdk = libs.getVersion("targetSdk").requiredVersion.toInt()
                     versionCode = libs.getVersion("versionCode").requiredVersion.toInt()
                     versionName = libs.getVersion("versionName").requiredVersion
+                    manifestPlaceholders["KAKAO_NATIVE_KEY"] = gradleLocalProperties(rootDir, providers).getProperty("kakaoNativeKey")
                 }
             }
 

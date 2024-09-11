@@ -5,7 +5,3 @@ plugins {
 android {
     namespace = "com.memozi.diaryfeed"
 }
-
-dependencies {
-    implementation(libs.androidx.junit.ktx)
-}
