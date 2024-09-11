@@ -51,7 +51,6 @@ fun MemoCategoryScreen(
     viewModel: CategoryViewModel = hiltViewModel()
 ) {
     val navigationBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -196,7 +195,9 @@ fun ImageAndColorPicker() {
                                 color = MemoziTheme.colors.gray02,
                                 shape = RoundedCornerShape(4.dp)
                             )
-                            .customClickable { openImagePicker() }, // Trigger image picker
+                            .customClickable {
+                                // openImagePicker()
+                            }, // Trigger image picker
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
@@ -312,7 +313,6 @@ fun ImageAndColorPicker() {
 
 // Function to open image picker
 fun openImagePicker() {
-    // Implement image picker functionality
 }
 
 @Preview

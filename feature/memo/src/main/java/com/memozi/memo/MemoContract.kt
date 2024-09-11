@@ -1,12 +1,15 @@
 package com.memozi.memo
 
 import com.memozi.memo.model.Category
+import com.memozi.memo.model.Memo
 import com.memozi.ui.base.SideEffect
 import com.memozi.ui.base.UiState
+import kotlinx.collections.immutable.toImmutableList
 
 data class MemoState(
     val nickname: String = "",
-    val categoryList: List<Category> = emptyList()
+    val memoList: List<Memo> = emptyList<Memo>().toImmutableList(),
+    val categoryList: List<Category> = emptyList<Category>().toImmutableList()
 ) : UiState
 
 sealed interface MemoSideEffect : SideEffect {

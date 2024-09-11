@@ -16,12 +16,19 @@ class MemoViewModel @Inject constructor(
     fun getCategory() {
         viewModelScope.launch {
             memoRepository.getCategory(0, 10, emptyList())
-                .onSuccess {
-                    intent { copy(categoryList = it) }
-                }.onFailure {
+                .onSuccess { categoryList ->
+                    intent { copy(categoryList = categoryList) }
+                }
+                .onFailure {
                     Log.d("api 실패", "memo - getCategory: ${it.message}")
                 }
         }
+    }
+
+    fun setMemo(selectCategory: Int) {
+        if (selectCategory >= uiState.value.categoryList.size) {
+            intent { copy(memoList = emptyList()) }
+        } else if (uiState.value.categoryList.isNotEmpty()) intent { copy(memoList = uiState.value.categoryList[selectCategory].memo) }
     }
 
     fun navigateSetting() {

@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
@@ -55,8 +56,7 @@ import com.memozi.component.top.MemoziTopAppbar
 import com.memozi.designsystem.MemoziTheme
 import com.memozi.designsystem.R
 import com.memozi.memo.model.Category
-import com.memozi.memo.model.MemoItem
-import com.memozi.memo.model.dummyMemoItems
+import com.memozi.memo.model.Memo
 import com.memozi.ui.extension.customClickable
 import com.memozi.ui.lifecycle.LaunchedEffectWithLifecycle
 import kotlinx.coroutines.flow.collectLatest
@@ -101,6 +101,7 @@ fun MemoRoute(
         }
     }
 
+    viewModel.setMemo(pagerState.currentPage)
     MemoziBackground()
     Column {
         MemoziTopAppbar(
@@ -126,12 +127,10 @@ fun MemoRoute(
                 .padding(top = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            MemoziHorizontalPagerIndicator(
-                pagerState
-            )
+            MemoziHorizontalPagerIndicator(pagerState)
             Spacer(modifier = Modifier.height(16.dp))
             MemoList(
-                memoItems = dummyMemoItems(),
+                memoItems = state.memoList,
                 bottomPaddingValue = PaddingValues(bottom = 8.dp + navigationBarHeight)
             )
         }
@@ -156,7 +155,7 @@ fun MemoFloatingButton(
                 .background(Color.Transparent)
                 .width(55.dp)
                 .height(55.dp)
-                .customClickable(rippleEnabled = false) { navigateMemoAdd() } // 나중에 커스텀 clickable 추가
+                .customClickable(rippleEnabled = false) { navigateMemoAdd() }
                 .background(
                     color = MemoziTheme.colors.mainPurple02,
                     shape = CircleShape
@@ -334,7 +333,7 @@ fun MemoziHorizontalPagerIndicator(
 }
 
 @Composable
-fun MemoList(memoItems: List<MemoItem>, bottomPaddingValue: PaddingValues) {
+fun MemoList(memoItems: List<Memo>, bottomPaddingValue: PaddingValues) {
     Box(
         modifier = Modifier
             .padding(horizontal = 16.dp)
@@ -344,7 +343,8 @@ fun MemoList(memoItems: List<MemoItem>, bottomPaddingValue: PaddingValues) {
     ) {
         LazyColumn(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
+                .wrapContentHeight()
         ) {
             items(memoItems.size) { index ->
                 if (memoItems.size > 1 && index != memoItems.size - 1) {
@@ -365,7 +365,7 @@ fun MemoList(memoItems: List<MemoItem>, bottomPaddingValue: PaddingValues) {
 }
 
 @Composable
-fun MemoItemCard(memo: MemoItem) {
+fun MemoItemCard(memo: Memo) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -386,7 +386,7 @@ fun MemoItemCard(memo: MemoItem) {
             )
             Spacer(modifier = Modifier.weight(1f))
             Text(
-                text = memo.date,
+                text = memo.dayOfWeek,
                 style = MemoziTheme.typography.ngReg11,
                 color = MemoziTheme.colors.gray03
             )
