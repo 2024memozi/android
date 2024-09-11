@@ -8,11 +8,17 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -20,19 +26,24 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.memozi.designsystem.MemoziTheme
 import com.memozi.designsystem.R
 import com.memozi.ui.extension.customClickable
@@ -45,6 +56,7 @@ fun OnboardingRoute(
     viewModel: OnboardingViewModel = hiltViewModel(),
     navigateHome: () -> Unit = {}
 ) {
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
     val pagerState = rememberPagerState(initialPage = 0, pageCount = { 4 })
     LaunchedEffectWithLifecycle {
         viewModel.sideEffect.collectLatest { sideEffect ->
@@ -58,13 +70,22 @@ fun OnboardingRoute(
 
     HorizontalPager(
         state = pagerState,
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = MemoziTheme.colors.white)
     ) { page ->
         when (page) {
             0 -> OnboardingOne()
             1 -> OnboardingTwo()
             2 -> OnboardingThree()
-            3 -> OnboardingFour { viewModel.navigateHome() }
+            3 -> OnboardingFour(
+                selectedAmPm = state.selectedAmPm,
+                selectedHour = state.selectedHour,
+                selectedMinute = state.selectedMinute,
+                setAmPm = { viewModel.setAmPm(it) },
+                setHour = { viewModel.setHour(it) },
+                setMinute = { viewModel.setMinute(it) },
+            ) { viewModel.navigateHome() }
         }
     }
 
@@ -220,8 +241,18 @@ fun OnboardingThree() {
 
 @Composable
 fun OnboardingFour(
+    selectedAmPm: String = "",
+    selectedHour: Int = 12,
+    selectedMinute: Int = 12,
+    setAmPm: (String) -> Unit = {},
+    setHour: (Int) -> Unit = {},
+    setMinute: (Int) -> Unit = {},
     navigateHome: () -> Unit = {}
 ) {
+    val amPmList = listOf("오전", "오후")
+    val hourList = (1..12).toList()
+    val minuteList = (0..59).toList()
+
     Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp)) {
         Box(
             modifier = Modifier
@@ -258,7 +289,51 @@ fun OnboardingFour(
                 .fillMaxWidth()
                 .weight(67f)
         )
-        // TODO Date Time Picker 공간
+
+        Box(
+            modifier = Modifier
+                .background(color = MemoziTheme.colors.white, shape = RoundedCornerShape(8.dp))
+                .fillMaxWidth()
+                .fillMaxHeight(0.17f)
+                .shadow(3.dp, shape = RoundedCornerShape(8.dp))
+        ) {
+            Row(
+                modifier = Modifier
+                    .background(color = MemoziTheme.colors.white)
+                    .fillMaxSize(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                NumberPicker(
+                    items = amPmList,
+                    selectedItem = selectedAmPm,
+                    onItemSelected = { setAmPm(it) },
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                )
+
+                NumberPicker(
+                    items = hourList.map { it.toString().padStart(2, '0') },
+                    selectedItem = selectedHour.toString().padStart(2, '0'),
+                    onItemSelected = { setHour(it.toInt()) },
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                )
+
+                NumberPicker(
+                    items = minuteList.map { it.toString().padStart(2, '0') },
+                    selectedItem = selectedMinute.toString().padStart(2, '0'),
+                    onItemSelected = { setMinute(it.toInt()) },
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                )
+            }
+        }
+
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -338,41 +413,65 @@ fun MemoziHorizontalPagerIndicator(
 }
 
 @Composable
+fun NumberPicker(
+    items: List<String>,
+    selectedItem: String,
+    onItemSelected: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val selectedIndex = items.indexOf(selectedItem)
+
+    Box(modifier = modifier.wrapContentSize()) {
+        LazyColumn(
+            modifier = Modifier
+                .height(120.dp) // 고정된 높이
+                .padding(8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            items(items) { item ->
+                val isSelected = item == selectedItem
+                Text(
+                    style = if (isSelected) MemoziTheme.typography.ngBold21 else MemoziTheme.typography.ngReg14,
+                    text = item,
+                    color = if (isSelected) MemoziTheme.colors.black else MemoziTheme.colors.gray03,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color.White)
+                        .padding(vertical = 8.dp),
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
+
+        // 위 구분선
+        HorizontalDivider(
+            modifier = Modifier
+                .width(48.dp)
+                .align(Alignment.Center)
+                .offset(y = -20.dp),
+            thickness = 2.dp,
+            color = MemoziTheme.colors.mainPurple
+        )
+
+        // 아래 구분선
+        HorizontalDivider(
+            modifier = Modifier
+                .width(48.dp)
+                .align(Alignment.Center)
+                .offset(y = 8.dp),
+            thickness = 2.dp,
+            color = MemoziTheme.colors.mainPurple
+        )
+    }
+}
+
+
+@Composable
 @Preview
 fun PreviewOnboarding() {
     MemoziTheme {
         Box(modifier = Modifier.background(color = MemoziTheme.colors.white)) {
             OnboardingRoute()
-        }
-    }
-}
-
-@Composable
-@Preview
-fun PreviewOnboardingOne() {
-    MemoziTheme {
-        Box(modifier = Modifier.background(color = MemoziTheme.colors.white)) {
-            OnboardingOne()
-        }
-    }
-}
-
-@Composable
-@Preview
-fun PreviewOnboardingTwo() {
-    MemoziTheme {
-        Box(modifier = Modifier.background(color = MemoziTheme.colors.white)) {
-            OnboardingTwo()
-        }
-    }
-}
-
-@Composable
-@Preview
-fun PreviewOnboardingThree() {
-    MemoziTheme {
-        Box(modifier = Modifier.background(color = MemoziTheme.colors.white)) {
-            OnboardingThree()
         }
     }
 }
