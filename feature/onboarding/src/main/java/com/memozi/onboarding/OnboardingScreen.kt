@@ -3,6 +3,7 @@ package com.memozi.onboarding
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,7 +17,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
@@ -28,6 +28,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -82,9 +84,11 @@ fun OnboardingRoute(
                 selectedAmPm = state.selectedAmPm,
                 selectedHour = state.selectedHour,
                 selectedMinute = state.selectedMinute,
+                isNotification = state.isNotification,
                 setAmPm = { viewModel.setAmPm(it) },
                 setHour = { viewModel.setHour(it) },
                 setMinute = { viewModel.setMinute(it) },
+                setIsNotification = { viewModel.setIsNotification(it) }
             ) { viewModel.navigateHome() }
         }
     }
@@ -244,9 +248,11 @@ fun OnboardingFour(
     selectedAmPm: String = "",
     selectedHour: Int = 12,
     selectedMinute: Int = 12,
+    isNotification: Boolean = false,
     setAmPm: (String) -> Unit = {},
     setHour: (Int) -> Unit = {},
     setMinute: (Int) -> Unit = {},
+    setIsNotification: (Boolean) -> Unit = {},
     navigateHome: () -> Unit = {}
 ) {
     val amPmList = listOf("오전", "오후")
@@ -291,18 +297,31 @@ fun OnboardingFour(
         )
 
         Box(
-            modifier = Modifier
-                .background(color = MemoziTheme.colors.white, shape = RoundedCornerShape(8.dp))
-                .fillMaxWidth()
-                .fillMaxHeight(0.17f)
-                .shadow(3.dp, shape = RoundedCornerShape(8.dp))
+            modifier = if (isNotification) {
+                Modifier
+                    .background(
+                        color = MemoziTheme.colors.black20,
+                        shape = RoundedCornerShape(8.dp)
+                    )
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.17f)
+            } else {
+                Modifier
+                    .background(
+                        color = MemoziTheme.colors.white,
+                        shape = RoundedCornerShape(8.dp)
+                    )
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.17f)
+                    .shadow(3.dp, shape = RoundedCornerShape(8.dp))
+            }
         ) {
             Row(
                 modifier = Modifier
-                    .background(color = MemoziTheme.colors.white)
+                    .background(color = if (isNotification) MemoziTheme.colors.black20 else MemoziTheme.colors.white)
                     .fillMaxSize(),
                 horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 NumberPicker(
                     items = amPmList,
@@ -311,6 +330,8 @@ fun OnboardingFour(
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxHeight()
+                        .background(color = Color.Transparent),
+                    enabled = !isNotification
                 )
 
                 NumberPicker(
@@ -320,6 +341,8 @@ fun OnboardingFour(
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxHeight()
+                        .background(color = Color.Transparent),
+                    enabled = !isNotification
                 )
 
                 NumberPicker(
@@ -329,27 +352,42 @@ fun OnboardingFour(
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxHeight()
+                        .background(color = Color.Transparent),
+                    enabled = !isNotification
                 )
             }
         }
 
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(51f)
+        )
 
-        Box(
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .fillMaxWidth()
-                .weight(67f)
-        )
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(50f)
-        )
-        // TODO 팝업 알림 라디오 버튼 공간
-        Box(
-            modifier = Modifier
+                .padding(8.dp)
                 .fillMaxWidth()
                 .weight(32f)
-        )
+                .clickable(onClick = { setIsNotification(!isNotification) })
+        ) {
+            RadioButton(
+                selected = isNotification,
+                onClick = { setIsNotification(!isNotification) },
+                colors = RadioButtonDefaults.colors(
+                    selectedColor = MemoziTheme.colors.mainPurple,
+                    unselectedColor = MemoziTheme.colors.mainPurple
+                )
+            )
+
+            Text(
+                text = "팝업 알림은 안받을래요.",
+                style = MemoziTheme.typography.ssuLight15,
+                color = MemoziTheme.colors.black
+            )
+        }
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -367,6 +405,58 @@ fun OnboardingFour(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(127f)
+        )
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun NumberPicker(
+    items: List<String>,
+    selectedItem: String,
+    onItemSelected: (String) -> Unit,
+    enabled: Boolean,
+    modifier: Modifier = Modifier
+) {
+    val selectedIndex = items.indexOf(selectedItem)
+
+    Box(modifier = modifier.fillMaxHeight()) {
+        LazyColumn(
+            modifier = Modifier
+                .padding(8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            userScrollEnabled = enabled
+        ) {
+            items(items) { item ->
+                val isSelected = item == selectedItem
+                Text(
+                    style = if (isSelected) MemoziTheme.typography.ngBold21 else MemoziTheme.typography.ngReg14,
+                    text = item,
+                    color = if (isSelected) MemoziTheme.colors.black else MemoziTheme.colors.gray03,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
+
+        HorizontalDivider(
+            modifier = Modifier
+                .width(48.dp)
+                .align(Alignment.Center)
+                .offset(y = (-16).dp),
+            thickness = 2.dp,
+            color = MemoziTheme.colors.mainPurple
+        )
+
+        HorizontalDivider(
+            modifier = Modifier
+                .width(48.dp)
+                .align(Alignment.Center)
+                .offset(y = 16.dp),
+            thickness = 2.dp,
+            color = MemoziTheme.colors.mainPurple
         )
     }
 }
@@ -411,60 +501,6 @@ fun MemoziHorizontalPagerIndicator(
         )
     }
 }
-
-@Composable
-fun NumberPicker(
-    items: List<String>,
-    selectedItem: String,
-    onItemSelected: (String) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val selectedIndex = items.indexOf(selectedItem)
-
-    Box(modifier = modifier.wrapContentSize()) {
-        LazyColumn(
-            modifier = Modifier
-                .height(120.dp) // 고정된 높이
-                .padding(8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            items(items) { item ->
-                val isSelected = item == selectedItem
-                Text(
-                    style = if (isSelected) MemoziTheme.typography.ngBold21 else MemoziTheme.typography.ngReg14,
-                    text = item,
-                    color = if (isSelected) MemoziTheme.colors.black else MemoziTheme.colors.gray03,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color.White)
-                        .padding(vertical = 8.dp),
-                    textAlign = TextAlign.Center
-                )
-            }
-        }
-
-        // 위 구분선
-        HorizontalDivider(
-            modifier = Modifier
-                .width(48.dp)
-                .align(Alignment.Center)
-                .offset(y = -20.dp),
-            thickness = 2.dp,
-            color = MemoziTheme.colors.mainPurple
-        )
-
-        // 아래 구분선
-        HorizontalDivider(
-            modifier = Modifier
-                .width(48.dp)
-                .align(Alignment.Center)
-                .offset(y = 8.dp),
-            thickness = 2.dp,
-            color = MemoziTheme.colors.mainPurple
-        )
-    }
-}
-
 
 @Composable
 @Preview

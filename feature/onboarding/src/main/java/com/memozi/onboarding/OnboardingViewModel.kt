@@ -20,6 +20,10 @@ class OnboardingViewModel @Inject constructor() :
         intent { copy(selectedMinute = selectedMinute) }
     }
 
+    fun setIsNotification(isNotification: Boolean) {
+        intent { copy(isNotification = isNotification) }
+    }
+
     fun navigateHome() {
         postSideEffect(OnboardingSideEffect.NavigateToHome)
     }
