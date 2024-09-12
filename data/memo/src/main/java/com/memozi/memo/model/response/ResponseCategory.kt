@@ -6,6 +6,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ResponseCategory(
+    @SerialName("categoryId")
+    val categoryId: Int,
     @SerialName("name")
     val name: String,
     @SerialName("representImage")
@@ -17,6 +19,7 @@ data class ResponseCategory(
 )
 
 fun ResponseCategory.toDomain() = Category(
+    categoryId = categoryId,
     name = name,
     representImage = representImage,
     txtColor = txtColor,
