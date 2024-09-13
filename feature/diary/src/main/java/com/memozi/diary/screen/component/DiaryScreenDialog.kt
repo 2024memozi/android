@@ -46,7 +46,7 @@ fun DiaryScreenDialog(
 
 @Preview(showBackground = true)
 @Composable
-fun showMemoziDialog() {
+fun ShowMemoziDialog() {
     MemoziTheme {
 
     }
