@@ -73,19 +73,19 @@ fun DiaryScreen(
     val maxDiaryLength = 100
     var diaryContent by remember { mutableStateOf("") }
     var locationDialogState by remember { mutableStateOf(false) }
-    var onChangedLocationDialogState: (Boolean) -> Unit =
+    val onChangedLocationDialogState: (Boolean) -> Unit =
         { newValue -> locationDialogState = newValue }
     val isDiaryAvailable by remember(diaryContent) { mutableStateOf(diaryContent.isNotEmpty()) }
-    var userName by remember { mutableStateOf("홍길동") }
+    val userName by remember { mutableStateOf("홍길동") }
     var isDiaryWritten by remember { mutableStateOf(false) }
-    var isDiaryExist by remember { mutableStateOf(true) }
+    val isDiaryExist by remember { mutableStateOf(true) }
     val navigationBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
     var year by remember { mutableIntStateOf(LocalDate.now().year) }
     var month by remember { mutableIntStateOf(LocalDate.now().monthValue) }
     var location by remember { mutableStateOf("") }
     var isLocationExist by remember { mutableStateOf(false) }
-    var onChangedLocation: (String) -> Unit = { newValue -> location = newValue }
-    var onChangedLocationExist: (Boolean) -> Unit = { newValue -> isLocationExist = newValue }
+    val onChangedLocation: (String) -> Unit = { newValue -> location = newValue }
+    val onChangedLocationExist: (Boolean) -> Unit = { newValue -> isLocationExist = newValue }
     var calendarBottomSheetState by remember { mutableStateOf(false) }
     val isDiaryExistDay by remember { mutableStateOf(false) }
 
