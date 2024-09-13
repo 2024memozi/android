@@ -3,46 +3,67 @@ package com.memozi.diary.screen
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.memozi.component.top.MemoziBackground
 import com.memozi.designsystem.MemoziTheme
 import com.memozi.designsystem.R
+import com.memozi.diary.screen.component.DiaryScreenDialog
+import com.memozi.diary.screen.component.WeekHeader
+import com.memozi.diary.utils.CalendarUtils
+import java.time.LocalDate
+import java.time.YearMonth
 
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DiaryScreen(
+    diaryViewModel: DiaryViewModel = hiltViewModel(),
     navigateToMemo: () -> Unit = {},
     navigateToSetting: () -> Unit = {}
 ) {
@@ -58,16 +79,22 @@ fun DiaryScreen(
     var userName by remember { mutableStateOf("홍길동") }
     var isDiaryWritten by remember { mutableStateOf(false) }
     var isDiaryExist by remember { mutableStateOf(true) }
+    val navigationBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+    var year by remember { mutableIntStateOf(LocalDate.now().year) }
+    var month by remember { mutableIntStateOf(LocalDate.now().monthValue) }
     var location by remember { mutableStateOf("") }
     var isLocationExist by remember { mutableStateOf(false) }
     var onChangedLocation: (String) -> Unit = { newValue -> location = newValue }
     var onChangedLocationExist: (Boolean) -> Unit = { newValue -> isLocationExist = newValue }
+    var calendarBottomSheetState by remember { mutableStateOf(false) }
+    val isDiaryExistDay by remember { mutableStateOf(false) }
 
     MemoziBackground()
 
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .padding(vertical = navigationBarHeight)
             .padding(20.dp)
     ) {
         DiaryFeedTopAppBar()
@@ -78,7 +105,8 @@ fun DiaryScreen(
             listSelectedState = listSelectedState,
             onChangedListSelectedState = { listSelectedState = it },
             calendarSelectedState = calendarSelectedState,
-            onChangedCalendarSelectedState = { calendarSelectedState = it }
+            onChangedCalendarSelectedState = { calendarSelectedState = it },
+            onChangedCalendarBottomSheetState = { calendarBottomSheetState = it }
         )
 
         if (!isDiaryWritten) {
@@ -195,6 +223,178 @@ fun DiaryScreen(
         )
     }
 
+    if (calendarBottomSheetState) {
+        val height = (LocalConfiguration.current.screenHeightDp * (0.144f)).dp
+        BottomSheetScaffold(
+            sheetContent = {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp)
+                        .padding(horizontal = 20.dp)
+                        .navigationBarsPadding(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_calendar_bottomsheet_back),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .padding(end = 8.dp)
+                                .clickable {
+                                    val (newYear, newMonth) = CalendarUtils.showLastMonth(
+                                        year,
+                                        month
+                                    )
+                                    year = newYear
+                                    month = newMonth
+                                }
+                        )
+                        Text(
+                            text = "${year}년 ${month}월 달력",
+                            style = MemoziTheme.typography.ssuLight15
+                        )
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_calendar_bottomsheet_forward),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .padding(start = 8.dp)
+                                .clickable {
+                                    val (newYear, newMonth) = CalendarUtils.showNextMonth(
+                                        year,
+                                        month
+                                    )
+                                    year = newYear
+                                    month = newMonth
+                                }
+                        )
+                    }
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 20.dp),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        WeekHeader()
+                        Box(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Column(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                val yearMonth = YearMonth.of(year, month)
+                                val firstDayOfMonth = yearMonth.atDay(1)
+                                val daysInMonth = yearMonth.lengthOfMonth()
+                                val firstDayOfWeek = firstDayOfMonth.dayOfWeek
+
+                                val dayOfWeekIndex = firstDayOfWeek.value % 7
+
+                                val calendarDays = mutableListOf<LocalDate>()
+                                for (i in 1..daysInMonth) {
+                                    calendarDays.add(LocalDate.of(year, month, i))
+                                }
+
+                                val leadingEmptyDays: List<LocalDate?> =
+                                    List(dayOfWeekIndex) { null }
+
+                                val trailingEmptyDays: List<LocalDate?> =
+                                    List((7 - (calendarDays.size + leadingEmptyDays.size) % 7) % 7) { null }
+
+                                val fullCalendarDays: List<LocalDate?> =
+                                    leadingEmptyDays + calendarDays + trailingEmptyDays
+
+                                val rows = fullCalendarDays.chunked(7) // 일주일씩 끊어서 배열 생성
+                                rows.forEach { week ->
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.SpaceBetween
+                                    ) {
+                                        week.forEach { date ->
+                                            Box(
+                                                modifier = Modifier
+                                                    .height((LocalConfiguration.current.screenHeightDp * 0.046f).dp)
+                                                    .width(((LocalConfiguration.current.screenWidthDp - 40) / 7).dp),
+                                                contentAlignment = Alignment.Center
+                                            ) {
+                                                // null인 경우는 아무것도 출력하지 않음
+                                                date?.let {
+                                                    if (isDiaryExistDay) {
+                                                        Box(
+                                                            modifier = Modifier
+                                                                .size(20.dp)
+                                                                .background(
+                                                                    color = MemoziTheme.colors.mainPurple,
+                                                                    shape = CircleShape
+                                                                )
+                                                                .align(Alignment.Center)
+                                                        ) {
+                                                            Text(
+                                                                text = it.dayOfMonth.toString(),
+                                                                modifier = Modifier.align(Alignment.Center),
+                                                                color = MemoziTheme.colors.white,
+                                                                style = MemoziTheme.typography.ngReg12_140
+                                                            )
+                                                        }
+                                                    } else {
+                                                        Text(
+                                                            text = it.dayOfMonth.toString(),
+                                                            modifier = Modifier.align(Alignment.Center),
+                                                            color = MemoziTheme.colors.black,
+                                                            style = MemoziTheme.typography.ngReg12_140
+                                                        )
+                                                        if (
+                                                            date.year == LocalDate.now().year &&
+                                                            date.monthValue == LocalDate.now().monthValue &&
+                                                            date.dayOfMonth == LocalDate.now().dayOfMonth
+                                                        ) {
+                                                            Image(
+                                                                painter = painterResource(id = R.drawable.ic_calendar_today),
+                                                                contentDescription = null,
+                                                                modifier = Modifier.align(Alignment.Center)
+                                                            )
+                                                            Text(
+                                                                text = "TODAY",
+                                                                modifier = Modifier.align(alignment = Alignment.BottomCenter),
+                                                                color = MemoziTheme.colors.black,
+                                                                style = MemoziTheme.typography.ngBold7
+                                                            )
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            sheetContainerColor = MemoziTheme.colors.white,
+            sheetShadowElevation = 16.dp,
+            sheetDragHandle = {
+                Box(
+                    modifier = Modifier
+                        .padding(vertical = 8.dp)
+                        .width((LocalConfiguration.current.screenWidthDp * 0.11f).dp)
+                        .height(4.dp)
+                        .background(
+                            color = MemoziTheme.colors.gray02,
+                            shape = RoundedCornerShape(12.dp)
+                        )
+                )
+            },
+            sheetPeekHeight = height
+        ) {}
+    }
 }
 
 @Composable
@@ -267,7 +467,8 @@ fun SelectDisplayType(
     listSelectedState: Boolean,
     onChangedListSelectedState: (Boolean) -> Unit,
     calendarSelectedState: Boolean,
-    onChangedCalendarSelectedState: (Boolean) -> Unit
+    onChangedCalendarSelectedState: (Boolean) -> Unit,
+    onChangedCalendarBottomSheetState: (Boolean) -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -286,6 +487,7 @@ fun SelectDisplayType(
             modifier = Modifier.clickable {
                 onChangedListSelectedState(true)
                 onChangedCalendarSelectedState(false)
+                onChangedCalendarBottomSheetState(false)
             }
         )
         Image(
@@ -303,6 +505,7 @@ fun SelectDisplayType(
             modifier = Modifier.clickable {
                 onChangedListSelectedState(false)
                 onChangedCalendarSelectedState(true)
+                onChangedCalendarBottomSheetState(true)
             }
         )
     }
@@ -540,7 +743,7 @@ fun DailyDiaryItem(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "{$year}년 {$month}월 {$day}일 | {$dayOfWeek}",
+            text = "${year}년 ${month}월 ${day}일 | $dayOfWeek",
             modifier = Modifier.padding(top = 16.dp, bottom = 6.dp),
             style = MemoziTheme.typography.ssuLight12
         )
@@ -557,7 +760,7 @@ fun DailyDiaryItem(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.ic_diary_feed_location),
+                    painter = painterResource(id = R.drawable.ic_diary_feed_pin_small),
                     contentDescription = null,
                     modifier = Modifier.padding(end = 2.dp)
                 )
@@ -585,6 +788,6 @@ fun DailyDiaryItem(
 @Composable
 fun ShowDiaryFeedScreen() {
     MemoziTheme {
-        DiaryScreen()
+
     }
 }
