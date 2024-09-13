@@ -2,9 +2,10 @@ package com.memozi.component.textfield
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -33,33 +34,37 @@ import com.memozi.designsystem.R
 
 @Composable
 fun MemoziSearchTextField(
-    modifier: Modifier = Modifier
-        .fillMaxWidth()
-        .height(56.dp),
+    modifier: Modifier =
+        Modifier
+            .fillMaxWidth()
+            .height(56.dp),
     placeholder: String = "메모를 검색해 보세요!",
     maxLines: Int = 1,
     maxLength: Int = 10,
     textStyle: TextStyle = MemoziTheme.typography.ssuLight12,
     onValueChange: (String) -> Unit = { _ -> },
+    onCancelClick: () -> Unit = {},
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Default),
-    keyboardActions: KeyboardActions = KeyboardActions.Default
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
 ) {
     var value by remember { mutableStateOf("") }
     var isFocused by remember { mutableStateOf(false) }
     val shape = RoundedCornerShape(8.dp)
 
     Row(
-        modifier = modifier
-            .background(shape = shape, color = MemoziTheme.colors.white),
-        verticalAlignment = Alignment.CenterVertically
+        modifier =
+            modifier
+                .background(shape = shape, color = MemoziTheme.colors.white),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Image(
-            modifier = Modifier
-                .height(26.dp)
-                .width(26.dp)
-                .padding(start = 8.dp),
+            modifier =
+                Modifier
+                    .height(26.dp)
+                    .width(26.dp)
+                    .padding(start = 8.dp),
             painter = painterResource(id = R.drawable.ic_search),
-            contentDescription = null
+            contentDescription = null,
         )
 
         BasicTextField(
@@ -70,11 +75,11 @@ fun MemoziSearchTextField(
                     onValueChange(it)
                 }
             },
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(start = 18.dp)
-                .onFocusChanged { isFocused = it.isFocused }
-                .wrapContentHeight(Alignment.CenterVertically),
+            modifier =
+                Modifier
+                    .padding(start = 18.dp)
+                    .onFocusChanged { isFocused = it.isFocused }
+                    .wrapContentHeight(Alignment.CenterVertically),
             textStyle = textStyle.copy(color = MemoziTheme.colors.black),
             keyboardOptions = keyboardOptions,
             keyboardActions = keyboardActions,
@@ -84,11 +89,25 @@ fun MemoziSearchTextField(
                 if (value.isEmpty() && !isFocused) {
                     Text(
                         text = placeholder,
-                        style = textStyle.copy(color = MemoziTheme.colors.gray05)
+                        style = textStyle.copy(color = MemoziTheme.colors.gray05),
                     )
                 }
                 innerTextField()
-            }
+            },
+        )
+    }
+    if (isFocused) {
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(
+            text = "취소",
+            style = textStyle.copy(color = MemoziTheme.colors.white),
+            modifier =
+                Modifier
+                    .clickable {
+                        value = ""
+                        isFocused = false
+                        onCancelClick()
+                    },
         )
     }
 }
