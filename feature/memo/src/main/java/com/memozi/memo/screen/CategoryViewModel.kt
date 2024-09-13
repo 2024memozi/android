@@ -1,16 +1,12 @@
 package com.memozi.memo.screen
 
-import android.net.Uri
-import androidx.core.content.ContentProviderCompat.requireContext
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.memozi.memo.repository.MemoRepository
+import com.memozi.model.exception.ApiError
 import com.memozi.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.asRequestBody
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,12 +22,16 @@ class CategoryViewModel @Inject constructor(
         intent { copy(imageUrl = imageUrl, selectedColor = -1) }
     }
 
+    fun updateImageOpt(opt: Int) {
+        intent { copy(selectImgOpt = opt) }
+    }
+
     fun updateTextColor() {
         intent { copy(textColor = if (selectedText == 0) "#000000" else "#ffffff") }
     }
 
     fun setSelectedColorIndex(colorIndex: Int) {
-        intent { copy(selectedColor = colorIndex) }
+        intent { copy(selectedColor = colorIndex, selectImgOpt = 2) }
     }
 
     fun setSelectedTextColorIndex(textColorIndex: Int) {
@@ -39,25 +39,22 @@ class CategoryViewModel @Inject constructor(
         updateTextColor()
     }
 
-    fun uriToFile(uri: Uri){
-
-    }
     fun postCategory() {
         viewModelScope.launch {
-
             memoRepository.postCategory(
-//                name = uiState.value.name,
-//                defaultImageUrl = uiState.value.imageUrl,
-//                bgColorId = uiState.value.bgColorId.(),
-//                txtColorId = uiState.value.textColor.toColorInt()
-//            ).onSuccess {
-//                Log.d("post성공", "postCategory: $it")
-//            }.onFailure {
-//                when (it) {
-//                    is ApiError -> Log.e("실패", it.message)
-//                    else -> Log.e("실패", it.message.toString())
-//                }
-//            }
+                name = uiState.value.name,
+                defaultImageUrl = if (uiState.value.selectImgOpt == 1) uiState.value.imageUrl else null,
+                bgColorImageUrl = if (uiState.value.selectedColor == 2) uiState.value.imageUrl else null,
+                txtColor = uiState.value.textColor,
+                image = if (uiState.value.selectImgOpt == 0) uiState.value.imageUrl else null
+            ).onSuccess {
+                Log.d("post성공", "uistate: ${uiState.value}")
+            }.onFailure {
+                when (it) {
+                    is ApiError -> Log.e("실패", it.message)
+                    else -> Log.e("실패", it.message.toString())
+                }
+            }
         }
     }
 

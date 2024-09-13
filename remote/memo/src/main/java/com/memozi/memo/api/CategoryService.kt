@@ -3,6 +3,7 @@ package com.memozi.memo.api
 import com.memozi.memo.model.request.RequestPageable
 import com.memozi.memo.model.response.ResponseCategory
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
@@ -27,11 +28,10 @@ interface CategoryService {
     @Multipart
     @POST("/category")
     suspend fun postCategory(
-        @Part("name") name: String,
-        @Part("defaultImageUrl") defaultImageUrl: String?,
-        @Part("bgColorImageUrl") bgColorImageUrl: String?,
-        @Part("txtColor") txtColor: String,
+        @Part("name") name: RequestBody,
+        @Part("defaultImageUrl") defaultImageUrl: RequestBody?,
+        @Part("bgColorImageUrl") bgColorImageUrl: RequestBody?,
+        @Part("txtColor") txtColor: RequestBody,
         @Part images: MultipartBody.Part?
     ): Unit
-
 }

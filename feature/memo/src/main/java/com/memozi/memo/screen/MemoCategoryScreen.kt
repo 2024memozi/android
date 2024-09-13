@@ -70,7 +70,6 @@ fun MemoCategoryScreen(
             .background(color = MemoziTheme.colors.white)
             .padding(bottom = navigationBarHeight)
     ) {
-        Spacer(modifier = Modifier.height(navigationBarHeight))
         Box(
             modifier = Modifier
                 .padding(top = 32.dp)
@@ -128,17 +127,18 @@ fun MemoCategoryScreen(
         // Color Picker and Image Selection Grid
         ImageAndColorPicker(
             imageUri = state.value.imageUrl.toUri(),
-            updateUrl = { viewModel.updateImageUrl(it.toString()) },
-            updateTextColor = { viewModel.updateTextColor() },
             selectedColorIndex = state.value.selectedColor,
             selectedTextColorIndex = state.value.selectedText,
-            setSelectedTextColorIndex = { viewModel.setSelectedTextColorIndex(it) },
-            setSelectedColorIndex = { viewModel.setSelectedColorIndex(it) }
+            updateUrl = { viewModel.updateImageUrl(it.toString()) },
+            updateTextColor = { viewModel.updateTextColor() },
+            updateImageOpt = { viewModel.updateImageOpt(it) },
+            updateSelectedTextColorIndex = { viewModel.setSelectedTextColorIndex(it) },
+            updateSelectedColorIndex = { viewModel.setSelectedColorIndex(it) }
         )
     }
     Row(
         modifier = Modifier
-            .padding(top = 30.dp + navigationBarHeight, end = 8.dp)
+            .padding(top = 30.dp, end = 8.dp)
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.End
     ) {
@@ -198,11 +198,10 @@ fun CategoryTextField(
                     painter = painterResource(id = R.drawable.ic_x_white_13),
                     tint = Color.Unspecified,
                     contentDescription = "삭제버튼",
-                    modifier = Modifier
-                        .customClickable {
-                            text = ""
-                            onValueChange(text)
-                        }
+                    modifier = Modifier.customClickable {
+                        text = ""
+                        onValueChange(text)
+                    }
                 )
             }
         }
@@ -230,26 +229,28 @@ fun ImageAndColorPicker(
     selectedColorIndex: Int,
     selectedTextColorIndex: Int,
     updateUrl: (Uri?) -> Unit = {},
+    updateImageOpt: (Int) -> Unit = {},
     updateTextColor: () -> Unit = {},
-    setSelectedColorIndex: (Int) -> Unit = {},
-    setSelectedTextColorIndex: (Int) -> Unit = {}
+    updateSelectedColorIndex: (Int) -> Unit = {},
+    updateSelectedTextColorIndex: (Int) -> Unit = {}
 ) {
     Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
-        PhotoPicker { updateUrl(it) }
+        PhotoPicker(updateUrl = updateUrl, updateImageOpt = updateImageOpt)
         ColorPicker(
             updateUrl = updateUrl,
             selectedColorIndex = selectedColorIndex
-        ) { setSelectedColorIndex(it) }
+        ) { updateSelectedColorIndex(it) }
         TextColorPicker(selectedTextColorIndex = selectedTextColorIndex) {
-            setSelectedTextColorIndex(
-                it
-            )
+            updateSelectedTextColorIndex(it)
         }
     }
 }
 
 @Composable
-fun PhotoPicker(updateUrl: (Uri?) -> Unit) {
+fun PhotoPicker(
+    updateUrl: (Uri?) -> Unit,
+    updateImageOpt: (Int) -> Unit = {}
+) {
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -287,6 +288,7 @@ fun PhotoPicker(updateUrl: (Uri?) -> Unit) {
                             shape = RoundedCornerShape(4.dp)
                         )
                         .customClickable {
+                            updateImageOpt(0)
                             val intent = Intent(
                                 Intent.ACTION_PICK,
                                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI
@@ -313,6 +315,7 @@ fun PhotoPicker(updateUrl: (Uri?) -> Unit) {
                             shape = RoundedCornerShape(4.dp)
                         )
                         .customClickable {
+                            updateImageOpt(1)
                             updateUrl(imageUrls[index].toUri())
                         }
                 ) {
@@ -333,7 +336,7 @@ fun PhotoPicker(updateUrl: (Uri?) -> Unit) {
 fun ColorPicker(
     updateUrl: (Uri?) -> Unit,
     selectedColorIndex: Int,
-    setSelectedColorIndex: (Int) -> Unit
+    updateSelectedColorIndex: (Int) -> Unit
 ) {
     val colorImageUrls = listOf(
         "https://github.com/user-attachments/assets/d81199e5-a6d7-49a3-87e5-9453b2e73109",
@@ -395,7 +398,7 @@ fun ColorPicker(
                     .background(color = color, shape = CircleShape)
                     .customClickable {
                         updateUrl(colorImageUrls[index].toUri())
-                        setSelectedColorIndex(index)
+                        updateSelectedColorIndex(index)
                     }
             )
         }
@@ -405,7 +408,7 @@ fun ColorPicker(
 @Composable
 fun TextColorPicker(
     selectedTextColorIndex: Int,
-    setSelectedTextColorIndex: (Int) -> Unit
+    updateSelectedTextColorIndex: (Int) -> Unit
 ) {
     Spacer(modifier = Modifier.height(16.dp))
     Text(text = "텍스트 색", style = MemoziTheme.typography.ngBold14)
@@ -441,7 +444,7 @@ fun TextColorPicker(
                     )
                     .background(color = textColors, shape = CircleShape)
                     .customClickable {
-                        setSelectedTextColorIndex(index)
+                        updateSelectedTextColorIndex(index)
                     }
             )
         }
