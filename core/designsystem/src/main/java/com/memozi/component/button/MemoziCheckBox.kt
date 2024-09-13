@@ -1,6 +1,7 @@
 package com.memozi.component.button
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -16,31 +17,31 @@ import com.memozi.designsystem.MemoziTheme
 import com.memozi.designsystem.R
 
 @Composable
-fun CheckBoxSelected() {
+fun CheckBoxSelected(onClick: () -> Unit) {
     Box(
-        modifier =
-            Modifier
-                .size(24.dp)
-                .clip(CircleShape)
-                .background(brush = MemoziTheme.colors.gradientBrush),
-        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .size(20.dp)
+            .clip(CircleShape)
+            .background(brush = MemoziTheme.colors.gradientBrush)
+            .clickable { onClick() },
+        contentAlignment = Alignment.Center
     ) {
         Icon(
-            painter = painterResource(id = R.drawable.ic_check_mark), // 체크 아이콘 리소스 추가
+            painter = painterResource(id = R.drawable.ic_check_mark),
             contentDescription = "Check Icon",
             tint = Color.White,
-            modifier = Modifier.size(16.dp),
+            modifier = Modifier.size(16.dp)
         )
     }
 }
 
 @Composable
-fun CheckBoxUnSelected() {
+fun CheckBoxUnSelected(onClick: () -> Unit) {
     Box(
-        modifier =
-            Modifier
-                .size(24.dp)
-                .clip(CircleShape)
-                .background(MemoziTheme.colors.gray02),
+        modifier = Modifier
+            .size(20.dp)
+            .clip(CircleShape)
+            .background(MemoziTheme.colors.gray02)
+            .clickable { onClick() },
     )
 }
