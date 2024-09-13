@@ -1,5 +1,7 @@
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,13 +15,21 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -39,6 +49,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.memozi.component.button.CheckBoxSelected
+import com.memozi.component.button.CheckBoxUnSelected
 import com.memozi.designsystem.MemoziTheme
 import com.memozi.memo.model.dummyMemoCategoriesItems
 import kotlinx.coroutines.launch
@@ -52,64 +64,75 @@ fun MemoDetailScreen() {
 
     var titleValue by remember { mutableStateOf("") }
     var memoValue by remember { mutableStateOf("") }
+    var checkBoxItems by remember { mutableStateOf<List<Pair<Boolean, String>>>(listOf()) } // 상태와 텍스트를 저장
+    var isVisible by remember { mutableStateOf(true) }
 
-    var isEnabled = titleValue.isNotEmpty() && memoValue.isNotEmpty()
+    val isEnabled =
+        titleValue.isNotEmpty() && (checkBoxItems.isNotEmpty() || memoValue.isNotEmpty())
 
     Column(
         modifier =
             Modifier
-                .fillMaxSize()
-                .padding(horizontal = 16.dp),
+                .fillMaxSize(),
     ) {
-        Box(
+        Row(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .padding(top = 32.dp),
+                    .padding(top = 32.dp)
+                    .padding(horizontal = 16.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            Row(
-                modifier = Modifier.align(Alignment.Center),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center,
-            ) {
-                Text(
-                    text = "카테고리",
-                    style = MemoziTheme.typography.ssuLight19,
-                    color = MemoziTheme.colors.black,
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Image(
-                    painter = painterResource(id = com.memozi.designsystem.R.drawable.ic_drop_black),
-                    contentDescription = null,
-                    modifier =
-                        Modifier.clickable {
-                            showBottomSheet = true
-                        },
-                )
-            }
-
-            Button(
-                onClick = {},
+            Box(
                 modifier =
                     Modifier
-                        .align(Alignment.CenterEnd)
-                        .width(68.dp)
-                        .height(34.dp),
-                shape = RoundedCornerShape(8.dp),
-                enabled = isEnabled,  // 두 필드가 모두 입력되면 활성화
-                colors =
-                ButtonDefaults.buttonColors(
-                    contentColor = MemoziTheme.colors.white,
-                    containerColor = if (isEnabled) MemoziTheme.colors.mainPurple else MemoziTheme.colors.gray02, // 조건에 따른 색상 변경
-                    disabledContentColor = MemoziTheme.colors.white,
-                    disabledContainerColor = MemoziTheme.colors.gray02,
-                ),
-                contentPadding = PaddingValues(horizontal = 22.dp, vertical = 6.dp),
+                        .fillMaxWidth(),
+                contentAlignment = Alignment.Center,
             ) {
-                Text(
-                    text = "등록",
-                    style = MemoziTheme.typography.ssuLight12,
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
+                ) {
+                    Text(
+                        text = "카테고리",
+                        style = MemoziTheme.typography.ssuLight19,
+                        color = MemoziTheme.colors.black,
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Image(
+                        painter = painterResource(id = com.memozi.designsystem.R.drawable.ic_drop_black),
+                        contentDescription = null,
+                        modifier =
+                            Modifier.clickable {
+                                showBottomSheet = true
+                            },
+                    )
+                }
+                if (isVisible) {
+                    Button(
+                        onClick = {},
+                        modifier =
+                            Modifier
+                                .width(68.dp)
+                                .height(34.dp)
+                                .align(Alignment.CenterEnd),
+                        shape = RoundedCornerShape(8.dp),
+                        enabled = isEnabled,
+                        colors =
+                            ButtonDefaults.buttonColors(
+                                contentColor = MemoziTheme.colors.white,
+                                containerColor = if (isEnabled) MemoziTheme.colors.mainPurple else MemoziTheme.colors.gray02,
+                                disabledContentColor = MemoziTheme.colors.white,
+                                disabledContainerColor = MemoziTheme.colors.gray02,
+                            ),
+                        contentPadding = PaddingValues(horizontal = 22.dp, vertical = 6.dp),
+                    ) {
+                        Text(
+                            text = "등록",
+                            style = MemoziTheme.typography.ssuLight12,
+                        )
+                    }
+                }
             }
         }
 
@@ -126,7 +149,8 @@ fun MemoDetailScreen() {
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .padding(top = 16.dp),
+                    .padding(top = 16.dp)
+                    .padding(horizontal = 16.dp),
             textStyle = MemoziTheme.typography.ngReg15,
             colors =
                 TextFieldDefaults.colors(
@@ -138,32 +162,106 @@ fun MemoDetailScreen() {
                 ),
             shape = RectangleShape,
         )
-
-        Column(
+        LazyColumn(
             modifier =
                 Modifier
-                    .fillMaxSize(1f)
-                    .padding(top = 16.dp),
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .padding(top = 2.dp),
         ) {
-            TextField(
-                modifier = Modifier.fillMaxSize(1f),
-                value = memoValue,
-                onValueChange = { newValue -> memoValue = newValue },
-                placeholder = {
-                    Text(
-                        text = "메모 내용을 입력하세요!",
-                        style = MemoziTheme.typography.ngBold12_140,
-                        color = MemoziTheme.colors.gray04,
+            item {
+                TextField(
+                    value = memoValue,
+                    onValueChange = { newValue -> memoValue = newValue },
+                    placeholder = {
+                        Text(
+                            text = "메모 내용을 입력하세요!",
+                            style = MemoziTheme.typography.ngBold12_140,
+                            color = MemoziTheme.colors.gray04,
+                        )
+                    },
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                    // 텍스트 필드 패딩
+                    colors =
+                        TextFieldDefaults.colors(
+                            focusedContainerColor = Color.Transparent,
+                            unfocusedContainerColor = Color.Transparent,
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent,
+                        ),
+                    shape = RectangleShape,
+                )
+            }
+            itemsIndexed(checkBoxItems) { index, item ->
+                Row(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(start = 10.dp)
+                            .padding(horizontal = 20.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    if (item.first) {
+                        CheckBoxSelected {
+                            checkBoxItems =
+                                checkBoxItems.toMutableList().apply {
+                                    this[index] = item.copy(first = !item.first)
+                                }
+                        }
+                    } else {
+                        CheckBoxUnSelected {
+                            checkBoxItems =
+                                checkBoxItems.toMutableList().apply {
+                                    this[index] = item.copy(first = !item.first)
+                                }
+                        }
+                    }
+                    Spacer(modifier = Modifier.width(8.dp))
+                    TextField(
+                        value = item.second,
+                        onValueChange = { newText ->
+                            checkBoxItems =
+                                checkBoxItems.toMutableList().apply {
+                                    this[index] = item.copy(second = newText)
+                                }
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        textStyle = MemoziTheme.typography.ngReg12_170,
+                        colors =
+                            TextFieldDefaults.colors(
+                                focusedContainerColor = Color.Transparent,
+                                unfocusedContainerColor = Color.Transparent,
+                                focusedIndicatorColor = Color.Transparent,
+                                unfocusedIndicatorColor = Color.Transparent,
+                            ),
+                        shape = RectangleShape,
                     )
-                },
-                colors =
-                    TextFieldDefaults.colors(
-                        focusedContainerColor = Color.Transparent,
-                        unfocusedContainerColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
+                }
+            }
+        }
+
+        Row(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(50.dp)
+                    .border(
+                        BorderStroke(1.dp, MemoziTheme.colors.gray02),
                     ),
-                shape = RectangleShape,
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start,
+        ) {
+            Spacer(modifier = Modifier.padding(start = 16.dp))
+            Image(
+                painter = painterResource(id = com.memozi.designsystem.R.drawable.ic_emptycheck),
+                contentDescription = null,
+                modifier =
+                    Modifier.clickable {
+                        checkBoxItems = checkBoxItems + Pair(false, "")
+                    },
             )
         }
     }
@@ -250,6 +348,48 @@ fun MemoDetailScreen() {
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun dropdownMenu(
+    onEditClick: () -> Unit,
+    onDeleteClick: () -> Unit,
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    Box(
+        modifier =
+            Modifier
+                .wrapContentSize(Alignment.TopEnd),
+    ) {
+        IconButton(onClick = { expanded = true }) {
+            Icon(Icons.Default.MoreVert, contentDescription = "More Options")
+        }
+
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            modifier =
+                Modifier
+                    .width(84.dp)
+                    .height(60.dp),
+        ) {
+            DropdownMenuItem(
+                text = { Text("수정하기") },
+                onClick = {
+                    expanded = false
+                    onEditClick()
+                },
+            )
+            DropdownMenuItem(
+                text = { Text("삭제하기") },
+                onClick = {
+                    expanded = false
+                    onDeleteClick()
+                },
+            )
         }
     }
 }
