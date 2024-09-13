@@ -2,13 +2,14 @@ package com.memozi.memo
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -36,6 +37,73 @@ import com.memozi.memo.model.MemoItem
 import com.memozi.memo.model.dummyMemoItems
 
 @Composable
+fun MemoSearchScreen() {
+    MemoziBackground(topWeight = 5f, bottomWeight = 25f)
+    val navigationBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+
+    Column(
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(horizontal = 16.dp)
+                .padding(top = 20.dp + navigationBarHeight),
+    ) {
+        Row(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 15.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            MemoziSearchTextField()
+            Spacer(modifier = Modifier.width(16.dp))
+        }
+
+        val dummyData =
+            listOf(
+                "투두 리스트" to dummyMemoItems().subList(3, 6),
+                "구매 리스트" to dummyMemoItems().subList(0, 3),
+            )
+        if (dummyData.all { it.second.isEmpty() }) {
+            EmptySearchList()
+        } else {
+            memoSearchList(dummyData)
+        }
+    }
+}
+
+@Composable
+fun EmptySearchList() {
+    Box(
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(horizontal = 16.dp),
+    ) {
+        Column(
+            modifier =
+                Modifier
+                    .align(Alignment.Center),
+            // 중앙 정렬
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.ic_hing),
+                contentDescription = null,
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = "항목을 찾을 수 없어요ㅠ",
+                style = MemoziTheme.typography.ssuLight15,
+                color = MemoziTheme.colors.black,
+            )
+        }
+        MemoFloatingButton()
+    }
+}
+
+@Composable
 fun MemoItemCard(
     memoTitle: String,
     memoContent: String,
@@ -44,16 +112,18 @@ fun MemoItemCard(
     Card(
         modifier =
             Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .aspectRatio(328f / 111f)
+                .padding(vertical = 8.dp),
         shape = RoundedCornerShape(8.dp),
         elevation = CardDefaults.cardElevation(4.dp),
     ) {
         Column(
             modifier =
                 Modifier
-                    .fillMaxWidth()
+                    .fillMaxSize()
                     .background(Color.White)
-                    .padding(8.dp),
+                    .padding(18.dp),
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -61,11 +131,13 @@ fun MemoItemCard(
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_diary_feed_vertical_line_black),
-                        contentDescription = null,
+                    Text(
+                        text = "|",
+                        style = MemoziTheme.typography.ngReg15,
+                        color = MemoziTheme.colors.gray07,
                     )
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(4.dp))
+
                     Text(
                         text = memoTitle,
                         style = MemoziTheme.typography.ngReg15,
@@ -79,8 +151,7 @@ fun MemoItemCard(
                 )
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
-
+            Spacer(modifier = Modifier.height(18.dp))
             Text(
                 text = memoContent,
                 style = MemoziTheme.typography.ngReg13,
@@ -93,8 +164,10 @@ fun MemoItemCard(
 @Composable
 fun memoSearchList(dummyData: List<Pair<String, List<MemoItem>>>) {
     LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(vertical = 10.dp),
     ) {
         dummyData.forEach { (title, memoItems) ->
             item {
@@ -130,54 +203,9 @@ fun memoSearchList(dummyData: List<Pair<String, List<MemoItem>>>) {
     }
 }
 
-@Composable
-fun MemoSearchScreen() {
-    MemoziBackground(topWeight = 10f, bottomWeight = 48f)
-    val navigationBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
-
-    Column(
-        modifier =
-            Modifier
-                .fillMaxSize()
-                .padding(horizontal = 16.dp)
-                .padding(top = 20.dp + navigationBarHeight),
-    ) {
-        Row(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 15.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            MemoziSearchTextField()
-            Spacer(modifier = Modifier.width(16.dp))
-            Text(
-                text = "취소",
-                style = MemoziTheme.typography.ssuLight13,
-                modifier =
-                    Modifier
-                        .align(Alignment.CenterVertically)
-                        .clickable {
-                            // 취소 버튼 클릭 시 동작
-                        },
-            )
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        val dummyData =
-            listOf(
-                "투두 리스트" to dummyMemoItems(),
-                "구매 리스트" to dummyMemoItems().subList(0, 3),
-            )
-
-        memoSearchList(dummyData = dummyData)
-    }
-}
-
 @Preview(showBackground = true)
 @Composable
-fun PreviewMemoSearchScreen() {
+fun PreviewMemoSearchScreenWithEmptyView() {
     MemoziTheme {
         MemoSearchScreen()
     }
