@@ -1,6 +1,5 @@
-package com.memozi.memo.component
+package com.memozi.memo
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import android.os.Environment
@@ -10,7 +9,7 @@ import java.io.IOException
 import java.io.InputStream
 
 object FileConverter {
-    @SuppressLint("Recycle")
+
     fun uriToFile(context: Context, uri: Uri): File? {
         val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
         inputStream?.let {
@@ -23,11 +22,11 @@ object FileConverter {
 
     private fun createTempImageFile(context: Context): File {
         val timeStamp = System.currentTimeMillis()
-        val imageFileName = "JPEG_${timeStamp}_"
+        val imageFileName = "PNG_${timeStamp}_"
         val storageDir: File? = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         return File.createTempFile(
             imageFileName,
-            ".jpg",
+            ".png",
             storageDir
         )
     }

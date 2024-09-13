@@ -45,8 +45,9 @@ class MemoRepositoryImpl @Inject constructor(
     override suspend fun postCategory(
         name: String,
         defaultImageUrl: String?,
-        bgColorId: Int,
-        txtColorId: Int
+        bgColorImageUrl: String?,
+        txtColor: String,
+        image: String
     ) = runCatching {
         memoRemoteDataSource.postCategory(name, defaultImageUrl, bgColorId, txtColorId)
     }

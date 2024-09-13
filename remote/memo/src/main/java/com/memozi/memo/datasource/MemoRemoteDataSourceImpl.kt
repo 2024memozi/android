@@ -4,6 +4,7 @@ import com.memozi.memo.api.CategoryService
 import com.memozi.memo.model.request.RequestPageable
 import com.memozi.memo.model.response.ResponseCategory
 import com.memozi.memo.source.remote.MemoRemoteDataSource
+import okhttp3.MultipartBody
 import javax.inject.Inject
 
 class MemoRemoteDataSourceImpl @Inject constructor(
@@ -20,9 +21,10 @@ class MemoRemoteDataSourceImpl @Inject constructor(
     override suspend fun postCategory(
         name: String,
         defaultImageUrl: String?,
-        bgColorId: Int,
-        txtColorId: Int
+        bgColorImageUrl: String?,
+        txtColor: String,
+        image: MultipartBody.Part?
     ) {
-        categoryService.postCategory(name, defaultImageUrl, bgColorId, txtColorId)
+        categoryService.postCategory(name, defaultImageUrl, bgColorImageUrl, txtColor, image)
     }
 }

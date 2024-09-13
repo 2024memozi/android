@@ -16,8 +16,9 @@ interface MemoRepository {
     suspend fun postCategory(
         name: String,
         defaultImageUrl: String?,
-        bgColorId: Int,
-        txtColorId: Int
+        bgColorImageUrl: String?,
+        txtColor: String,
+        image: String
     ): Result<Unit>
 
     suspend fun getCategorySearch(): Result<List<Category>>

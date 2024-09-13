@@ -1,6 +1,7 @@
 package com.memozi.memo.source.remote
 
 import com.memozi.memo.model.response.ResponseCategory
+import okhttp3.MultipartBody
 
 interface MemoRemoteDataSource {
 //    suspend fun delCategory(categoryId: Int): Result<Unit>
@@ -15,8 +16,9 @@ interface MemoRemoteDataSource {
     suspend fun postCategory(
         name: String,
         defaultImageUrl: String?,
-        bgColorId: Int,
-        txtColorId: Int
+        bgColorImageUrl: String?,
+        txtColor: String,
+        image: MultipartBody.Part?
     ): Unit
 
 //    suspend fun getCategorySearch(): Result<List<Category>>

@@ -2,9 +2,11 @@ package com.memozi.memo.api
 
 import com.memozi.memo.model.request.RequestPageable
 import com.memozi.memo.model.response.ResponseCategory
+import okhttp3.MultipartBody
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -25,9 +27,11 @@ interface CategoryService {
     @Multipart
     @POST("/category")
     suspend fun postCategory(
-        @Query("name") name: String,
-        @Query("defaultImageUrl") defaultImageUrl: String?,
-        @Query("bgColorId") bgColorId: Int,
-        @Query("txtColorId") txtColorId: Int
+        @Part("name") name: String,
+        @Part("defaultImageUrl") defaultImageUrl: String?,
+        @Part("bgColorImageUrl") bgColorImageUrl: String?,
+        @Part("txtColor") txtColor: String,
+        @Part images: MultipartBody.Part?
     ): Unit
+
 }

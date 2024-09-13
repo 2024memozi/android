@@ -1,10 +1,16 @@
 package com.memozi.memo.screen
 
+import android.net.Uri
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.viewModelScope
 import com.memozi.memo.repository.MemoRepository
 import com.memozi.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import javax.inject.Inject
 
 @HiltViewModel
@@ -33,9 +39,13 @@ class CategoryViewModel @Inject constructor(
         updateTextColor()
     }
 
+    fun uriToFile(uri: Uri){
+
+    }
     fun postCategory() {
         viewModelScope.launch {
-//            memoRepository.postCategory(
+
+            memoRepository.postCategory(
 //                name = uiState.value.name,
 //                defaultImageUrl = uiState.value.imageUrl,
 //                bgColorId = uiState.value.bgColorId.(),
