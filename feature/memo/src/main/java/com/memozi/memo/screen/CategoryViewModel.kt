@@ -1,10 +1,7 @@
 package com.memozi.memo.screen
 
-import android.util.Log
-import androidx.core.graphics.toColorInt
 import androidx.lifecycle.viewModelScope
 import com.memozi.memo.repository.MemoRepository
-import com.memozi.model.exception.ApiError
 import com.memozi.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -20,32 +17,37 @@ class CategoryViewModel @Inject constructor(
     }
 
     fun updateImageUrl(imageUrl: String) {
-        intent { copy(imageUrl = imageUrl) }
+        intent { copy(imageUrl = imageUrl, selectedColor = -1) }
     }
 
-    fun updateTextColor(textColor: Int) {
-        intent { copy(textColor = if(textColor==0)"#000000" else "#ffffff") }
+    fun updateTextColor() {
+        intent { copy(textColor = if (selectedText == 0) "#000000" else "#ffffff") }
     }
 
-    fun updateBgColor(bgColorId: Int) {
-        intent { copy(bgColorId = bgColorId) }
+    fun setSelectedColorIndex(colorIndex: Int) {
+        intent { copy(selectedColor = colorIndex) }
+    }
+
+    fun setSelectedTextColorIndex(textColorIndex: Int) {
+        intent { copy(selectedText = textColorIndex) }
+        updateTextColor()
     }
 
     fun postCategory() {
         viewModelScope.launch {
-            memoRepository.postCategory(
-                name = uiState.value.name,
-                defaultImageUrl = uiState.value.imageUrl,
-                bgColorId = uiState.value.bgColorId,
-                txtColorId = uiState.value.textColor.toColorInt()
-            ).onSuccess {
-                Log.d("post성공", "postCategory: $it")
-            }.onFailure {
-                when (it) {
-                    is ApiError -> Log.e("실패", it.message)
-                    else -> Log.e("실패", it.message.toString())
-                }
-            }
+//            memoRepository.postCategory(
+//                name = uiState.value.name,
+//                defaultImageUrl = uiState.value.imageUrl,
+//                bgColorId = uiState.value.bgColorId.(),
+//                txtColorId = uiState.value.textColor.toColorInt()
+//            ).onSuccess {
+//                Log.d("post성공", "postCategory: $it")
+//            }.onFailure {
+//                when (it) {
+//                    is ApiError -> Log.e("실패", it.message)
+//                    else -> Log.e("실패", it.message.toString())
+//                }
+//            }
         }
     }
 

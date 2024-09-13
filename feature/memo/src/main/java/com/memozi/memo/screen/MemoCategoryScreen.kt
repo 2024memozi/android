@@ -23,7 +23,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -43,7 +42,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
@@ -72,7 +70,7 @@ fun MemoCategoryScreen(
             .background(color = MemoziTheme.colors.white)
             .padding(bottom = navigationBarHeight)
     ) {
-        // Top title
+        Spacer(modifier = Modifier.height(navigationBarHeight))
         Box(
             modifier = Modifier
                 .padding(top = 32.dp)
@@ -87,7 +85,6 @@ fun MemoCategoryScreen(
             )
         }
 
-        // Main image section
         MemoziCategory(
             modifier = Modifier
                 .fillMaxWidth()
@@ -95,23 +92,36 @@ fun MemoCategoryScreen(
                 .padding(top = 30.dp)
                 .padding(horizontal = 16.dp)
                 .background(
-                    color = MemoziTheme.colors.black,
+                    color = when (state.value.selectedColor) {
+                        0 -> MemoziTheme.colors.mainPink
+                        1 -> MemoziTheme.colors.pink
+                        2 -> MemoziTheme.colors.yellow01
+                        3 -> MemoziTheme.colors.yellow02
+                        4 -> MemoziTheme.colors.orange
+                        5 -> MemoziTheme.colors.yellowGreen01
+                        6 -> MemoziTheme.colors.yellowGreen02
+                        7 -> MemoziTheme.colors.mainPurple
+                        8 -> MemoziTheme.colors.blue01
+                        9 -> MemoziTheme.colors.gray02
+                        10 -> MemoziTheme.colors.black
+                        11 -> MemoziTheme.colors.white
+                        else -> Color.Transparent
+                    },
                     shape = RoundedCornerShape(14.dp)
                 ),
             imageURL = state.value.imageUrl,
             title = state.value.name,
-            titleColor = Color( android.graphics.Color.parseColor(state.value.textColor)),
+            titleColor = Color(android.graphics.Color.parseColor(state.value.textColor)),
             textStyle = TextStyle(
                 fontFamily = Ssurround,
                 fontSize = 32.sp,
-                lineHeight = 35.sp, // 100%
+                lineHeight = 35.sp,
                 letterSpacing = 0.sp
             ),
             textModifier = Modifier
                 .padding(bottom = 16.dp)
-                .padding(end = 16.dp),
+                .padding(end = 16.dp)
         )
-
 
         CategoryTextField(onValueChange = { viewModel.updateName(it) })
 
@@ -119,12 +129,16 @@ fun MemoCategoryScreen(
         ImageAndColorPicker(
             imageUri = state.value.imageUrl.toUri(),
             updateUrl = { viewModel.updateImageUrl(it.toString()) },
-            updateTextColor = {viewModel.updateTextColor(it)}
+            updateTextColor = { viewModel.updateTextColor() },
+            selectedColorIndex = state.value.selectedColor,
+            selectedTextColorIndex = state.value.selectedText,
+            setSelectedTextColorIndex = { viewModel.setSelectedTextColorIndex(it) },
+            setSelectedColorIndex = { viewModel.setSelectedColorIndex(it) }
         )
     }
     Row(
         modifier = Modifier
-            .padding(top = 30.dp, end = 8.dp)
+            .padding(top = 30.dp + navigationBarHeight, end = 8.dp)
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.End
     ) {
@@ -149,6 +163,7 @@ fun CategoryTextField(
         ) {
             BasicTextField(
                 value = text,
+                maxLines = 1,
                 onValueChange = {
                     if (it.length <= maxCharCount && !it.contains(" ")) {
                         text = it
@@ -184,7 +199,10 @@ fun CategoryTextField(
                     tint = Color.Unspecified,
                     contentDescription = "삭제버튼",
                     modifier = Modifier
-                        .customClickable { text = "" }
+                        .customClickable {
+                            text = ""
+                            onValueChange(text)
+                        }
                 )
             }
         }
@@ -209,183 +227,223 @@ fun CategoryTextField(
 @Composable
 fun ImageAndColorPicker(
     imageUri: Uri,
+    selectedColorIndex: Int,
+    selectedTextColorIndex: Int,
     updateUrl: (Uri?) -> Unit = {},
-    updateTextColor:(Int)-> Unit={},
-    clickEvent: (Uri?) -> Unit = {}
+    updateTextColor: () -> Unit = {},
+    setSelectedColorIndex: (Int) -> Unit = {},
+    setSelectedTextColorIndex: (Int) -> Unit = {}
 ) {
-    val (selectedColorIndex, setSelectedColorIndex) = remember { mutableStateOf(-1) }
-    val (selectedTextColorIndex, setSelectedTextColorIndex) = remember { mutableStateOf(-1) }
+    Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+        PhotoPicker { updateUrl(it) }
+        ColorPicker(
+            updateUrl = updateUrl,
+            selectedColorIndex = selectedColorIndex
+        ) { setSelectedColorIndex(it) }
+        TextColorPicker(selectedTextColorIndex = selectedTextColorIndex) {
+            setSelectedTextColorIndex(
+                it
+            )
+        }
+    }
+}
 
-    val context = LocalContext.current
+@Composable
+fun PhotoPicker(updateUrl: (Uri?) -> Unit) {
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             val uri: Uri? = result.data?.data
             updateUrl(uri)
-            clickEvent(uri) // Pass the selected image URI back to the parent function
         }
     }
     val imageUrls = listOf(
         "",
-        "https://memozi.s3.ap-northeast-2.amazonaws.com/uploads/182b72d4-b2dc-48cd-b29c-d3e783bcb8ef_img1.png",
-        "https://memozi.s3.ap-northeast-2.amazonaws.com/uploads/6623d807-ca63-47ec-9b72-9f5ef7ec0ad9_img2.png",
-        "https://memozi.s3.ap-northeast-2.amazonaws.com/uploads/931aeb54-f316-4032-adf1-0b275570f4a2_img3.png",
-        "https://memozi.s3.ap-northeast-2.amazonaws.com/uploads/0003d64c-e42b-490d-84d5-58eed8f7b550_img5.png",
-        "https://memozi.s3.ap-northeast-2.amazonaws.com/uploads/210a8361-9d77-4b2e-a8e2-26cf1ad1c74d_img1_%282%29.png",
-        "https://memozi.s3.ap-northeast-2.amazonaws.com/uploads/8b8b69b0-a0c6-40d6-8191-540ef896106c_testimg.png",
-        "https://memozi.s3.ap-northeast-2.amazonaws.com/uploads/e6124a22-cd95-4283-b772-7c79e2005b84_img7.png"
+        "https://github.com/user-attachments/assets/f463d586-5cac-4a4f-852c-981688b31279",
+        "https://github.com/user-attachments/assets/281592eb-dcd1-4e6d-9502-b28e2bb759fe",
+        "https://github.com/user-attachments/assets/7e5b82df-b138-431b-9a5e-15723dac08a9",
+        "https://github.com/user-attachments/assets/80e9dd1f-e00f-4a45-8fc9-ab34947d0fa0",
+        "https://github.com/user-attachments/assets/92222695-6dfb-4f6e-bb1d-4cb3fc78c733",
+        "https://github.com/user-attachments/assets/74a686ba-347d-47b6-90f7-d126cc4836e8",
+        "https://github.com/user-attachments/assets/307ac07c-8990-41d6-aaa9-3d5d154adf30"
     )
 
-    val colorImageUrls = listOf(
-        ""
-    )
+    Text(text = "사진 배경", style = MemoziTheme.typography.ngBold14)
+    Spacer(modifier = Modifier.height(8.dp))
 
-    Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
-        Text(text = "사진 배경", style = MemoziTheme.typography.ngBold14)
-        Spacer(modifier = Modifier.height(8.dp))
-
-        // Image Picker Grid
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(4),
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            items(8) { index ->
-                if (index == 0) {
-                    Box(
-                        modifier = Modifier
-                            .padding(4.dp)
-                            .aspectRatio(1f)
-                            .background(
-                                color = MemoziTheme.colors.gray02,
-                                shape = RoundedCornerShape(4.dp)
-                            )
-                            .customClickable {
-                                val intent = Intent(
-                                    Intent.ACTION_PICK,
-                                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-                                ).apply {
-                                    type = "image/*"
-                                }
-                                launcher.launch(intent)
-                            },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_camera_gray_24),
-                            contentDescription = "Camera Icon",
-                            tint = MemoziTheme.colors.white
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(4),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        items(8) { index ->
+            if (index == 0) {
+                Box(
+                    modifier = Modifier
+                        .padding(4.dp)
+                        .aspectRatio(1f)
+                        .background(
+                            color = MemoziTheme.colors.gray02,
+                            shape = RoundedCornerShape(4.dp)
                         )
-                    }
-                } else {
-                    Box(
-                        modifier = Modifier
-                            .padding(4.dp)
-                            .aspectRatio(1f)
-                            .background(
-                                color = MemoziTheme.colors.gray02,
-                                shape = RoundedCornerShape(4.dp)
-                            )
-                            .customClickable {
-                                updateUrl(imageUrls[index].toUri())
+                        .customClickable {
+                            val intent = Intent(
+                                Intent.ACTION_PICK,
+                                MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                            ).apply {
+                                type = "image/*"
                             }
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.img_category_01 + index),
-                            contentDescription = "카테고리 선택",
-                            modifier = Modifier.fillMaxSize(),
-                            contentScale = ContentScale.Crop
+                            launcher.launch(intent)
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_camera_gray_24),
+                        contentDescription = "Camera Icon",
+                        tint = MemoziTheme.colors.white
+                    )
+                }
+            } else {
+                Box(
+                    modifier = Modifier
+                        .padding(4.dp)
+                        .aspectRatio(1f)
+                        .background(
+                            color = MemoziTheme.colors.gray02,
+                            shape = RoundedCornerShape(4.dp)
                         )
-                    }
+                        .customClickable {
+                            updateUrl(imageUrls[index].toUri())
+                        }
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.img_category_01 + index),
+                        contentDescription = "카테고리 선택",
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
                 }
             }
         }
+    }
 //
+}
 
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(text = "단색 배경", style = MemoziTheme.typography.ngBold14)
-        Spacer(modifier = Modifier.height(8.dp))
+@Composable
+fun ColorPicker(
+    updateUrl: (Uri?) -> Unit,
+    selectedColorIndex: Int,
+    setSelectedColorIndex: (Int) -> Unit
+) {
+    val colorImageUrls = listOf(
+        "https://github.com/user-attachments/assets/d81199e5-a6d7-49a3-87e5-9453b2e73109",
+        "https://github.com/user-attachments/assets/fad22470-6026-44be-a1c1-dc5dac9b359c",
+        "https://github.com/user-attachments/assets/bf3a7e71-0e9e-4154-b394-4bc7ac3a73f6",
+        "https://github.com/user-attachments/assets/baa5d621-5154-4be7-a029-20dcb3e7b837",
+        "https://github.com/user-attachments/assets/efaba9d6-b58a-4967-893f-6642e1d58b6b",
+        "https://github.com/user-attachments/assets/9e2e9b0d-91b8-4099-a150-597d2a647f3e",
+        "https://github.com/user-attachments/assets/2ff64136-aefb-4351-afbd-d39900a64251",
+        "https://github.com/user-attachments/assets/c61574fd-a380-4625-a89c-958aed65bce5",
+        "https://github.com/user-attachments/assets/a12f63c6-daf8-495a-afaa-d99eb2b2b29b",
+        "https://github.com/user-attachments/assets/9b27c7a9-f680-480a-851d-4736b9a1cd76",
+        "https://github.com/user-attachments/assets/e1835347-31b9-4c7d-bbf6-e0838594c3ad",
+        "https://github.com/user-attachments/assets/408ed494-73ee-4316-8b83-b8e336413fd0"
+    )
+    Spacer(modifier = Modifier.height(16.dp))
+    Text(text = "단색 배경", style = MemoziTheme.typography.ngBold14)
+    Spacer(modifier = Modifier.height(8.dp))
 
-        // Unified Color Picker Grid with spacing between rows
-        LazyVerticalGrid(
-            columns = GridCells.Adaptive(minSize = 40.dp),
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(8.dp), // Space between rows
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(12) { index ->
-                val color = when (index) {
-                    0 -> MemoziTheme.colors.mainPink
-                    1 -> MemoziTheme.colors.pink
-                    2 -> MemoziTheme.colors.yellow01
-                    3 -> MemoziTheme.colors.yellow02
-                    4 -> MemoziTheme.colors.orange
-                    5 -> MemoziTheme.colors.yellowGreen01
-                    6 -> MemoziTheme.colors.yellowGreen02
-                    7 -> MemoziTheme.colors.mainPurple
-                    8 -> MemoziTheme.colors.blue01
-                    9 -> MemoziTheme.colors.gray02
-                    10 -> MemoziTheme.colors.black
-                    11 -> MemoziTheme.colors.white
-                    else -> Color.Transparent
-                }
-
-                val borderColor = if (selectedColorIndex == index) {
-                    MemoziTheme.colors.cautionRed
-                } else {
-                    Color.Transparent
-                }
-
-                Box(
-                    modifier = Modifier
-                        .size(40.dp)
-                        .border(
-                            width = 1.dp,
-                            color = if (color == MemoziTheme.colors.white && selectedColorIndex != index) MemoziTheme.colors.gray02 else borderColor,
-                            shape = CircleShape
-                        )
-                        .background(color = color, shape = CircleShape)
-                        .customClickable {
-                            setSelectedColorIndex(index) // Update selected index
-                        }
-                )
+    // Unified Color Picker Grid with spacing between rows
+    LazyVerticalGrid(
+        columns = GridCells.Adaptive(minSize = 40.dp),
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(8.dp), // Space between rows
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        items(12) { index ->
+            val color = when (index) {
+                0 -> MemoziTheme.colors.mainPink
+                1 -> MemoziTheme.colors.pink
+                2 -> MemoziTheme.colors.yellow01
+                3 -> MemoziTheme.colors.yellow02
+                4 -> MemoziTheme.colors.orange
+                5 -> MemoziTheme.colors.yellowGreen01
+                6 -> MemoziTheme.colors.yellowGreen02
+                7 -> MemoziTheme.colors.mainPurple
+                8 -> MemoziTheme.colors.blue01
+                9 -> MemoziTheme.colors.gray02
+                10 -> MemoziTheme.colors.black
+                11 -> MemoziTheme.colors.white
+                else -> Color.Transparent
             }
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(text = "텍스트 색", style = MemoziTheme.typography.ngBold14)
-        Spacer(modifier = Modifier.height(8.dp))
-        // Text Color Picker using Row
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            val textColors = listOf(
-                MemoziTheme.colors.black,
-                MemoziTheme.colors.white
+
+            val borderColor = if (selectedColorIndex == index) {
+                MemoziTheme.colors.cautionRed
+            } else {
+                Color.Transparent
+            }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(1 / 9f)
+                    .aspectRatio(1f)
+                    .border(
+                        width = 1.dp,
+                        color = if (color == MemoziTheme.colors.white && selectedColorIndex != index) MemoziTheme.colors.gray02 else borderColor,
+                        shape = CircleShape
+                    )
+                    .background(color = color, shape = CircleShape)
+                    .customClickable {
+                        updateUrl(colorImageUrls[index].toUri())
+                        setSelectedColorIndex(index)
+                    }
             )
+        }
+    }
+}
 
-            textColors.forEachIndexed { index, color ->
-                val borderColor = if (selectedTextColorIndex == index) {
-                    MemoziTheme.colors.cautionRed
-                } else {
-                    Color.Transparent
+@Composable
+fun TextColorPicker(
+    selectedTextColorIndex: Int,
+    setSelectedTextColorIndex: (Int) -> Unit
+) {
+    Spacer(modifier = Modifier.height(16.dp))
+    Text(text = "텍스트 색", style = MemoziTheme.typography.ngBold14)
+    Spacer(modifier = Modifier.height(8.dp))
+    LazyVerticalGrid(
+        columns = GridCells.Adaptive(minSize = 40.dp),
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(8.dp), // Space between rows
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        items(2) { index ->
+            val textColors = when (index) {
+                0 -> MemoziTheme.colors.black
+                else -> {
+                    MemoziTheme.colors.white
                 }
-
-                Box(
-                    modifier = Modifier
-                        .size(40.dp)
-                        .border(
-                            width = 1.dp,
-                            color = if (color == MemoziTheme.colors.white && selectedTextColorIndex != index) MemoziTheme.colors.gray02 else borderColor,
-                            shape = CircleShape
-                        )
-                        .background(color = color, shape = CircleShape)
-                        .customClickable {
-                            updateTextColor(index)
-                            setSelectedTextColorIndex(index)
-                        }
-                )
             }
+
+            val borderColor = if (selectedTextColorIndex == index) {
+                MemoziTheme.colors.cautionRed
+            } else {
+                Color.Transparent
+            }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(1 / 9f)
+                    .aspectRatio(1f)
+                    .border(
+                        width = 1.dp,
+                        color = if (textColors == MemoziTheme.colors.white && selectedTextColorIndex != index) MemoziTheme.colors.gray02 else borderColor,
+                        shape = CircleShape
+                    )
+                    .background(color = textColors, shape = CircleShape)
+                    .customClickable {
+                        setSelectedTextColorIndex(index)
+                    }
+            )
         }
     }
 }
