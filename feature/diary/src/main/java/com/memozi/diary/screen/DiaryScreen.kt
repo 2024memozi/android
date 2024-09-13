@@ -51,10 +51,17 @@ fun DiaryScreen(
     var diaryWriteState by remember { mutableStateOf(false) }
     val maxDiaryLength = 100
     var diaryContent by remember { mutableStateOf("") }
+    var locationDialogState by remember { mutableStateOf(false) }
+    var onChangedLocationDialogState: (Boolean) -> Unit =
+        { newValue -> locationDialogState = newValue }
     val isDiaryAvailable by remember(diaryContent) { mutableStateOf(diaryContent.isNotEmpty()) }
     var userName by remember { mutableStateOf("홍길동") }
     var isDiaryWritten by remember { mutableStateOf(false) }
     var isDiaryExist by remember { mutableStateOf(true) }
+    var location by remember { mutableStateOf("") }
+    var isLocationExist by remember { mutableStateOf(false) }
+    var onChangedLocation: (String) -> Unit = { newValue -> location = newValue }
+    var onChangedLocationExist: (Boolean) -> Unit = { newValue -> isLocationExist = newValue }
 
     MemoziBackground()
 
@@ -81,8 +88,11 @@ fun DiaryScreen(
                 maxDiaryLength = maxDiaryLength,
                 diaryContent = diaryContent,
                 onChangedDiaryContent = { diaryContent = it },
+                onChangedLocationDialogState = onChangedLocationDialogState,
+                location = location,
+                isLocationExist = isLocationExist,
                 isDiaryAvailable = isDiaryAvailable,
-                onChangedDiaryWritten = { isDiaryWritten = it }
+                onChangedDiaryWritten = { isDiaryWritten = it },
             )
         }
 
@@ -90,6 +100,101 @@ fun DiaryScreen(
             DiaryFeedDisplayCard()
         }
     }
+
+    if (locationDialogState) {
+        DiaryScreenDialog(
+            height = (LocalConfiguration.current.screenHeightDp * 0.207).dp,
+            content = {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "위치 추가",
+                        modifier = Modifier.padding(vertical = 10.dp),
+                        color = MemoziTheme.colors.black,
+                        style = MemoziTheme.typography.ngBold12_140
+                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(1.dp)
+                            .background(color = MemoziTheme.colors.gray02)
+                    )
+                    Spacer(modifier = Modifier.height((LocalConfiguration.current.screenHeightDp * 0.207 * 0.25).dp))
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = (LocalConfiguration.current.screenWidthDp * 0.76 * 0.118).dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_diary_feed_pin),
+                            contentDescription = null,
+                        )
+                        BasicTextField(
+                            value = location,
+                            onValueChange = onChangedLocation,
+                            modifier = Modifier.fillMaxWidth(),
+                            singleLine = true
+                        )
+                    }
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = (LocalConfiguration.current.screenWidthDp * 0.76 * 0.118).dp)
+                            .height(1.dp)
+                            .background(color = MemoziTheme.colors.gray07),
+                    )
+                    Spacer(Modifier.weight(1f))
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = (LocalConfiguration.current.screenWidthDp * 0.76 * 0.118).dp)
+                            .padding(bottom = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .height((LocalConfiguration.current.screenHeightDp * 0.041).dp)
+                                .width((LocalConfiguration.current.screenWidthDp * 0.244).dp)
+                                .clip(shape = RoundedCornerShape(8.dp))
+                                .background(color = MemoziTheme.colors.gray01)
+                                .clickable(onClick = { onChangedLocationDialogState(false) }),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "취소",
+                                color = MemoziTheme.colors.gray04,
+                                style = MemoziTheme.typography.ngReg12_140
+                            )
+                        }
+                        Spacer(Modifier.weight(1f))
+                        Box(
+                            modifier = Modifier
+                                .height((LocalConfiguration.current.screenHeightDp * 0.041).dp)
+                                .width((LocalConfiguration.current.screenWidthDp * 0.244).dp)
+                                .clip(shape = RoundedCornerShape(8.dp))
+                                .background(color = MemoziTheme.colors.mainPurple)
+                                .clickable(
+                                    onClick = {
+                                        onChangedLocationDialogState(false)
+                                        onChangedLocationExist(true)
+                                    }),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "확인",
+                                color = MemoziTheme.colors.white,
+                                style = MemoziTheme.typography.ngReg12_140
+                            )
+                        }
+                    }
+                }
+            }
+        )
+    }
+
 }
 
 @Composable
@@ -210,8 +315,11 @@ fun DiaryFeedWriteCard(
     maxDiaryLength: Int,
     diaryContent: String,
     onChangedDiaryContent: (String) -> Unit,
+    onChangedLocationDialogState: (Boolean) -> Unit,
+    location: String = "",
+    isLocationExist: Boolean = false,
     isDiaryAvailable: Boolean,
-    onChangedDiaryWritten: (Boolean) -> Unit
+    onChangedDiaryWritten: (Boolean) -> Unit,
 ) {
     ElevatedCard(
         modifier = Modifier
@@ -250,8 +358,27 @@ fun DiaryFeedWriteCard(
             if (diaryWriteState) {
                 Column(
                     modifier = Modifier
-                        .padding(8.dp)
+                        .padding(top = 24.dp, bottom = 8.dp)
+                        .padding(horizontal = 16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    if (isLocationExist) {
+                        Row(
+                            modifier = Modifier.padding(vertical = 8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.ic_diary_feed_pin_small),
+                                contentDescription = null,
+                                modifier = Modifier.padding(end = 4.dp)
+                            )
+                            Text(
+                                text = location,
+                                color = MemoziTheme.colors.black,
+                                style = MemoziTheme.typography.ngReg8
+                            )
+                        }
+                    }
                     BasicTextField(
                         value = diaryContent,
                         onValueChange = { newContent ->
@@ -259,18 +386,30 @@ fun DiaryFeedWriteCard(
                                 onChangedDiaryContent(newContent)
                             }
                         },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 8.dp, vertical = 16.dp),
+                        modifier = Modifier.fillMaxWidth(),
                         textStyle = MemoziTheme.typography.ngReg12_140.copy(color = Color.Black)
                     )
+                    Spacer(modifier = Modifier.height(20.dp))
                     Row(
+                        modifier = Modifier.align(Alignment.Start),
                         verticalAlignment = Alignment.Bottom
                     ) {
-                        DiaryFeedWriteOption(id = R.drawable.ic_diary_feed_camera)
-                        DiaryFeedWriteOption(id = R.drawable.ic_diary_feed_gallery)
-                        DiaryFeedWriteOption(id = R.drawable.ic_diary_feed_pin)
-                        DiaryFeedWriteOption(id = R.drawable.ic_diary_feed_random)
+                        DiaryFeedWriteOption(
+                            id = R.drawable.ic_diary_feed_camera,
+                            onClick = {}
+                        )
+                        DiaryFeedWriteOption(
+                            id = R.drawable.ic_diary_feed_gallery,
+                            onClick = {}
+                        )
+                        DiaryFeedWriteOption(
+                            id = R.drawable.ic_diary_feed_pin,
+                            onClick = { onChangedLocationDialogState(true) }
+                        )
+                        DiaryFeedWriteOption(
+                            id = R.drawable.ic_diary_feed_random,
+                            onClick = {}
+                        )
                         Spacer(modifier = Modifier.weight(1f))
                         Text(
                             text = buildAnnotatedString {
