@@ -1,0 +1,62 @@
+Index: feature/memo/src/main/java/com/memozi/memo/MemoSearchScreen.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/feature/memo/src/main/java/com/memozi/memo/MemoSearchScreen.kt b/feature/memo/src/main/java/com/memozi/memo/MemoSearchScreen.kt
+new file mode 100644
+--- /dev/null	(date 1725296583765)
++++ b/feature/memo/src/main/java/com/memozi/memo/MemoSearchScreen.kt	(date 1725296583765)
+@@ -0,0 +1,52 @@
++package com.memozi.memo
++
++import androidx.compose.foundation.layout.Column
++import androidx.compose.foundation.layout.Row
++import androidx.compose.foundation.layout.Spacer
++import androidx.compose.foundation.layout.fillMaxSize
++import androidx.compose.foundation.layout.fillMaxWidth
++import androidx.compose.foundation.layout.padding
++import androidx.compose.foundation.layout.width
++import androidx.compose.material3.Text
++import androidx.compose.runtime.Composable
++import androidx.compose.ui.Alignment
++import androidx.compose.ui.Modifier
++import androidx.compose.ui.tooling.preview.Preview
++import androidx.compose.ui.unit.dp
++import com.memozi.component.textfield.MemoziSearchTextField
++import com.memozi.component.top.MemoziBackground
++import com.memozi.designsystem.MemoziTheme
++
++@Composable
++fun MemoSearchScreen() {
++    MemoziBackground()
++    Column(
++        modifier =
++            // 여기 질문
++            Modifier
++                .fillMaxSize()
++                .padding(horizontal = 16.dp)
++                .padding(top = 20.dp),
++    ) {
++        Row(
++            modifier = Modifier.fillMaxWidth(),
++            verticalAlignment = Alignment.CenterVertically,
++        ) {
++            MemoziSearchTextField()
++            Spacer(modifier = Modifier.width(30.dp)) // 30.dp의 간격을 추가
++            Text(
++                text = "취소",
++                style = MemoziTheme.typography.ssuLight13, // 사용하고 있는 테마에 맞는 텍스트 스타일을 지정
++                modifier = Modifier.align(Alignment.CenterVertically), // 텍스트가 Row의 수직 중심에 정렬되도록 설정
++            )
++        }
++    }
++}
++
++@Preview
++@Composable
++fun PreviewMemod() {
++    MemoziTheme {
++        MemoSearchScreen()
++    }
++}
