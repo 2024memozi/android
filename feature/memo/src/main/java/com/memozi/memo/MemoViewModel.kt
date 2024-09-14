@@ -48,7 +48,8 @@ class MemoViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             categoryId?.let {
-                memoRepository.putMemo(categoryId, title, content, checkBoxs)
+                memoRepository.putMemo(categoryId, title, content, checkBoxs).onSuccess {
+                }
             }
         }
     }

@@ -9,9 +9,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -53,24 +56,37 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.memozi.component.button.CheckBoxSelected
 import com.memozi.component.button.CheckBoxUnSelected
 import com.memozi.designsystem.MemoziTheme
-import com.memozi.memo.MemoViewModel
+import com.memozi.designsystem.R
+import com.memozi.memo.detail.MemoDetailSideEffect
+import com.memozi.memo.detail.MemoDetailViewModel
 import com.memozi.memo.model.CheckBox
 import com.memozi.memo.model.dummyMemoCategoriesItems
+import com.memozi.ui.lifecycle.LaunchedEffectWithLifecycle
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MemoDetailScreen(
-    viewmodel: MemoViewModel = hiltViewModel()
+    viewmodel: MemoDetailViewModel = hiltViewModel(),
+    navigateMemo: () -> Unit = {}
 ) {
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
     var showBottomSheet by remember { mutableStateOf(false) }
-
+    val navigationBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
     var titleValue by remember { mutableStateOf("") }
     var memoValue by remember { mutableStateOf("") }
     var checkBoxItems by remember { mutableStateOf<List<Pair<Boolean, String>>>(listOf()) } // 상태와 텍스트를 저장
     var isVisible by remember { mutableStateOf(true) }
+
+    LaunchedEffectWithLifecycle {
+        viewmodel.sideEffect.collectLatest { sideeffect ->
+            when (sideeffect) {
+                MemoDetailSideEffect.NavigateMemo -> { navigateMemo() }
+            }
+        }
+    }
 
     fun convertToCheckBoxList(checkBoxItems: List<Pair<Boolean, String>>): List<CheckBox> {
         return checkBoxItems.mapIndexed { index, pair ->
@@ -86,21 +102,18 @@ fun MemoDetailScreen(
         titleValue.isNotEmpty() && (checkBoxItems.isNotEmpty() || memoValue.isNotEmpty())
 
     Column(
-        modifier =
-        Modifier
+        modifier = Modifier
             .fillMaxSize()
     ) {
         Row(
-            modifier =
-            Modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 32.dp)
                 .padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
-                modifier =
-                Modifier
+                modifier = Modifier
                     .fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
@@ -115,7 +128,7 @@ fun MemoDetailScreen(
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Image(
-                        painter = painterResource(id = com.memozi.designsystem.R.drawable.ic_drop_black),
+                        painter = painterResource(id = R.drawable.ic_drop_black),
                         contentDescription = null,
                         modifier =
                         Modifier.clickable {
@@ -277,7 +290,7 @@ fun MemoDetailScreen(
         ) {
             Spacer(modifier = Modifier.padding(start = 16.dp))
             Image(
-                painter = painterResource(id = com.memozi.designsystem.R.drawable.ic_emptycheck),
+                painter = painterResource(id = R.drawable.ic_emptycheck),
                 contentDescription = null,
                 modifier =
                 Modifier.clickable {
@@ -285,6 +298,7 @@ fun MemoDetailScreen(
                 }
             )
         }
+        Spacer(modifier = Modifier.height(navigationBarHeight))
     }
 
     if (showBottomSheet) {
