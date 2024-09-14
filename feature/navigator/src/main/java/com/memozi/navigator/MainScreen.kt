@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.memozi.diary.navigation.diaryNavGraph
 import com.memozi.login.navigation.loginNavGraph
 import com.memozi.memo.navigation.memoNavGraph
 
@@ -42,6 +43,10 @@ internal fun MainScreen(
                     navigateToMemoDetail = {},
                     navigateToCategory = {},
                     navigateToCategoryAdd = navigator::navigateCategoryAdd,
+                    navigateToSetting = navigator::navigateSetting
+                )
+                diaryNavGraph(
+                    navigateToMemo = navigator::navigateMemo,
                     navigateToSetting = navigator::navigateSetting
                 )
             }
