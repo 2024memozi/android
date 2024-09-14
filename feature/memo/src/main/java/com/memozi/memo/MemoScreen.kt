@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
@@ -28,6 +29,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,6 +40,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -45,6 +48,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import androidx.compose.ui.util.lerp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.memozi.component.textfield.MemoziSearchTextField
@@ -52,10 +56,8 @@ import com.memozi.component.top.MemoziBackground
 import com.memozi.component.top.MemoziTopAppbar
 import com.memozi.designsystem.MemoziTheme
 import com.memozi.designsystem.R
-import com.memozi.memo.model.CategoryItem
-import com.memozi.memo.model.MemoItem
-import com.memozi.memo.model.dummyMemoCategoriesItems
-import com.memozi.memo.model.dummyMemoItems
+import com.memozi.memo.model.Category
+import com.memozi.memo.model.Memo
 import com.memozi.ui.extension.customClickable
 import com.memozi.ui.lifecycle.LaunchedEffectWithLifecycle
 import kotlinx.coroutines.flow.collectLatest
@@ -68,15 +70,17 @@ fun MemoRoute(
     modifier: Modifier = Modifier,
     viewModel: MemoViewModel = hiltViewModel(),
     navigateMemoDetail: (Int) -> Unit = {},
-    navigateToCategory: (Int) -> Unit = {},
+    navigateToCategoryEdit: (String, Int, String, String) -> Unit,
     navigateToCategoryAdd: () -> Unit = {},
     navigateSetting: () -> Unit = {}
 ) {
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
     val pagerState =
-        rememberPagerState(initialPage = 0, pageCount = { dummyMemoCategoriesItems().size + 1 })
+        rememberPagerState(initialPage = 0, pageCount = { state.categoryList.size + 1 })
     val navigationBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
     LaunchedEffectWithLifecycle() {
+        viewModel.getCategory()
         viewModel.sideEffect.collectLatest { sideEffect ->
             when (sideEffect) {
                 is MemoSideEffect.NavigateToMemo -> {
@@ -84,7 +88,12 @@ fun MemoRoute(
                 }
 
                 is MemoSideEffect.NavigateToCategory -> {
-                    navigateToCategory(sideEffect.categoryId)
+                    navigateToCategoryEdit(
+                        state.categoryList[pagerState.currentPage].representImage,
+                        state.categoryList[pagerState.currentPage].categoryId,
+                        state.categoryList[pagerState.currentPage].name,
+                        state.categoryList[pagerState.currentPage].txtColor
+                    )
                 }
 
                 is MemoSideEffect.NavigateToCategoryAdd -> {
@@ -98,6 +107,7 @@ fun MemoRoute(
         }
     }
 
+    viewModel.setMemo(pagerState.currentPage)
     MemoziBackground()
     Column {
         MemoziTopAppbar(
@@ -112,7 +122,7 @@ fun MemoRoute(
         )
         MemoziHorizontalPager(
             pagerState,
-            category = dummyMemoCategoriesItems(),
+            category = state.categoryList,
             modifier = Modifier.padding(top = 15.dp),
             navigateToCategoryAdd = { viewModel.navigateCategoryAdd() }
         )
@@ -124,11 +134,13 @@ fun MemoRoute(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             MemoziHorizontalPagerIndicator(
-                pagerState
+                pagerState,
+                editClickEvent = { viewModel.navigateCategory(it) }
             )
+
             Spacer(modifier = Modifier.height(16.dp))
             MemoList(
-                memoItems = dummyMemoItems(),
+                memoItems = state.memoList,
                 bottomPaddingValue = PaddingValues(bottom = 8.dp + navigationBarHeight)
             )
         }
@@ -153,7 +165,7 @@ fun MemoFloatingButton(
                 .background(Color.Transparent)
                 .width(55.dp)
                 .height(55.dp)
-                .customClickable(rippleEnabled = false) { navigateMemoAdd() } // 나중에 커스텀 clickable 추가
+                .customClickable(rippleEnabled = false) { navigateMemoAdd() }
                 .background(
                     color = MemoziTheme.colors.mainPurple02,
                     shape = CircleShape
@@ -175,7 +187,7 @@ fun MemoFloatingButton(
 fun MemoziHorizontalPager(
     pagerState: PagerState,
     modifier: Modifier,
-    category: List<CategoryItem>,
+    category: List<Category>,
     navigateToCategoryAdd: () -> Unit
 ) {
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
@@ -214,9 +226,9 @@ fun MemoziHorizontalPager(
                 MemoziCategoryAdd(navigateToCategoryAdd = navigateToCategoryAdd)
             } else {
                 MemoziCategory(
-                    imageURL = category[page].imageUrl,
+                    imageURL = category[page].representImage,
                     title = category[page].name,
-                    titleColor = Color(android.graphics.Color.parseColor(category[page].textColor))
+                    titleColor = Color(android.graphics.Color.parseColor(category[page].txtColor))
                 )
             }
         }
@@ -228,7 +240,12 @@ fun MemoziCategory(
     modifier: Modifier = Modifier,
     imageURL: String,
     title: String,
-    titleColor: Color
+    titleColor: Color,
+    textStyle: TextStyle = MemoziTheme.typography.ssuLight11,
+    textModifier: Modifier = Modifier
+        .fillMaxWidth()
+        .padding(bottom = 8.dp)
+        .padding(horizontal = 9.dp)
 ) {
     Box(modifier = modifier) {
         AsyncImage(
@@ -245,14 +262,10 @@ fun MemoziCategory(
         )
         Text(
             text = title,
-            style = MemoziTheme.typography.ssuLight11,
+            style = textStyle,
             color = titleColor,
             textAlign = TextAlign.End,
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.BottomEnd)
-                .padding(bottom = 8.dp)
-                .padding(horizontal = 9.dp)
+            modifier = textModifier.align(Alignment.BottomEnd)
         )
     }
 }
@@ -293,7 +306,7 @@ fun MemoziCategoryAdd(navigateToCategoryAdd: () -> Unit) {
 @Composable
 fun MemoziHorizontalPagerIndicator(
     pagerState: PagerState,
-    navigateToEdit: () -> Unit = {},
+    editClickEvent: (Int) -> Unit = {},
     pageCount: Int = pagerState.pageCount,
     modifier: Modifier = Modifier,
     activeColor: Color = MemoziTheme.colors.mainPurple,
@@ -322,16 +335,18 @@ fun MemoziHorizontalPagerIndicator(
                     .background(if (isSelected) activeColor else inactiveColor)
             )
         }
-        Icon(
-            painter = painterResource(id = R.drawable.ic_edit),
-            contentDescription = "edit",
-            modifier = Modifier.customClickable(onClick = navigateToEdit)
-        )
+        if (pagerState.currentPage != pagerState.pageCount - 1) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_edit),
+                contentDescription = "edit",
+                modifier = Modifier.customClickable(onClick = { editClickEvent(pagerState.currentPage) })
+            )
+        }
     }
 }
 
 @Composable
-fun MemoList(memoItems: List<MemoItem>, bottomPaddingValue: PaddingValues) {
+fun MemoList(memoItems: List<Memo>, bottomPaddingValue: PaddingValues) {
     Box(
         modifier = Modifier
             .padding(horizontal = 16.dp)
@@ -341,7 +356,8 @@ fun MemoList(memoItems: List<MemoItem>, bottomPaddingValue: PaddingValues) {
     ) {
         LazyColumn(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
+                .wrapContentHeight()
         ) {
             items(memoItems.size) { index ->
                 if (memoItems.size > 1 && index != memoItems.size - 1) {
@@ -362,7 +378,7 @@ fun MemoList(memoItems: List<MemoItem>, bottomPaddingValue: PaddingValues) {
 }
 
 @Composable
-fun MemoItemCard(memo: MemoItem) {
+fun MemoItemCard(memo: Memo) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -383,7 +399,7 @@ fun MemoItemCard(memo: MemoItem) {
             )
             Spacer(modifier = Modifier.weight(1f))
             Text(
-                text = memo.date,
+                text = memo.dayOfWeek,
                 style = MemoziTheme.typography.ngReg11,
                 color = MemoziTheme.colors.gray03
             )
@@ -402,7 +418,7 @@ fun MemoItemCard(memo: MemoItem) {
 fun PreviewMemo() {
     MemoziTheme {
         Box(modifier = Modifier.background(color = MemoziTheme.colors.white)) {
-            MemoRoute(padding = PaddingValues(10.dp))
+//            MemoRoute(padding = PaddingValues(10.dp))
         }
     }
 }

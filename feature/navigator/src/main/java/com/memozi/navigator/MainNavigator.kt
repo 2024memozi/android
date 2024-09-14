@@ -6,28 +6,23 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.memozi.diary.navigation.DiaryRoute
 import com.memozi.login.navigation.LoginRoute
 import com.memozi.memo.navigation.MemoRoute
-import com.memozi.onboarding.navigation.OnboardingRoute
+import com.memozi.memo.navigation.navigateCategory
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 internal class MainNavigator(
     val navController: NavHostController
 ) {
-    val startDestination = OnboardingRoute.route
+    val startDestination = LoginRoute.route
     private val currentDestination: NavDestination?
         @Composable get() = navController
             .currentBackStackEntryAsState().value?.destination
 
     fun navigateLogin() {
         navController.navigate(LoginRoute.route) {
-            popUpTo(navController.graph.id) {
-                inclusive = true
-            }
-        }
-    }
-
-    fun navigateOnboarding() {
-        navController.navigate(OnboardingRoute.route) {
             popUpTo(navController.graph.id) {
                 inclusive = true
             }
@@ -42,9 +37,18 @@ internal class MainNavigator(
         }
     }
 
-    fun navigateCategoryAdd() {
-        navController.navigate(MemoRoute.categoryAdd) {
+    fun navigateDiary() {
+        navController.navigate(DiaryRoute.route) {
+
         }
+    }
+
+    fun navigateCategoryAdd() {
+        navController.navigate(MemoRoute.categoryAdd) {}
+    }
+    fun navigateCategoryEdit(img: String, categoryId: Int, name: String, txtColor: String) {
+        val encodedImg = URLEncoder.encode(img, StandardCharsets.UTF_8.toString())
+        navController.navigateCategory(encodedImg, categoryId, name, txtColor)
     }
 
     fun navigateSetting() {

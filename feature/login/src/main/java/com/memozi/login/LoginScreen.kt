@@ -1,5 +1,7 @@
 package com.memozi.login
 
+import android.util.Log
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -7,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,21 +19,55 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.memozi.designsystem.Kakao
 import com.memozi.designsystem.MemoziTheme
 import com.memozi.designsystem.R
+import dagger.hilt.android.EntryPointAccessors
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun LoginRoute(
     padding: PaddingValues,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: LoginViewModel = hiltViewModel(),
+    navigateMemo: () -> Unit = {}
 ) {
-    LoginScreen()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current as ComponentActivity
+    val entryPoint = EntryPointAccessors.fromActivity<OAuthEntryPoint>(context)
+    val oAuthInteractor = entryPoint.getOAuthInteractor()
+
+    LaunchedEffect(Unit) {
+        viewModel.sideEffect.collectLatest { sideeffect ->
+            when (sideeffect) {
+                is LoginSideEffect.LoginError -> {
+                    Log.d("로그인 에러", "LoginRoute: ")
+                }
+                LoginSideEffect.LoginSuccess -> {
+                    navigateMemo()
+                }
+
+                LoginSideEffect.LoginToSignUp -> TODO()
+                LoginSideEffect.StartLogin -> {
+                    oAuthInteractor.loginByKakao().onSuccess {
+                        Log.d("카카오 메인", "LoginRoute: $it")
+                        viewModel.signIn(it.accessToken)
+                    }
+                }
+            }
+        }
+    }
+    LoginScreen { viewModel.startKakaoLogin() }
 }
 
 @Composable
@@ -59,9 +96,11 @@ fun SplashScreen() {
 }
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(kakaoButtonEvent: () -> Unit = {}) {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = MemoziTheme.colors.white),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(
@@ -76,7 +115,10 @@ fun LoginScreen() {
         Spacer(modifier = Modifier.height(12.dp))
         Image(
             painter = painterResource(id = R.drawable.img_logo),
-            contentDescription = "로고에용~"
+            contentDescription = "로고에용~",
+            modifier = Modifier
+                .fillMaxWidth(0.28f)
+                .aspectRatio(1f)
         )
         Box(
             modifier = Modifier
@@ -84,7 +126,7 @@ fun LoginScreen() {
                 .weight(256f)
         )
         Button(
-            onClick = { /*TODO*/ },
+            onClick = { kakaoButtonEvent() },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp)

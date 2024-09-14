@@ -12,6 +12,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven(url = "https://devrepo.kakao.com/nexus/content/groups/public/")
     }
 }
 rootProject.name = "memozi"
@@ -28,19 +29,25 @@ include(":core:model")
 // domain
 include(":domain:memozi")
 include(":domain:memo")
+include(":domain:auth")
+include(":domain:oauth")
 
 // data
 include(":data:memozi")
-
+include(":data:auth")
+include(":data:oauth")
+include(":data:memo")
 // local
 include(":local:memozi")
+include(":local:auth")
 
 // remote
 include(":remote:memozi")
+include(":remote:auth")
+include(":remote:memo")
 
 // feature
 include(":feature:memo")
 include(":feature:login")
 include(":feature:navigator")
-include(":feature:diaryfeed")
-include(":feature:onboarding")
+include(":feature:diary")

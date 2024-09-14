@@ -15,12 +15,14 @@ fun NavController.navigateLogin(navOptions: NavOptions) {
 
 fun NavGraphBuilder.loginNavGraph(
     padding: PaddingValues = PaddingValues(0.dp),
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    navigateMemo: () -> Unit = {}
 ) {
     composable(route = LoginRoute.route) {
         LoginRoute(
             padding = padding,
-            modifier = modifier
+            modifier = modifier,
+            navigateMemo = navigateMemo
         )
     }
 }

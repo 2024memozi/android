@@ -1,0 +1,213 @@
+Index: feature/diaryfeed/src/main/java/com/memozi/diaryfeed/DiaryFeedScreen.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.memozi.diaryfeed\r\n\r\nimport androidx.compose.foundation.Image\r\nimport androidx.compose.foundation.clickable\r\nimport androidx.compose.foundation.layout.Column\r\nimport androidx.compose.foundation.layout.Row\r\nimport androidx.compose.foundation.layout.fillMaxSize\r\nimport androidx.compose.foundation.layout.fillMaxWidth\r\nimport androidx.compose.foundation.layout.padding\r\nimport androidx.compose.runtime.Composable\r\nimport androidx.compose.runtime.getValue\r\nimport androidx.compose.runtime.mutableStateOf\r\nimport androidx.compose.runtime.remember\r\nimport androidx.compose.runtime.setValue\r\nimport androidx.compose.ui.Modifier\r\nimport androidx.compose.ui.res.painterResource\r\nimport androidx.compose.ui.tooling.preview.Preview\r\nimport androidx.compose.ui.unit.dp\r\nimport com.memozi.component.top.MemoziBackGround\r\nimport com.memozi.designsystem.MemoziTheme\r\nimport com.memozi.designsystem.R\r\nimport com.memozi.diaryfeed.component.DiaryFeedDisplayCard\r\nimport com.memozi.diaryfeed.component.DiaryFeedGreeting\r\nimport com.memozi.diaryfeed.component.DiaryFeedTopAppBar\r\nimport com.memozi.diaryfeed.component.DiaryFeedWriteCard\r\n\r\n@Composable\r\nfun DiaryFeedScreen() {\r\n    var listSelectedState by remember { mutableStateOf(true) }\r\n    var calendarSelectedState by remember { mutableStateOf(false) }\r\n    var isDiaryWritten by remember { mutableStateOf(false) }\r\n    var isDiaryExist by remember { mutableStateOf(true) }\r\n\r\n    MemoziBackGround()\r\n\r\n    Column(\r\n        modifier = Modifier\r\n            .fillMaxSize()\r\n            .padding(20.dp)\r\n    ) {\r\n        DiaryFeedTopAppBar()\r\n\r\n        DiaryFeedGreeting()\r\n\r\n        Row(\r\n            modifier = Modifier\r\n                .fillMaxWidth()\r\n                .padding(bottom = 10.dp)\r\n        ) {\r\n            Image(\r\n                painter =\r\n                if (listSelectedState) painterResource(id = R.drawable.ic_diary_feed_list_selected)\r\n                else painterResource(id = R.drawable.ic_diary_feed_list_not_selected),\r\n                contentDescription = null,\r\n                modifier = Modifier.clickable {\r\n                    calendarSelectedState = listSelectedState\r\n                    listSelectedState = !listSelectedState\r\n                }\r\n            )\r\n            Image(\r\n                painter = painterResource(id = R.drawable.ic_diary_feed_vertical_line_white),\r\n                contentDescription = null\r\n            )\r\n            Image(\r\n                painter =\r\n                if (calendarSelectedState) painterResource(id = R.drawable.ic_diary_feed_calendar_selected)\r\n                else painterResource(id = R.drawable.ic_diary_feed_calendar_not_selected),\r\n                contentDescription = null,\r\n                modifier = Modifier.clickable {\r\n                    listSelectedState = calendarSelectedState\r\n                    calendarSelectedState = !calendarSelectedState\r\n                }\r\n            )\r\n        }\r\n\r\n        if (!isDiaryWritten) {\r\n            DiaryFeedWriteCard(\r\n                onDiaryWrittenChange = { isDiaryWritten = it }\r\n            )\r\n        }\r\n\r\n        if (isDiaryExist) {\r\n            DiaryFeedDisplayCard()\r\n        }\r\n    }\r\n}\r\n\r\n@Preview(showBackground = true)\r\n@Composable\r\nfun ShowDiaryFeedScreen() {\r\n    MemoziTheme {\r\n        DiaryFeedScreen()\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/feature/diaryfeed/src/main/java/com/memozi/diaryfeed/DiaryFeedScreen.kt b/feature/diaryfeed/src/main/java/com/memozi/diaryfeed/DiaryFeedScreen.kt
+--- a/feature/diaryfeed/src/main/java/com/memozi/diaryfeed/DiaryFeedScreen.kt	(revision 1435eb84978b235d05969f37525f3f9929cb45be)
++++ b/feature/diaryfeed/src/main/java/com/memozi/diaryfeed/DiaryFeedScreen.kt	(date 1725199862103)
+@@ -12,6 +12,7 @@
+ import androidx.compose.runtime.mutableStateOf
+ import androidx.compose.runtime.remember
+ import androidx.compose.runtime.setValue
++import androidx.compose.ui.Alignment
+ import androidx.compose.ui.Modifier
+ import androidx.compose.ui.res.painterResource
+ import androidx.compose.ui.tooling.preview.Preview
+@@ -31,12 +32,12 @@
+     var isDiaryWritten by remember { mutableStateOf(false) }
+     var isDiaryExist by remember { mutableStateOf(true) }
+ 
+-    MemoziBackGround()
++    MemoziBackGround() // 최상위 컵포저블 전체 화면의 레이아웃을 설정
+ 
+-    Column(
++    Column(  //화면의 여러 컴포저블을 수직으로 설정하겠다는 의미
+         modifier = Modifier
+             .fillMaxSize()
+-            .padding(20.dp)
++            .padding(20.dp) //앱바를 처음에 둘 때 위 아래로부터 20씩 띄워져있는 상태
+     ) {
+         DiaryFeedTopAppBar()
+ 
+@@ -59,7 +60,8 @@
+             )
+             Image(
+                 painter = painterResource(id = R.drawable.ic_diary_feed_vertical_line_white),
+-                contentDescription = null
++                contentDescription = null,
++                Modifier.align(Alignment.CenterVertically)
+             )
+             Image(
+                 painter =
+Index: feature/diaryfeed/src/main/java/com/memozi/diaryfeed/component/DiaryFeedTopAppBar.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.memozi.diaryfeed.component\r\n\r\nimport androidx.compose.foundation.Image\r\nimport androidx.compose.foundation.clickable\r\nimport androidx.compose.foundation.layout.Row\r\nimport androidx.compose.foundation.layout.Spacer\r\nimport androidx.compose.foundation.layout.fillMaxWidth\r\nimport androidx.compose.foundation.layout.padding\r\nimport androidx.compose.material3.Text\r\nimport androidx.compose.runtime.Composable\r\nimport androidx.compose.ui.Alignment\r\nimport androidx.compose.ui.Modifier\r\nimport androidx.compose.ui.res.painterResource\r\nimport androidx.compose.ui.unit.dp\r\nimport com.memozi.designsystem.MemoziTheme\r\nimport com.memozi.designsystem.R\r\n\r\n@Composable\r\nfun DiaryFeedTopAppBar() {\r\n    Row(\r\n        modifier = Modifier\r\n            .fillMaxWidth()\r\n            .padding(bottom = 40.dp),\r\n        verticalAlignment = Alignment.CenterVertically\r\n    ) {\r\n        Text(\r\n            text = \"MEMO : Zi\",\r\n            style = MemoziTheme.typography.appnameBold15\r\n        )\r\n        Spacer(Modifier.weight(1f))\r\n        Text(\r\n            text = \"메모\",\r\n            modifier = Modifier.clickable { /* TODO : 메모 페이지로 이동 */ },\r\n            style = MemoziTheme.typography.ssuLight13\r\n        )\r\n        Image(\r\n            painter = painterResource(id = R.drawable.ic_diary_feed_vertical_line_black),\r\n            contentDescription = null\r\n        )\r\n        Text(\r\n            text = \"설정\",\r\n            modifier = Modifier.clickable { /* TODO : 설정 페이지로 이동 */ },\r\n            style = MemoziTheme.typography.ssuLight13\r\n        )\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/feature/diaryfeed/src/main/java/com/memozi/diaryfeed/component/DiaryFeedTopAppBar.kt b/feature/diaryfeed/src/main/java/com/memozi/diaryfeed/component/DiaryFeedTopAppBar.kt
+--- a/feature/diaryfeed/src/main/java/com/memozi/diaryfeed/component/DiaryFeedTopAppBar.kt	(revision 1435eb84978b235d05969f37525f3f9929cb45be)
++++ b/feature/diaryfeed/src/main/java/com/memozi/diaryfeed/component/DiaryFeedTopAppBar.kt	(date 1725198703294)
+@@ -11,7 +11,9 @@
+ import androidx.compose.ui.Alignment
+ import androidx.compose.ui.Modifier
+ import androidx.compose.ui.res.painterResource
++import androidx.compose.ui.tooling.preview.Preview
+ import androidx.compose.ui.unit.dp
++import com.memozi.component.top.MemoziBackGround
+ import com.memozi.designsystem.MemoziTheme
+ import com.memozi.designsystem.R
+ 
+@@ -43,4 +45,13 @@
+             style = MemoziTheme.typography.ssuLight13
+         )
+     }
+-}
+\ No newline at end of file
++}
++
++
++@Preview(showBackground = true)
++@Composable
++private fun PrviewMemoziBackGround() {
++    MemoziTheme {
++        DiaryFeedTopAppBar()
++    }
++}
+Index: feature/diaryfeed/src/main/java/com/memozi/diaryfeed/component/DiaryFeedWriteCard.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.memozi.diaryfeed.component\r\n\r\nimport androidx.compose.foundation.Image\r\nimport androidx.compose.foundation.background\r\nimport androidx.compose.foundation.clickable\r\nimport androidx.compose.foundation.layout.Column\r\nimport androidx.compose.foundation.layout.PaddingValues\r\nimport androidx.compose.foundation.layout.Row\r\nimport androidx.compose.foundation.layout.Spacer\r\nimport androidx.compose.foundation.layout.fillMaxWidth\r\nimport androidx.compose.foundation.layout.height\r\nimport androidx.compose.foundation.layout.padding\r\nimport androidx.compose.foundation.layout.width\r\nimport androidx.compose.foundation.shape.RoundedCornerShape\r\nimport androidx.compose.foundation.text.BasicTextField\r\nimport androidx.compose.material3.Button\r\nimport androidx.compose.material3.ButtonColors\r\nimport androidx.compose.material3.CardDefaults\r\nimport androidx.compose.material3.ElevatedCard\r\nimport androidx.compose.material3.Text\r\nimport androidx.compose.runtime.Composable\r\nimport androidx.compose.runtime.getValue\r\nimport androidx.compose.runtime.mutableStateOf\r\nimport androidx.compose.runtime.remember\r\nimport androidx.compose.runtime.setValue\r\nimport androidx.compose.ui.Alignment\r\nimport androidx.compose.ui.Modifier\r\nimport androidx.compose.ui.draw.shadow\r\nimport androidx.compose.ui.graphics.Color\r\nimport androidx.compose.ui.res.painterResource\r\nimport androidx.compose.ui.text.SpanStyle\r\nimport androidx.compose.ui.text.buildAnnotatedString\r\nimport androidx.compose.ui.text.withStyle\r\nimport androidx.compose.ui.unit.dp\r\nimport com.memozi.designsystem.MemoziTheme\r\nimport com.memozi.designsystem.R\r\n\r\n@Composable\r\nfun DiaryFeedWriteCard(\r\n    onDiaryWrittenChange: (Boolean) -> Unit\r\n) {\r\n    var diaryWriteState by remember { mutableStateOf(false) }\r\n    var diaryContent by remember { mutableStateOf(\"\") }\r\n    val isDiaryAvailable by remember(diaryContent) {\r\n        mutableStateOf(diaryContent.isNotEmpty())\r\n    }\r\n\r\n    ElevatedCard(\r\n        modifier = Modifier\r\n            .fillMaxWidth()\r\n            .padding(bottom = 16.dp)\r\n            .background(\r\n                shape = RoundedCornerShape(12.dp),\r\n                color = MemoziTheme.colors.white\r\n            )\r\n            .shadow(\r\n                elevation = 6.dp,\r\n                shape = RoundedCornerShape(12.dp)\r\n            ),\r\n        colors = CardDefaults.cardColors(MemoziTheme.colors.white),\r\n        content = {\r\n            if (!diaryWriteState) {\r\n                Column(\r\n                    modifier = Modifier\r\n                        .padding(20.dp)\r\n                        .align(Alignment.CenterHorizontally),\r\n                    horizontalAlignment = Alignment.CenterHorizontally\r\n                ) {\r\n                    Image(\r\n                        painter = painterResource(id = R.drawable.ic_diary_feed_plus),\r\n                        contentDescription = \"\",\r\n                        modifier = Modifier\r\n                            .padding(bottom = 8.dp)\r\n                            .clickable { diaryWriteState = true }\r\n                    )\r\n                    Text(\r\n                        text = \"오늘은 일기를 적지 않으셨어요 !\\n 오늘의 기억을 적어주세요 :)\",\r\n                        style = MemoziTheme.typography.ssuLight13\r\n                    )\r\n                }\r\n            }\r\n            if (diaryWriteState) {\r\n                Column(\r\n                    modifier = Modifier\r\n                        .padding(8.dp)\r\n                ) {\r\n                    BasicTextField(\r\n                        value = diaryContent,\r\n                        onValueChange = { newContent ->\r\n                            diaryContent = newContent\r\n                        },\r\n                        modifier = Modifier\r\n                            .fillMaxWidth()\r\n                            .padding(horizontal = 8.dp, vertical = 16.dp),\r\n                        textStyle = MemoziTheme.typography.ngReg12_140.copy(color = Color.Black) // 텍스트 색상 설정\r\n                    )\r\n                    Row {\r\n                        Image(\r\n                            painter = painterResource(id = R.drawable.ic_diary_feed_camera),\r\n                            contentDescription = null,\r\n                            modifier = Modifier.align(Alignment.Bottom)\r\n                        )\r\n                        Image(\r\n                            painter = painterResource(id = R.drawable.ic_diary_feed_gallery),\r\n                            contentDescription = null,\r\n                            modifier = Modifier.align(Alignment.Bottom)\r\n                        )\r\n                        Image(\r\n                            painter = painterResource(id = R.drawable.ic_diary_feed_pin),\r\n                            contentDescription = null,\r\n                            modifier = Modifier.align(Alignment.Bottom)\r\n                        )\r\n                        Image(\r\n                            painter = painterResource(id = R.drawable.ic_diary_feed_random),\r\n                            contentDescription = null,\r\n                            modifier = Modifier.align(Alignment.Bottom)\r\n                        )\r\n                        Spacer(modifier = Modifier.weight(1f))\r\n                        Text(\r\n                            text = buildAnnotatedString {\r\n                                withStyle(\r\n                                    style = SpanStyle(brush = MemoziTheme.colors.gradientBrush)\r\n                                ) {\r\n                                    append(\"100\")\r\n                                }\r\n                            },\r\n                            modifier = Modifier\r\n                                .padding(end = 8.dp)\r\n                                .align(Alignment.Bottom)\r\n                        )\r\n                        Button(\r\n                            onClick = { onDiaryWrittenChange(true) /* 일기 작성 완료 */ },\r\n                            modifier = Modifier\r\n                                .width(68.dp)\r\n                                .height(34.dp)\r\n                                .align(Alignment.CenterVertically),\r\n                            enabled = isDiaryAvailable,\r\n                            shape = RoundedCornerShape(8.dp),\r\n                            colors = ButtonColors(\r\n                                contentColor = MemoziTheme.colors.white,\r\n                                containerColor = MemoziTheme.colors.mainPurple,\r\n                                disabledContentColor = MemoziTheme.colors.white,\r\n                                disabledContainerColor = MemoziTheme.colors.gray02\r\n                            ),\r\n                            contentPadding = PaddingValues(horizontal = 22.dp, vertical = 6.dp)\r\n                        ) {\r\n                            Text(\r\n                                text = \"등록\",\r\n                                modifier = Modifier.padding(0.dp),\r\n                                style = MemoziTheme.typography.ssuLight12\r\n                            )\r\n                        }\r\n                    }\r\n                }\r\n            }\r\n        }\r\n    )\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/feature/diaryfeed/src/main/java/com/memozi/diaryfeed/component/DiaryFeedWriteCard.kt b/feature/diaryfeed/src/main/java/com/memozi/diaryfeed/component/DiaryFeedWriteCard.kt
+--- a/feature/diaryfeed/src/main/java/com/memozi/diaryfeed/component/DiaryFeedWriteCard.kt	(revision 1435eb84978b235d05969f37525f3f9929cb45be)
++++ b/feature/diaryfeed/src/main/java/com/memozi/diaryfeed/component/DiaryFeedWriteCard.kt	(date 1725200620981)
+@@ -31,13 +31,14 @@
+ import androidx.compose.ui.text.SpanStyle
+ import androidx.compose.ui.text.buildAnnotatedString
+ import androidx.compose.ui.text.withStyle
++import androidx.compose.ui.tooling.preview.Preview
+ import androidx.compose.ui.unit.dp
+ import com.memozi.designsystem.MemoziTheme
+ import com.memozi.designsystem.R
+ 
+ @Composable
+ fun DiaryFeedWriteCard(
+-    onDiaryWrittenChange: (Boolean) -> Unit
++    onDiaryWrittenChange: (Boolean) -> Unit,
+ ) {
+     var diaryWriteState by remember { mutableStateOf(false) }
+     var diaryContent by remember { mutableStateOf("") }
+@@ -155,4 +156,105 @@
+             }
+         }
+     )
++}
++
++@Composable
++fun PreviewDiaryFeedWriteCardContent() {
++    MemoziTheme {
++        ElevatedCard(
++            modifier = Modifier
++                .fillMaxWidth()
++                .padding(bottom = 16.dp)
++                .background(
++                    shape = RoundedCornerShape(12.dp),
++                    color = MemoziTheme.colors.white
++                )
++                .shadow(
++                    elevation = 6.dp,
++                    shape = RoundedCornerShape(12.dp)
++                ),
++            colors = CardDefaults.cardColors(MemoziTheme.colors.white),
++            content = {
++                Column(
++                    modifier = Modifier
++                        .padding(8.dp)
++                ) {
++                    BasicTextField(
++                        value = "Sample Diary Content",
++                        onValueChange = { /* No-op for preview */ },
++                        modifier = Modifier
++                            .fillMaxWidth()
++                            .padding(horizontal = 8.dp, vertical = 16.dp),
++                        textStyle = MemoziTheme.typography.ngReg12_140.copy(color = Color.Black)
++                    )
++                    Row {
++                        Image(
++                            painter = painterResource(id = R.drawable.ic_diary_feed_camera),
++                            contentDescription = null,
++                            modifier = Modifier.align(Alignment.Bottom)
++                        )
++                        Image(
++                            painter = painterResource(id = R.drawable.ic_diary_feed_gallery),
++                            contentDescription = null,
++                            modifier = Modifier.align(Alignment.Bottom)
++                        )
++                        Image(
++                            painter = painterResource(id = R.drawable.ic_diary_feed_pin),
++                            contentDescription = null,
++                            modifier = Modifier.align(Alignment.Bottom)
++                        )
++                        Image(
++                            painter = painterResource(id = R.drawable.ic_diary_feed_random),
++                            contentDescription = null,
++                            modifier = Modifier.align(Alignment.Bottom)
++                        )
++                        Spacer(modifier = Modifier.weight(1f))
++                        Text(
++                            text = buildAnnotatedString {
++                                withStyle(
++                                    style = SpanStyle(brush = MemoziTheme.colors.gradientBrush)
++                                ) {
++                                    append("100")
++                                }
++                            },
++                            modifier = Modifier
++                                .padding(end = 8.dp)
++                                .align(Alignment.Bottom)
++                        )
++                        Button(
++                            onClick = { /* No-op for preview */ },
++                            modifier = Modifier
++                                .width(68.dp)
++                                .height(34.dp)
++                                .align(Alignment.CenterVertically),
++                            enabled = true, // or false depending on your needs
++                            shape = RoundedCornerShape(8.dp),
++                            colors = ButtonColors(
++                                contentColor = MemoziTheme.colors.white, //글씨체
++                                containerColor = MemoziTheme.colors.mainPurple,
++                                disabledContentColor = MemoziTheme.colors.white,
++                                disabledContainerColor = MemoziTheme.colors.gray02
++                            ),
++                            contentPadding = PaddingValues(horizontal = 22.dp, vertical = 6.dp)
++                        ) {
++                            Text(
++                                text = "등록",
++                                modifier = Modifier.padding(0.dp),
++                                style = MemoziTheme.typography.ssuLight12
++                            )
++                        }
++                    }
++                }
++            }
++        )
++    }
++}
++
++
++@Preview(showBackground = true)
++@Composable
++fun ShowDiaryFeedScreen() {
++    MemoziTheme {
++        PreviewDiaryFeedWriteCardContent()
++    }
+ }
+\ No newline at end of file

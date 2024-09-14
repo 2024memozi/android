@@ -10,5 +10,5 @@ android {
 dependencies {
     implementation(projects.feature.login)
     implementation(projects.feature.memo)
-    implementation(projects.feature.onboarding)
+    implementation(projects.feature.diary)
 }

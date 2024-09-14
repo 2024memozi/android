@@ -16,4 +16,13 @@ dependencies {
     implementation(projects.core.network)
     implementation(projects.feature.navigator)
     implementation(projects.feature.memo)
+    implementation(projects.feature.login)
+    implementation(projects.feature.diary)
+    implementation(projects.data.auth)
+    implementation(projects.data.oauth)
+    implementation(projects.data.memo)
+    implementation(projects.local.auth)
+    implementation(projects.remote.auth)
+    implementation(projects.remote.memo)
+    implementation(libs.kakao.login)
 }

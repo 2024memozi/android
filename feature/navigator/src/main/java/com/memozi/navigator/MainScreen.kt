@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.memozi.diary.navigation.diaryNavGraph
 import com.memozi.login.navigation.loginNavGraph
 import com.memozi.memo.navigation.memoNavGraph
 import com.memozi.onboarding.navigation.onboardingNavGraph
@@ -36,7 +37,8 @@ internal fun MainScreen(
                 exitTransition = { ExitTransition.None }
             ) {
                 loginNavGraph(
-                    padding = innerPadding
+                    padding = innerPadding,
+                    navigateMemo = navigator::navigateMemo
                 )
                 onboardingNavGraph(
                     padding = innerPadding,
@@ -44,9 +46,14 @@ internal fun MainScreen(
                 )
                 memoNavGraph(
                     padding = innerPadding,
+                    navigateMemo = navigator::navigateMemo,
                     navigateToMemoDetail = {},
-                    navigateToCategory = {},
+                    navigateToCategoryEdit = navigator::navigateCategoryEdit,
                     navigateToCategoryAdd = navigator::navigateCategoryAdd,
+                    navigateToSetting = navigator::navigateSetting
+                )
+                diaryNavGraph(
+                    navigateToMemo = navigator::navigateMemo,
                     navigateToSetting = navigator::navigateSetting
                 )
             }
