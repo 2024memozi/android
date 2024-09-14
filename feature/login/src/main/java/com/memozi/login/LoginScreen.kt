@@ -48,6 +48,7 @@ fun LoginRoute(
     val oAuthInteractor = entryPoint.getOAuthInteractor()
 
     LaunchedEffect(Unit) {
+        viewModel.getUser()
         viewModel.sideEffect.collectLatest { sideeffect ->
             when (sideeffect) {
                 is LoginSideEffect.LoginError -> {
