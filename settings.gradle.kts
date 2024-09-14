@@ -36,17 +36,18 @@ include(":domain:oauth")
 include(":data:memozi")
 include(":data:auth")
 include(":data:oauth")
+include(":data:memo")
 // local
 include(":local:memozi")
+include(":local:auth")
 
 // remote
 include(":remote:memozi")
 include(":remote:auth")
+include(":remote:memo")
 
 // feature
 include(":feature:memo")
 include(":feature:login")
 include(":feature:navigator")
 include(":feature:diary")
-include(":local:auth")
-

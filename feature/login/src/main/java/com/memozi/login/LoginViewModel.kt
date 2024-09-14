@@ -24,6 +24,7 @@ class LoginViewModel @Inject constructor(
             authRepository.signIn(socialToken)
                 .onSuccess {
                     authRepository.saveLocalData(AuthEntity(it.accessToken, it.refreshToken))
+                    postSideEffect(LoginSideEffect.LoginSuccess)
                 }.onFailure {
                     when (it) {
                         is ApiError -> Log.e("실패", it.message)

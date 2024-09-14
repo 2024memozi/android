@@ -9,6 +9,9 @@ import androidx.navigation.compose.rememberNavController
 import com.memozi.diary.navigation.DiaryRoute
 import com.memozi.login.navigation.LoginRoute
 import com.memozi.memo.navigation.MemoRoute
+import com.memozi.memo.navigation.navigateCategory
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 internal class MainNavigator(
     val navController: NavHostController
@@ -41,8 +44,11 @@ internal class MainNavigator(
     }
 
     fun navigateCategoryAdd() {
-        navController.navigate(MemoRoute.categoryAdd) {
-        }
+        navController.navigate(MemoRoute.categoryAdd) {}
+    }
+    fun navigateCategoryEdit(img: String, categoryId: Int, name: String, txtColor: String) {
+        val encodedImg = URLEncoder.encode(img, StandardCharsets.UTF_8.toString())
+        navController.navigateCategory(encodedImg, categoryId, name, txtColor)
     }
 
     fun navigateSetting() {

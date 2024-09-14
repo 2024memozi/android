@@ -39,7 +39,8 @@ import kotlinx.coroutines.flow.collectLatest
 fun LoginRoute(
     padding: PaddingValues,
     modifier: Modifier = Modifier,
-    viewModel: LoginViewModel = hiltViewModel()
+    viewModel: LoginViewModel = hiltViewModel(),
+    navigateMemo: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current as ComponentActivity
@@ -49,12 +50,17 @@ fun LoginRoute(
     LaunchedEffect(Unit) {
         viewModel.sideEffect.collectLatest { sideeffect ->
             when (sideeffect) {
-                is LoginSideEffect.LoginError -> TODO()
-                LoginSideEffect.LoginSuccess -> {}
+                is LoginSideEffect.LoginError -> {
+                    Log.d("로그인 에러", "LoginRoute: ")
+                }
+                LoginSideEffect.LoginSuccess -> {
+                    navigateMemo()
+                }
+
                 LoginSideEffect.LoginToSignUp -> TODO()
                 LoginSideEffect.StartLogin -> {
                     oAuthInteractor.loginByKakao().onSuccess {
-                        Log.d("카카카오 메인", "LoginRoute: $it")
+                        Log.d("카카오 메인", "LoginRoute: $it")
                         viewModel.signIn(it.accessToken)
                     }
                 }
