@@ -4,6 +4,7 @@ import com.memozi.memo.model.request.RequestPageable
 import com.memozi.memo.model.response.ResponseCategory
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
@@ -33,5 +34,10 @@ interface CategoryService {
         @Part("bgColorImageUrl") bgColorImageUrl: RequestBody?,
         @Part("txtColor") txtColor: RequestBody,
         @Part images: MultipartBody.Part?
-    ): Unit
+    )
+
+    @DELETE("/category")
+    suspend fun deleteCategory(
+        @Path("categoryId") categoryId: Int
+    )
 }

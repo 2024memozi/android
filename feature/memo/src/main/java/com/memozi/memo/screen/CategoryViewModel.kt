@@ -1,7 +1,9 @@
 package com.memozi.memo.screen
 
 import android.util.Log
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.memozi.memo.navigation.MemoRoute
 import com.memozi.memo.repository.MemoRepository
 import com.memozi.model.exception.ApiError
 import com.memozi.ui.base.BaseViewModel
@@ -11,11 +13,29 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CategoryViewModel @Inject constructor(
-    private val memoRepository: MemoRepository
+    private val memoRepository: MemoRepository,
+    savedStateHandle: SavedStateHandle
 ) : BaseViewModel<CategoryState, CategorySideEffect>(CategoryState()) {
 
+    private val categoryId = savedStateHandle.get<String>(MemoRoute.CATEGORY_ID)?.toInt()
+    private val categoryImg = savedStateHandle.get<String>(MemoRoute.CATEGORY_IMAGE)
+    private val categoryName = savedStateHandle.get<String>(MemoRoute.CATEGORY_NAME)
+    private val categoryTextColor = savedStateHandle.get<String>(MemoRoute.CATEGORY_TEXT)
+
+    init {
+        categoryImg?.let {
+            intent { copy(imageUrl = categoryImg) }
+        }
+        categoryName?.let {
+            intent { copy(name = categoryName) }
+        }
+        categoryTextColor?.let {
+            intent { copy(textColor = categoryTextColor) }
+        }
+    }
+
     fun updateName(name: String) {
-        intent { copy(name = name) }
+        intent { copy(btnEnable = name.isNotBlank()) }
     }
 
     fun updateImageUrl(imageUrl: String) {
@@ -26,7 +46,7 @@ class CategoryViewModel @Inject constructor(
         intent { copy(selectImgOpt = opt) }
     }
 
-    fun updateTextColor() {
+    private fun updateTextColor() {
         intent { copy(textColor = if (selectedText == 0) "#000000" else "#ffffff") }
     }
 
@@ -48,7 +68,7 @@ class CategoryViewModel @Inject constructor(
                 txtColor = uiState.value.textColor,
                 image = if (uiState.value.selectImgOpt == 0) uiState.value.imageUrl else null
             ).onSuccess {
-                Log.d("post성공", "uistate: ${uiState.value}")
+                postSideEffect(CategorySideEffect.NavigateToMemo)
             }.onFailure {
                 when (it) {
                     is ApiError -> Log.e("실패", it.message)
@@ -58,9 +78,8 @@ class CategoryViewModel @Inject constructor(
         }
     }
 
-    fun navigateCategory(categoryId: Int) {
-    }
-
-    fun navigateCategoryAdd() {
+    fun updateCategory() {
+        viewModelScope.launch {
+        }
     }
 }

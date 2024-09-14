@@ -57,13 +57,45 @@ import com.memozi.designsystem.R
 import com.memozi.designsystem.Ssurround
 import com.memozi.memo.MemoziCategory
 import com.memozi.ui.extension.customClickable
+import com.memozi.ui.lifecycle.LaunchedEffectWithLifecycle
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun MemoCategoryScreen(
-    viewModel: CategoryViewModel = hiltViewModel()
+    viewModel: CategoryViewModel = hiltViewModel(),
+    navigateMemo: () -> Unit = {}
 ) {
-    val navigationBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
     val state = viewModel.uiState.collectAsStateWithLifecycle()
+    LaunchedEffectWithLifecycle {
+        viewModel.sideEffect.collectLatest {
+            when (it) {
+                is CategorySideEffect.NavigateToCategory -> TODO()
+                CategorySideEffect.NavigateToCategoryAdd -> TODO()
+                CategorySideEffect.NavigateToMemo -> {
+                    navigateMemo()
+                }
+
+                CategorySideEffect.NavigateToSettings -> TODO()
+            }
+        }
+    }
+    CategoryScreen(viewModel = viewModel, state = state.value)
+    Row(
+        modifier = Modifier
+            .padding(top = 30.dp, end = 8.dp)
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.End
+    ) {
+        MemoziButton(
+            clickEvent = { viewModel.postCategory() },
+            enabled = state.value.btnEnable
+        )
+    }
+}
+
+@Composable
+fun CategoryScreen(viewModel: CategoryViewModel, state: CategoryState) {
+    val navigationBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -91,7 +123,7 @@ fun MemoCategoryScreen(
                 .padding(top = 30.dp)
                 .padding(horizontal = 16.dp)
                 .background(
-                    color = when (state.value.selectedColor) {
+                    color = when (state.selectedColor) {
                         0 -> MemoziTheme.colors.mainPink
                         1 -> MemoziTheme.colors.pink
                         2 -> MemoziTheme.colors.yellow01
@@ -108,9 +140,9 @@ fun MemoCategoryScreen(
                     },
                     shape = RoundedCornerShape(14.dp)
                 ),
-            imageURL = state.value.imageUrl,
-            title = state.value.name,
-            titleColor = Color(android.graphics.Color.parseColor(state.value.textColor)),
+            imageURL = state.imageUrl,
+            title = state.name,
+            titleColor = Color(android.graphics.Color.parseColor(state.textColor)),
             textStyle = TextStyle(
                 fontFamily = Ssurround,
                 fontSize = 32.sp,
@@ -122,35 +154,26 @@ fun MemoCategoryScreen(
                 .padding(end = 16.dp)
         )
 
-        CategoryTextField(onValueChange = { viewModel.updateName(it) })
+        CategoryTextField(name = state.name, onValueChange = { viewModel.updateName(it) })
 
         // Color Picker and Image Selection Grid
         ImageAndColorPicker(
-            imageUri = state.value.imageUrl.toUri(),
-            selectedColorIndex = state.value.selectedColor,
-            selectedTextColorIndex = state.value.selectedText,
+            selectedColorIndex = state.selectedColor,
+            selectedTextColorIndex = state.selectedText,
             updateUrl = { viewModel.updateImageUrl(it.toString()) },
-            updateTextColor = { viewModel.updateTextColor() },
             updateImageOpt = { viewModel.updateImageOpt(it) },
             updateSelectedTextColorIndex = { viewModel.setSelectedTextColorIndex(it) },
             updateSelectedColorIndex = { viewModel.setSelectedColorIndex(it) }
         )
     }
-    Row(
-        modifier = Modifier
-            .padding(top = 30.dp, end = 8.dp)
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.End
-    ) {
-        MemoziButton(clickEvent = { viewModel.postCategory() })
-    }
 }
 
 @Composable
 fun CategoryTextField(
-    onValueChange: (String) -> Unit = { }
+    onValueChange: (String) -> Unit = { },
+    name: String
 ) {
-    var text by remember { mutableStateOf("") }
+    var text by remember { mutableStateOf(name) }
     val maxCharCount = 10
     val isError = text.isEmpty()
 
@@ -172,6 +195,7 @@ fun CategoryTextField(
                 },
                 modifier = Modifier
                     .fillMaxHeight()
+                    .weight(1f)
                     .wrapContentHeight(Alignment.CenterVertically),
                 textStyle = MemoziTheme.typography.ngReg15.copy(MemoziTheme.colors.black),
                 decorationBox = { innerTextField ->
@@ -184,7 +208,6 @@ fun CategoryTextField(
                     innerTextField()
                 }
             )
-            Spacer(modifier = Modifier.weight(1f))
             Text(
                 text = "${text.length}/$maxCharCount",
                 modifier = Modifier.fillMaxHeight(),
@@ -225,12 +248,10 @@ fun CategoryTextField(
 
 @Composable
 fun ImageAndColorPicker(
-    imageUri: Uri,
     selectedColorIndex: Int,
     selectedTextColorIndex: Int,
     updateUrl: (Uri?) -> Unit = {},
     updateImageOpt: (Int) -> Unit = {},
-    updateTextColor: () -> Unit = {},
     updateSelectedColorIndex: (Int) -> Unit = {},
     updateSelectedTextColorIndex: (Int) -> Unit = {}
 ) {
@@ -329,7 +350,6 @@ fun PhotoPicker(
             }
         }
     }
-//
 }
 
 @Composable

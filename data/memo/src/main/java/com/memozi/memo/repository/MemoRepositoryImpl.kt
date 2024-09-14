@@ -1,6 +1,5 @@
 package com.memozi.memo.repository
 
-import android.util.Log
 import com.memozi.memo.model.Category
 import com.memozi.memo.model.response.toDomain
 import com.memozi.memo.source.remote.MemoRemoteDataSource

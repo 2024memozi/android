@@ -70,7 +70,7 @@ fun MemoRoute(
     modifier: Modifier = Modifier,
     viewModel: MemoViewModel = hiltViewModel(),
     navigateMemoDetail: (Int) -> Unit = {},
-    navigateToCategory: (Int) -> Unit = {},
+    navigateToCategoryEdit: (String, Int, String, String) -> Unit,
     navigateToCategoryAdd: () -> Unit = {},
     navigateSetting: () -> Unit = {}
 ) {
@@ -88,7 +88,12 @@ fun MemoRoute(
                 }
 
                 is MemoSideEffect.NavigateToCategory -> {
-                    navigateToCategory(sideEffect.categoryId)
+                    navigateToCategoryEdit(
+                        state.categoryList[pagerState.currentPage].representImage,
+                        state.categoryList[pagerState.currentPage].categoryId,
+                        state.categoryList[pagerState.currentPage].name,
+                        state.categoryList[pagerState.currentPage].txtColor
+                    )
                 }
 
                 is MemoSideEffect.NavigateToCategoryAdd -> {
@@ -128,7 +133,11 @@ fun MemoRoute(
                 .padding(top = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            MemoziHorizontalPagerIndicator(pagerState)
+            MemoziHorizontalPagerIndicator(
+                pagerState,
+                editClickEvent = { viewModel.navigateCategory(it) }
+            )
+
             Spacer(modifier = Modifier.height(16.dp))
             MemoList(
                 memoItems = state.memoList,
@@ -297,7 +306,7 @@ fun MemoziCategoryAdd(navigateToCategoryAdd: () -> Unit) {
 @Composable
 fun MemoziHorizontalPagerIndicator(
     pagerState: PagerState,
-    navigateToEdit: () -> Unit = {},
+    editClickEvent: (Int) -> Unit = {},
     pageCount: Int = pagerState.pageCount,
     modifier: Modifier = Modifier,
     activeColor: Color = MemoziTheme.colors.mainPurple,
@@ -326,11 +335,13 @@ fun MemoziHorizontalPagerIndicator(
                     .background(if (isSelected) activeColor else inactiveColor)
             )
         }
-        Icon(
-            painter = painterResource(id = R.drawable.ic_edit),
-            contentDescription = "edit",
-            modifier = Modifier.customClickable(onClick = navigateToEdit)
-        )
+        if (pagerState.currentPage != pagerState.pageCount - 1) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_edit),
+                contentDescription = "edit",
+                modifier = Modifier.customClickable(onClick = { editClickEvent(pagerState.currentPage) })
+            )
+        }
     }
 }
 
@@ -407,7 +418,7 @@ fun MemoItemCard(memo: Memo) {
 fun PreviewMemo() {
     MemoziTheme {
         Box(modifier = Modifier.background(color = MemoziTheme.colors.white)) {
-            MemoRoute(padding = PaddingValues(10.dp))
+//            MemoRoute(padding = PaddingValues(10.dp))
         }
     }
 }
