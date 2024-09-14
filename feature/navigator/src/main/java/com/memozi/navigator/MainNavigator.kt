@@ -10,6 +10,7 @@ import com.memozi.diary.navigation.DiaryRoute
 import com.memozi.login.navigation.LoginRoute
 import com.memozi.memo.navigation.MemoRoute
 import com.memozi.memo.navigation.navigateCategory
+import com.memozi.memo.navigation.navigateMemoAdd
 import com.memozi.memo.navigation.navigateSearch
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
@@ -40,7 +41,6 @@ internal class MainNavigator(
 
     fun navigateDiary() {
         navController.navigate(DiaryRoute.route) {
-
         }
     }
 
@@ -54,13 +54,14 @@ internal class MainNavigator(
     }
 
     fun navigateSetting() {
-        navController.navigate(MemoRoute.route) {
-            // todo 나중에 stetting으로 Route 변경
-        }
+        navController.navigate(MemoRoute.route)
     }
 
     fun navigateSearch() {
         navController.navigateSearch()
+    }
+    fun navigateMemoAdd() {
+        navController.navigateMemoAdd()
     }
 
     fun popBackStackIfNotLogin() {

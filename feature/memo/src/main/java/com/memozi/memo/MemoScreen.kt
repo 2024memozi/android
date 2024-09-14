@@ -70,11 +70,11 @@ fun MemoRoute(
     modifier: Modifier = Modifier,
     viewModel: MemoViewModel = hiltViewModel(),
     navigateMemoDetail: (Int) -> Unit = {},
-    navigateMemoAdd: () -> Unit={},
+    navigateMemoAdd: () -> Unit = {},
     navigateToCategoryEdit: (String, Int, String, String) -> Unit,
     navigateToCategoryAdd: () -> Unit = {},
     navigateSetting: () -> Unit = {},
-    navigateSearch: () -> Unit = {},
+    navigateSearch: () -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val pagerState =
@@ -122,7 +122,7 @@ fun MemoRoute(
                 MemoziSearchTextField(
                     modifier = Modifier
                         .height(40.dp)
-                        .customClickable (rippleEnabled = false){ viewModel.navigateSearch() }
+                        .customClickable(rippleEnabled = false) { viewModel.navigateSearch() }
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp),
                     enable = false

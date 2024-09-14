@@ -1,5 +1,6 @@
 package com.memozi.memo.navigation
 
+import MemoDetailScreen
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -23,10 +24,15 @@ fun NavController.navigateSearch() {
     navigate(MemoRoute.search)
 }
 
+fun NavController.navigateMemoAdd() {
+    navigate(MemoRoute.memoAdd)
+}
+
 fun NavGraphBuilder.memoNavGraph(
     padding: PaddingValues = PaddingValues(0.dp),
     modifier: Modifier = Modifier,
     navigateMemo: () -> Unit = {},
+    navigateMemoAdd: () -> Unit,
     navigateToMemoDetail: (Int) -> Unit = {},
     navigateToCategoryEdit: (String, Int, String, String) -> Unit,
     navigateToCategoryAdd: () -> Unit = {},
@@ -38,10 +44,12 @@ fun NavGraphBuilder.memoNavGraph(
             padding = padding,
             modifier = modifier,
             navigateMemoDetail = navigateToMemoDetail,
+            navigateMemoAdd = navigateMemoAdd,
             navigateToCategoryEdit = navigateToCategoryEdit,
             navigateToCategoryAdd = navigateToCategoryAdd,
             navigateSetting = navigateToSetting,
             navigateSearch = navigateSearch
+
         )
     }
     composable(route = MemoRoute.categoryAdd) {
@@ -62,6 +70,12 @@ fun NavGraphBuilder.memoNavGraph(
             navigateMemo = navigateMemo
         )
     }
+
+    composable(
+        route = MemoRoute.memoAdd
+    ) {
+        MemoDetailScreen()
+    }
 }
 
 object MemoRoute {
@@ -69,10 +83,13 @@ object MemoRoute {
     const val categoryAdd = "category/Add"
     const val edit = "category"
     const val search = "search"
+    const val memoAdd = "memoadd"
     const val CATEGORY_IMAGE = "category_img"
     const val CATEGORY_ID = "category_id"
     const val CATEGORY_NAME = "category_name"
     const val CATEGORY_TEXT = "category_text_color"
     fun editRoute(img: String, id: String, name: String, txtcolor: String) =
         "$edit/$img/$id/$name/$txtcolor"
+
+    fun editMemoRoute(memoId: String) = "memoedit/$memoId"
 }
