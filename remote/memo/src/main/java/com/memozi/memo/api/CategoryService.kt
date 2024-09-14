@@ -54,9 +54,8 @@ interface CategoryService {
         @Part images: MultipartBody.Part?
     ): ResponseCategory
 
-
     @GET("/category/search")
     suspend fun searchMemo(
-        @Query("query") query: String,
+        @Query("query") query: String
     ): ResponseSearch
 }

@@ -6,7 +6,6 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.memozi.diary.navigation.DiaryRoute
 import com.memozi.diary.navigation.navigateDiary
 import com.memozi.login.navigation.LoginRoute
 import com.memozi.memo.navigation.MemoRoute

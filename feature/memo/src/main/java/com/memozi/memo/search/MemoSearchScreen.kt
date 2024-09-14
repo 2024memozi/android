@@ -37,9 +37,7 @@ import com.memozi.component.top.MemoziBackground
 import com.memozi.designsystem.MemoziTheme
 import com.memozi.designsystem.R
 import com.memozi.memo.MemoFloatingButton
-import com.memozi.memo.model.MemoItem
 import com.memozi.memo.model.SearchResult
-import com.memozi.memo.model.dummyMemoItems
 
 @Composable
 fun MemoSearchScreen(
@@ -65,7 +63,6 @@ fun MemoSearchScreen(
             MemoziSearchTextField()
             Spacer(modifier = Modifier.width(16.dp))
         }
-
 
         if (state.result.isEmpty()) {
             EmptySearchList()

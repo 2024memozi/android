@@ -13,7 +13,7 @@ class MemoSearchViewModel @Inject constructor(
     private val memoRepository: MemoRepository
 ) : BaseViewModel<MemoSearchState, MemoSearchEffect>(MemoSearchState()) {
 
-    suspend fun getResult(){
+    suspend fun getResult() {
         viewModelScope.launch {
             memoRepository.getCategorySearch(uiState.value.query).onSuccess {
                 Log.d("getResult", "getResult: $it")
@@ -21,6 +21,5 @@ class MemoSearchViewModel @Inject constructor(
                 Log.d("getResult 실패", "getResult: ${it.message}")
             }
         }
-        
     }
 }

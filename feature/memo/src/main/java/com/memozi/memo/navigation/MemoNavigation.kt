@@ -9,8 +9,8 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.memozi.memo.MemoRoute
-import com.memozi.memo.search.MemoSearchScreen
 import com.memozi.memo.screen.MemoCategoryScreen
+import com.memozi.memo.search.MemoSearchScreen
 
 fun NavController.navigateMemo(navOptions: NavOptions) {
     navigate(MemoRoute.route, navOptions)
@@ -44,7 +44,7 @@ fun NavGraphBuilder.memoNavGraph(
         MemoRoute(
             padding = padding,
             modifier = modifier,
-            navigateDiary= navigateDiary,
+            navigateDiary = navigateDiary,
             navigateMemoDetail = navigateToMemoDetail,
             navigateMemoAdd = navigateMemoAdd,
             navigateToCategoryEdit = navigateToCategoryEdit,

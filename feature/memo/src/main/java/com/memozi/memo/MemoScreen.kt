@@ -69,7 +69,7 @@ fun MemoRoute(
     padding: PaddingValues,
     modifier: Modifier = Modifier,
     viewModel: MemoViewModel = hiltViewModel(),
-    navigateDiary: () ->Unit,
+    navigateDiary: () -> Unit,
     navigateMemoDetail: (Int) -> Unit = {},
     navigateMemoAdd: () -> Unit = {},
     navigateToCategoryEdit: (String, Int, String, String) -> Unit,

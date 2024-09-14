@@ -11,7 +11,7 @@ data class ResponseSearch(
     @SerialName("count")
     val count: Int,
     @SerialName("memos")
-    val memos: List<ResponseMemo>,
+    val memos: List<ResponseMemo>
 )
 
 fun ResponseSearch.toDomain() = SearchResult(
@@ -19,4 +19,3 @@ fun ResponseSearch.toDomain() = SearchResult(
     count = count,
     memos = memos.map { it.toDomain() }
 )
-
