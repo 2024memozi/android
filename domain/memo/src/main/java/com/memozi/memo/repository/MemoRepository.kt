@@ -16,7 +16,12 @@ interface MemoRepository {
         image: String?
     ): Result<Category>
 
-    suspend fun getCategory(categoryId: Int): Result<Category>
+    suspend fun getCategory(
+        categoryId: Int,
+        page: Int,
+        size: Int,
+        sort: List<String>
+    ): Result<Category>
 
     suspend fun getCategory(
         page: Int,

@@ -27,6 +27,14 @@ class MemoViewModel @Inject constructor(
         }
     }
 
+    fun getCategory(categoryId: Int) {
+        viewModelScope.launch {
+            memoRepository.getCategory(categoryId, 0, 10, emptyList())
+                .onSuccess { intent { copy(memoList = it.memo) } }
+                .onFailure { Log.d("api 실패", "memo - getCategory id : ${it.message}") }
+        }
+    }
+
     fun setMemo(selectCategory: Int) {
         if (selectCategory >= uiState.value.categoryList.size) {
             intent { copy(memoList = emptyList()) }

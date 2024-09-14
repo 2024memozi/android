@@ -82,7 +82,6 @@ fun MemoDetailScreen(
         }
     }
 
-
     val isEnabled =
         titleValue.isNotEmpty() && (checkBoxItems.isNotEmpty() || memoValue.isNotEmpty())
 

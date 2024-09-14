@@ -38,8 +38,25 @@ class MemoRepositoryImpl @Inject constructor(
         it.toDomain()
     }
 
-    override suspend fun getCategory(categoryId: Int): Result<Category> {
-        TODO("Not yet implemented")
+    override suspend fun getCategory(
+        categoryId: Int,
+        page: Int,
+        size: Int,
+        sort: List<String>
+    ): Result<Category> = runCatching {
+        memoRemoteDataSource.getCategory(categoryId, page, size, sort)
+    }.mapCatching {
+        it.toDomain()
+    }.recoverCatching { exception ->
+        when (exception) {
+            is HttpException -> {
+                throw ApiError(exception.message())
+            }
+
+            else -> {
+                throw exception
+            }
+        }
     }
 
     override suspend fun getCategory(

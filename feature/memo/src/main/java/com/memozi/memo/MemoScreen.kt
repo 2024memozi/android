@@ -117,8 +117,7 @@ fun MemoRoute(
             }
         }
     }
-
-    viewModel.setMemo(pagerState.currentPage)
+    if (pagerState.currentPage < state.categoryList.size) viewModel.getCategory(state.categoryList[pagerState.currentPage].categoryId)
     MemoziBackground()
     Column {
         MemoziTopAppbar(
