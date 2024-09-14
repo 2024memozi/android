@@ -2,6 +2,7 @@ package com.memozi.memo
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.memozi.memo.model.CheckBox
 import com.memozi.memo.repository.MemoRepository
 import com.memozi.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,6 +30,17 @@ class MemoViewModel @Inject constructor(
         if (selectCategory >= uiState.value.categoryList.size) {
             intent { copy(memoList = emptyList()) }
         } else if (uiState.value.categoryList.isNotEmpty()) intent { copy(memoList = uiState.value.categoryList[selectCategory].memo) }
+    }
+
+    fun putmemo(
+        selectCategory: Int = 45,
+        title: String = "test",
+        content: String = "test용 ",
+        checkBoxs: List<CheckBox> = emptyList()
+    ) {
+        viewModelScope.launch {
+            memoRepository.putMemo(selectCategory, title, content, checkBoxs)
+        }
     }
 
     fun navigateSetting() {

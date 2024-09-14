@@ -1,7 +1,10 @@
 package com.memozi.memo.repository
 
 import com.memozi.memo.model.Category
+import com.memozi.memo.model.CheckBox
+import com.memozi.memo.model.Memo
 import com.memozi.memo.model.SearchResult
+import com.memozi.memo.model.request.RequestCheckBox
 import com.memozi.memo.model.response.toDomain
 import com.memozi.memo.source.remote.MemoRemoteDataSource
 import com.memozi.model.exception.ApiError
@@ -23,7 +26,14 @@ class MemoRepositoryImpl @Inject constructor(
         txtColor: String,
         image: String?
     ): Result<Category> = runCatching {
-        memoRemoteDataSource.updateCategory(categoryId, name, defaultImageUrl, bgColorImageUrl, txtColor, image)
+        memoRemoteDataSource.updateCategory(
+            categoryId,
+            name,
+            defaultImageUrl,
+            bgColorImageUrl,
+            txtColor,
+            image
+        )
     }.mapCatching {
         it.toDomain()
     }
@@ -71,8 +81,25 @@ class MemoRepositoryImpl @Inject constructor(
             }
         }
     }
-    override suspend fun getCategorySearch(query:String): Result<SearchResult> = runCatching {
+
+    override suspend fun getCategorySearch(query: String): Result<SearchResult> = runCatching {
         memoRemoteDataSource.getCategorySearch(query)
+    }.mapCatching {
+        it.toDomain()
+    }
+
+    override suspend fun putMemo(
+        categoryId: Int,
+        title: String,
+        content: String,
+        checkBoxs: List<CheckBox>
+    ): Result<Memo> = runCatching {
+        memoRemoteDataSource.putMemo(
+            categoryId = categoryId,
+            title = title,
+            content = content,
+            checkBoxs = checkBoxs.map { RequestCheckBox(it.id, it.content, it.checked) }
+        )
     }.mapCatching {
         it.toDomain()
     }

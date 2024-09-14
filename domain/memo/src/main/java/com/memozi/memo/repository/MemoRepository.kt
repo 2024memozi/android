@@ -1,6 +1,8 @@
 package com.memozi.memo.repository
 
 import com.memozi.memo.model.Category
+import com.memozi.memo.model.CheckBox
+import com.memozi.memo.model.Memo
 import com.memozi.memo.model.SearchResult
 
 interface MemoRepository {
@@ -31,4 +33,11 @@ interface MemoRepository {
     ): Result<Unit>
 
     suspend fun getCategorySearch(query: String): Result<SearchResult>
+
+    suspend fun putMemo(
+        categoryId: Int,
+        title: String,
+        content: String,
+        checkBoxs: List<CheckBox>
+    ): Result<Memo>
 }

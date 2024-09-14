@@ -49,15 +49,19 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.memozi.component.button.CheckBoxSelected
 import com.memozi.component.button.CheckBoxUnSelected
 import com.memozi.designsystem.MemoziTheme
+import com.memozi.memo.MemoViewModel
 import com.memozi.memo.model.dummyMemoCategoriesItems
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MemoDetailScreen() {
+fun MemoDetailScreen(
+    viewmodel: MemoViewModel = hiltViewModel()
+) {
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
     var showBottomSheet by remember { mutableStateOf(false) }
@@ -110,7 +114,7 @@ fun MemoDetailScreen() {
                 }
                 if (isVisible) {
                     Button(
-                        onClick = {},
+                        onClick = { viewmodel.putmemo() },
                         modifier =
                         Modifier
                             .width(68.dp)
