@@ -8,6 +8,7 @@ import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -36,8 +37,19 @@ interface CategoryService {
         @Part images: MultipartBody.Part?
     )
 
-    @DELETE("/category")
+    @DELETE("/category/{categoryId}")
     suspend fun deleteCategory(
         @Path("categoryId") categoryId: Int
     )
+
+    @Multipart
+    @PUT("/category/{categoryId}")
+    suspend fun updateCategory(
+        @Path("categoryId") categoryId: Int,
+        @Part("name") name: RequestBody,
+        @Part("defaultImageUrl") defaultImageUrl: RequestBody?,
+        @Part("bgColorImageUrl") bgColorImageUrl: RequestBody?,
+        @Part("txtColor") txtColor: RequestBody,
+        @Part images: MultipartBody.Part?
+    ): ResponseCategory
 }

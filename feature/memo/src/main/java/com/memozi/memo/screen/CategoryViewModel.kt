@@ -27,15 +27,16 @@ class CategoryViewModel @Inject constructor(
             intent { copy(imageUrl = categoryImg) }
         }
         categoryName?.let {
-            intent { copy(name = categoryName) }
+            intent { copy(name = categoryName, btnEnable = categoryName.isNotBlank()) }
         }
         categoryTextColor?.let {
             intent { copy(textColor = categoryTextColor) }
         }
+        categoryId?.let { intent { copy(editMode = true) } }
     }
 
     fun updateName(name: String) {
-        intent { copy(name=name, btnEnable = name.isNotBlank()) }
+        intent { copy(name = name, btnEnable = name.isNotBlank()) }
     }
 
     fun updateImageUrl(imageUrl: String) {
@@ -80,6 +81,38 @@ class CategoryViewModel @Inject constructor(
 
     fun updateCategory() {
         viewModelScope.launch {
+            categoryId?.let {
+                memoRepository.updateCategory(
+                    categoryId = categoryId,
+                    name = uiState.value.name,
+                    defaultImageUrl = if (uiState.value.selectImgOpt == 1) uiState.value.imageUrl else null,
+                    bgColorImageUrl = if (uiState.value.selectedColor == 2) uiState.value.imageUrl else null,
+                    txtColor = uiState.value.textColor,
+                    image = if (uiState.value.selectImgOpt == 0) uiState.value.imageUrl else null
+                ).onSuccess {
+                    postSideEffect(CategorySideEffect.NavigateToMemo)
+                }.onFailure {
+                    when (it) {
+                        is ApiError -> Log.e("실패", it.message)
+                        else -> Log.e("실패", it.message.toString())
+                    }
+                }
+            }
+        }
+    }
+
+    fun deleteCategory() {
+        viewModelScope.launch {
+            categoryId?.let {
+                memoRepository.delCategory(it).onSuccess {
+                    postSideEffect(CategorySideEffect.NavigateToMemo)
+                }.onFailure {
+                    when (it) {
+                        is ApiError -> Log.e("실패", it.message)
+                        else -> Log.e("실패", it.message.toString())
+                    }
+                }
+            }
         }
     }
 }

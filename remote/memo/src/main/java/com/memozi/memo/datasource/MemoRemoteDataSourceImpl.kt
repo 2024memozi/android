@@ -62,4 +62,46 @@ class MemoRemoteDataSourceImpl @Inject constructor(
             )
         }
     }
+
+    override suspend fun updateCategory(
+        categoryId: Int,
+        name: String,
+        defaultImageUrl: String?,
+        bgColorImageUrl: String?,
+        txtColor: String,
+        image: String?
+    ): ResponseCategory {
+        image?.let {
+            val imageUri = image.toUri()
+            val file = FileConverter.uriToFile(context, imageUri)
+
+            file?.let {
+                val requestFile = it.asRequestBody("image/*".toMediaTypeOrNull())
+                val multipartBody =
+                    MultipartBody.Part.createFormData("images", it.name, requestFile)
+
+                return categoryService.updateCategory(
+                    categoryId,
+                    name.toRequestBody("text/plain".toMediaTypeOrNull()),
+                    defaultImageUrl?.toRequestBody("text/plain".toMediaTypeOrNull()),
+                    bgColorImageUrl?.toRequestBody("text/plain".toMediaTypeOrNull()),
+                    txtColor.toRequestBody("text/plain".toMediaTypeOrNull()),
+                    multipartBody
+                )
+            }
+        }
+
+        return categoryService.updateCategory(
+            categoryId,
+            name.toRequestBody("text/plain".toMediaTypeOrNull()),
+            defaultImageUrl?.toRequestBody("text/plain".toMediaTypeOrNull()),
+            bgColorImageUrl?.toRequestBody("text/plain".toMediaTypeOrNull()),
+            txtColor.toRequestBody("text/plain".toMediaTypeOrNull()),
+            null
+        )
+    }
+
+    override suspend fun delCategory(categoryId: Int) {
+        categoryService.deleteCategory(categoryId)
+    }
 }

@@ -79,7 +79,7 @@ fun MemoCategoryScreen(
             }
         }
     }
-    CategoryScreen(viewModel = viewModel, state = state.value)
+    CategoryScreen(viewModel = viewModel, state = state.value, editMode = state.value.editMode)
     Row(
         modifier = Modifier
             .padding(top = 30.dp, end = 8.dp)
@@ -87,14 +87,32 @@ fun MemoCategoryScreen(
         horizontalArrangement = Arrangement.End
     ) {
         MemoziButton(
-            clickEvent = { viewModel.postCategory() },
+            text = if (state.value.editMode) "저장" else "등록",
+            clickEvent = { if (state.value.editMode) viewModel.updateCategory() else viewModel.postCategory() },
             enabled = state.value.btnEnable
         )
+    }
+    Row(
+        modifier = Modifier
+            .padding(top = 30.dp, start = 8.dp)
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.Start
+    ) {
+        if (state.value.editMode) {
+            MemoziButton(
+                text = "삭제",
+                clickEvent = { viewModel.deleteCategory() }
+            )
+        }
     }
 }
 
 @Composable
-fun CategoryScreen(viewModel: CategoryViewModel, state: CategoryState) {
+fun CategoryScreen(
+    viewModel: CategoryViewModel,
+    state: CategoryState,
+    editMode: Boolean = false
+) {
     val navigationBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
     Column(
         modifier = Modifier
@@ -109,7 +127,7 @@ fun CategoryScreen(viewModel: CategoryViewModel, state: CategoryState) {
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = "카테고리 추가",
+                text = if (editMode) "카테고리 수정" else "카테고리 추가",
                 style = MemoziTheme.typography.ssuLight19,
                 color = MemoziTheme.colors.black,
                 textAlign = TextAlign.Center

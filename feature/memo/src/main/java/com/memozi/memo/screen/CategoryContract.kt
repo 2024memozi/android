@@ -12,8 +12,8 @@ data class CategoryState(
     val defaultImgId: Int = 2,
     val selectImgOpt: Int = 1, // 0 - url 사진 , 1- 기본 , 2- color
 
-    val btnEnable: Boolean = false
-
+    val btnEnable: Boolean = false,
+    val editMode: Boolean = false
 ) : UiState
 
 sealed interface CategorySideEffect : SideEffect {

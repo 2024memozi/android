@@ -10,12 +10,21 @@ import javax.inject.Inject
 class MemoRepositoryImpl @Inject constructor(
     private val memoRemoteDataSource: MemoRemoteDataSource
 ) : MemoRepository {
-    override suspend fun delCategory(categoryId: Int): Result<Unit> {
-        TODO("Not yet implemented")
+    override suspend fun delCategory(categoryId: Int): Result<Unit> = runCatching {
+        memoRemoteDataSource.delCategory(categoryId)
     }
 
-    override suspend fun putCategory(categoryId: Int): Result<Category> {
-        TODO("Not yet implemented")
+    override suspend fun updateCategory(
+        categoryId: Int,
+        name: String,
+        defaultImageUrl: String?,
+        bgColorImageUrl: String?,
+        txtColor: String,
+        image: String?
+    ): Result<Category> = runCatching {
+        memoRemoteDataSource.updateCategory(categoryId, name, defaultImageUrl, bgColorImageUrl, txtColor, image)
+    }.mapCatching {
+        it.toDomain()
     }
 
     override suspend fun getCategory(categoryId: Int): Result<Category> {
