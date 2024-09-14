@@ -9,6 +9,7 @@ import com.memozi.memo.model.request.RequestCheckBox
 import com.memozi.memo.model.request.RequestMemo
 import com.memozi.memo.model.request.RequestPageable
 import com.memozi.memo.model.response.ResponseCategory
+import com.memozi.memo.model.response.ResponseCategoryByID
 import com.memozi.memo.model.response.ResponseMemo
 import com.memozi.memo.model.response.ResponseSearch
 import com.memozi.memo.source.remote.MemoRemoteDataSource
@@ -38,6 +39,14 @@ class MemoRemoteDataSourceImpl @Inject constructor(
             checkBoxes = checkBoxs
         )
     )
+
+    override suspend fun getCategory(
+        categoryId: Int,
+        page: Int,
+        size: Int,
+        sort: List<String>
+    ): ResponseCategoryByID =
+        categoryService.getCategoryById(categoryId, pageable = RequestPageable(page, size, sort))
 
     override suspend fun getCategory(
         page: Int,

@@ -2,6 +2,7 @@ package com.memozi.memo.api
 
 import com.memozi.memo.model.request.RequestPageable
 import com.memozi.memo.model.response.ResponseCategory
+import com.memozi.memo.model.response.ResponseCategoryByID
 import com.memozi.memo.model.response.ResponseSearch
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -18,10 +19,8 @@ interface CategoryService {
     @GET("/category/{categoryId}")
     suspend fun getCategoryById(
         @Path("categoryId") categoryId: Int,
-        @Query("page") page: Int,
-        @Query("size") size: Int,
-        @Query("sort") sort: List<String>
-    ): ResponseCategory
+        @Query("pageable") pageable: RequestPageable
+    ): ResponseCategoryByID
 
     @GET("/category")
     suspend fun getAllCategories(

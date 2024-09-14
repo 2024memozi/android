@@ -2,6 +2,7 @@ package com.memozi.memo.source.remote
 
 import com.memozi.memo.model.request.RequestCheckBox
 import com.memozi.memo.model.response.ResponseCategory
+import com.memozi.memo.model.response.ResponseCategoryByID
 import com.memozi.memo.model.response.ResponseMemo
 import com.memozi.memo.model.response.ResponseSearch
 
@@ -13,6 +14,13 @@ interface MemoRemoteDataSource {
         content: String,
         checkBoxs: List<RequestCheckBox>
     ): ResponseMemo
+
+    suspend fun getCategory(
+        categoryId: Int,
+        page: Int,
+        size: Int,
+        sort: List<String>
+    ): ResponseCategoryByID
 
     suspend fun getCategory(
         page: Int,
