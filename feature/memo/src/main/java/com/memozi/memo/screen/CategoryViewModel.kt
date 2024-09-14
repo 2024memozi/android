@@ -35,7 +35,7 @@ class CategoryViewModel @Inject constructor(
     }
 
     fun updateName(name: String) {
-        intent { copy(btnEnable = name.isNotBlank()) }
+        intent { copy(name=name, btnEnable = name.isNotBlank()) }
     }
 
     fun updateImageUrl(imageUrl: String) {
