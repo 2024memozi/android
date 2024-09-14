@@ -65,7 +65,7 @@ class CategoryViewModel @Inject constructor(
             memoRepository.postCategory(
                 name = uiState.value.name,
                 defaultImageUrl = if (uiState.value.selectImgOpt == 1) uiState.value.imageUrl else null,
-                bgColorImageUrl = if (uiState.value.selectedColor == 2) uiState.value.imageUrl else null,
+                bgColorImageUrl = if (uiState.value.selectImgOpt == 2) uiState.value.imageUrl else null,
                 txtColor = uiState.value.textColor,
                 image = if (uiState.value.selectImgOpt == 0) uiState.value.imageUrl else null
             ).onSuccess {
@@ -86,7 +86,7 @@ class CategoryViewModel @Inject constructor(
                     categoryId = categoryId,
                     name = uiState.value.name,
                     defaultImageUrl = if (uiState.value.selectImgOpt == 1) uiState.value.imageUrl else null,
-                    bgColorImageUrl = if (uiState.value.selectedColor == 2) uiState.value.imageUrl else null,
+                    bgColorImageUrl = if (uiState.value.selectImgOpt == 2) uiState.value.imageUrl else null,
                     txtColor = uiState.value.textColor,
                     image = if (uiState.value.selectImgOpt == 0) uiState.value.imageUrl else null
                 ).onSuccess {

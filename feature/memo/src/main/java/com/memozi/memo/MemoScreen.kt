@@ -228,7 +228,7 @@ fun MemoziHorizontalPager(
                 MemoziCategory(
                     imageURL = category[page].representImage,
                     title = category[page].name,
-                    titleColor = Color(android.graphics.Color.parseColor("#333333"))
+                    titleColor = Color(android.graphics.Color.parseColor(category[page].txtColor))
                 )
             }
         }
