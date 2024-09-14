@@ -46,11 +46,5 @@ interface MemoRemoteDataSource {
     ): ResponseCategory
 
     suspend fun delCategory(categoryId: Int)
-    suspend fun getCategorySearch(query: String): ResponseSearch
+    suspend fun getCategorySearch(query: String): List<ResponseSearch>
 }
-
-data class CheckBox(
-    val id: Int,
-    val content: String,
-    val checked: Boolean
-)

@@ -13,13 +13,14 @@ class MemoSearchViewModel @Inject constructor(
     private val memoRepository: MemoRepository
 ) : BaseViewModel<MemoSearchState, MemoSearchEffect>(MemoSearchState()) {
 
-    suspend fun getResult() {
+    fun getResult(query: String) {
         viewModelScope.launch {
-            memoRepository.getCategorySearch(uiState.value.query).onSuccess {
-                Log.d("getResult", "getResult: $it")
-            }.onFailure {
-                Log.d("getResult 실패", "getResult: ${it.message}")
-            }
+            memoRepository.getCategorySearch(query)
+                .onSuccess {
+                    intent { copy(result = it) }
+                }.onFailure {
+                    Log.d("getResult 실패", "getResult: ${it.message}")
+                }
         }
     }
 }

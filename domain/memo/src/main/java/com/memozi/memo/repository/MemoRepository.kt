@@ -37,7 +37,7 @@ interface MemoRepository {
         image: String?
     ): Result<Unit>
 
-    suspend fun getCategorySearch(query: String): Result<SearchResult>
+    suspend fun getCategorySearch(query: String): Result<List<SearchResult>>
 
     suspend fun putMemo(
         categoryId: Int,

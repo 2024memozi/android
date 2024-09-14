@@ -134,6 +134,6 @@ class MemoRemoteDataSourceImpl @Inject constructor(
         categoryService.deleteCategory(categoryId)
     }
 
-    override suspend fun getCategorySearch(query: String): ResponseSearch =
+    override suspend fun getCategorySearch(query: String): List<ResponseSearch> =
         categoryService.searchMemo(query)
 }

@@ -99,10 +99,20 @@ class MemoRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getCategorySearch(query: String): Result<SearchResult> = runCatching {
+    override suspend fun getCategorySearch(query: String): Result<List<SearchResult>> = runCatching {
         memoRemoteDataSource.getCategorySearch(query)
     }.mapCatching {
-        it.toDomain()
+        it.map { it.toDomain() }
+    }.recoverCatching { exception ->
+        when (exception) {
+            is HttpException -> {
+                throw ApiError(exception.message())
+            }
+
+            else -> {
+                throw exception
+            }
+        }
     }
 
     override suspend fun putMemo(

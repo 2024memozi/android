@@ -73,7 +73,7 @@ fun MemoDetailScreen(
 ) {
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
-    var showBottomSheet by remember { mutableStateOf(false) }
+    var showBottomSheet by remember { mutableStateOf(true) }
     val navigationBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
     var titleValue by remember { mutableStateOf("") }
     var memoValue by remember { mutableStateOf("") }

@@ -46,6 +46,7 @@ fun MemoSearchScreen(
     MemoziBackground(topWeight = 5f, bottomWeight = 25f)
     val navigationBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+
     Column(
         modifier =
         Modifier
@@ -60,7 +61,7 @@ fun MemoSearchScreen(
                 .padding(bottom = 15.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            MemoziSearchTextField()
+            MemoziSearchTextField(onValueChange = { viewModel.getResult(it) })
             Spacer(modifier = Modifier.width(16.dp))
         }
 

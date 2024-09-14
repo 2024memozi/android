@@ -56,5 +56,5 @@ interface CategoryService {
     @GET("/category/search")
     suspend fun searchMemo(
         @Query("query") query: String
-    ): ResponseSearch
+    ): List<ResponseSearch>
 }
