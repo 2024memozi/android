@@ -71,7 +71,7 @@ fun MemoRoute(
     viewModel: MemoViewModel = hiltViewModel(),
     navigateDiary: () -> Unit,
     navigateMemoDetail: (Int) -> Unit = {},
-    navigateMemoAdd: () -> Unit = {},
+    navigateMemoAdd: (Int) -> Unit = {},
     navigateToCategoryEdit: (String, Int, String, String) -> Unit,
     navigateToCategoryAdd: () -> Unit = {},
     navigateSetting: () -> Unit = {},
@@ -82,7 +82,7 @@ fun MemoRoute(
         rememberPagerState(initialPage = 0, pageCount = { state.categoryList.size + 1 })
     val navigationBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
-    LaunchedEffectWithLifecycle() {
+    LaunchedEffectWithLifecycle {
         viewModel.getCategory()
         viewModel.sideEffect.collectLatest { sideEffect ->
             when (sideEffect) {
@@ -109,6 +109,10 @@ fun MemoRoute(
 
                 MemoSideEffect.NavigateSearch -> {
                     navigateSearch()
+                }
+
+                is MemoSideEffect.NavigateMemoAdd -> {
+                    navigateMemoAdd(state.categoryList[pagerState.currentPage].categoryId)
                 }
             }
         }
@@ -156,7 +160,9 @@ fun MemoRoute(
             )
         }
     }
-    MemoFloatingButton(navigateMemoAdd = navigateMemoAdd)
+    MemoFloatingButton(
+        navigateMemoAdd = { viewModel.navigateMemoAdd() }
+    )
 }
 
 @Composable

@@ -60,8 +60,8 @@ internal class MainNavigator(
         navController.navigateSearch()
     }
 
-    fun navigateMemoAdd() {
-        navController.navigateMemoAdd()
+    fun navigateMemoAdd(categoryId: Int) {
+        navController.navigateMemoAdd(categoryId)
     }
 
     fun popBackStackIfNotLogin() {

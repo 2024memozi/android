@@ -24,8 +24,8 @@ fun NavController.navigateSearch() {
     navigate(MemoRoute.search)
 }
 
-fun NavController.navigateMemoAdd() {
-    navigate(MemoRoute.memoAdd)
+fun NavController.navigateMemoAdd(categoryId: Int) {
+    navigate(MemoRoute.addMemo(categoryId.toString()))
 }
 
 fun NavGraphBuilder.memoNavGraph(
@@ -33,7 +33,7 @@ fun NavGraphBuilder.memoNavGraph(
     modifier: Modifier = Modifier,
     navigateDiary: () -> Unit = {},
     navigateMemo: () -> Unit = {},
-    navigateMemoAdd: () -> Unit,
+    navigateMemoAdd: (Int) -> Unit,
     navigateToMemoDetail: (Int) -> Unit = {},
     navigateToCategoryEdit: (String, Int, String, String) -> Unit,
     navigateToCategoryAdd: () -> Unit = {},
@@ -51,7 +51,6 @@ fun NavGraphBuilder.memoNavGraph(
             navigateToCategoryAdd = navigateToCategoryAdd,
             navigateSetting = navigateToSetting,
             navigateSearch = navigateSearch
-
         )
     }
     composable(route = MemoRoute.categoryAdd) {
@@ -74,7 +73,9 @@ fun NavGraphBuilder.memoNavGraph(
     }
 
     composable(
-        route = MemoRoute.memoAdd
+        route = MemoRoute.addMemo(
+            "{${MemoRoute.CATEGORY_ID}}"
+        )
     ) {
         MemoDetailScreen()
     }
@@ -93,5 +94,6 @@ object MemoRoute {
     fun editRoute(img: String, id: String, name: String, txtcolor: String) =
         "$edit/$img/$id/$name/$txtcolor"
 
+    fun addMemo(categoryId: String) = "$memoAdd/$categoryId"
     fun editMemoRoute(memoId: String) = "memoedit/$memoId"
 }

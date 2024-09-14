@@ -1,6 +1,7 @@
 package com.memozi.memo
 
 import android.util.Log
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.memozi.memo.model.CheckBox
 import com.memozi.memo.repository.MemoRepository
@@ -11,18 +12,18 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MemoViewModel @Inject constructor(
-    private val memoRepository: MemoRepository
+    private val memoRepository: MemoRepository,
+    savedStateHandle: SavedStateHandle
 ) : BaseViewModel<MemoState, MemoSideEffect>(MemoState()) {
+
+    val categoryId =
+        savedStateHandle.get<String>(com.memozi.memo.navigation.MemoRoute.CATEGORY_ID)?.toInt()
 
     fun getCategory() {
         viewModelScope.launch {
             memoRepository.getCategory(0, 10, emptyList())
-                .onSuccess { categoryList ->
-                    intent { copy(categoryList = categoryList) }
-                }
-                .onFailure {
-                    Log.d("api 실패", "memo - getCategory: ${it.message}")
-                }
+                .onSuccess { categoryList -> intent { copy(categoryList = categoryList) } }
+                .onFailure { Log.d("api 실패", "memo - getCategory: ${it.message}") }
         }
     }
 
@@ -33,13 +34,14 @@ class MemoViewModel @Inject constructor(
     }
 
     fun putmemo(
-        selectCategory: Int = 45,
-        title: String = "test",
+        title: String = "test", // todo 바꿀것
         content: String = "test용 ",
         checkBoxs: List<CheckBox> = emptyList()
     ) {
         viewModelScope.launch {
-            memoRepository.putMemo(selectCategory, title, content, checkBoxs)
+            categoryId?.let {
+                memoRepository.putMemo(categoryId, title, content, checkBoxs)
+            }
         }
     }
 
@@ -49,6 +51,10 @@ class MemoViewModel @Inject constructor(
 
     fun navigateMemo(memoId: Int) {
         postSideEffect(MemoSideEffect.NavigateToMemo(memoId))
+    }
+
+    fun navigateMemoAdd() {
+        postSideEffect(MemoSideEffect.NavigateMemoAdd)
     }
 
     fun navigateCategory(categoryId: Int) {

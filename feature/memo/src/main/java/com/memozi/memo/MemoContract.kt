@@ -18,4 +18,5 @@ sealed interface MemoSideEffect : SideEffect {
     data object NavigateToCategoryAdd : MemoSideEffect
     data object NavigateToSettings : MemoSideEffect
     data object NavigateSearch : MemoSideEffect
+    data object NavigateMemoAdd : MemoSideEffect
 }

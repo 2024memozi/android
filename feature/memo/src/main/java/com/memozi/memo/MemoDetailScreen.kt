@@ -54,6 +54,7 @@ import com.memozi.component.button.CheckBoxSelected
 import com.memozi.component.button.CheckBoxUnSelected
 import com.memozi.designsystem.MemoziTheme
 import com.memozi.memo.MemoViewModel
+import com.memozi.memo.model.CheckBox
 import com.memozi.memo.model.dummyMemoCategoriesItems
 import kotlinx.coroutines.launch
 
@@ -70,6 +71,17 @@ fun MemoDetailScreen(
     var memoValue by remember { mutableStateOf("") }
     var checkBoxItems by remember { mutableStateOf<List<Pair<Boolean, String>>>(listOf()) } // 상태와 텍스트를 저장
     var isVisible by remember { mutableStateOf(true) }
+
+    fun convertToCheckBoxList(checkBoxItems: List<Pair<Boolean, String>>): List<CheckBox> {
+        return checkBoxItems.mapIndexed { index, pair ->
+            CheckBox(
+                id = index,
+                content = pair.second,
+                checked = pair.first
+            )
+        }
+    }
+
 
     val isEnabled =
         titleValue.isNotEmpty() && (checkBoxItems.isNotEmpty() || memoValue.isNotEmpty())
@@ -114,7 +126,13 @@ fun MemoDetailScreen(
                 }
                 if (isVisible) {
                     Button(
-                        onClick = { viewmodel.putmemo() },
+                        onClick = {
+                            viewmodel.putmemo(
+                                title = titleValue,
+                                content = memoValue,
+                                checkBoxs = convertToCheckBoxList(checkBoxItems)
+                            )
+                        },
                         modifier =
                         Modifier
                             .width(68.dp)
