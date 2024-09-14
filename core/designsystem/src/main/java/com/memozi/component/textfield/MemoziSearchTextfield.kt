@@ -46,6 +46,7 @@ fun MemoziSearchTextField(
     onCancelClick: () -> Unit = {},
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Default),
     keyboardActions: KeyboardActions = KeyboardActions.Default,
+    enable:Boolean = true,
 ) {
     var value by remember { mutableStateOf("") }
     var isFocused by remember { mutableStateOf(false) }
@@ -94,6 +95,7 @@ fun MemoziSearchTextField(
                 }
                 innerTextField()
             },
+            enabled = enable
         )
     }
     if (isFocused) {

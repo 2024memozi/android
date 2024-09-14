@@ -70,6 +70,7 @@ fun MemoRoute(
     modifier: Modifier = Modifier,
     viewModel: MemoViewModel = hiltViewModel(),
     navigateMemoDetail: (Int) -> Unit = {},
+    navigateMemoAdd: () -> Unit={},
     navigateToCategoryEdit: (String, Int, String, String) -> Unit,
     navigateToCategoryAdd: () -> Unit = {},
     navigateSetting: () -> Unit = {},
@@ -121,9 +122,10 @@ fun MemoRoute(
                 MemoziSearchTextField(
                     modifier = Modifier
                         .height(40.dp)
-                        .customClickable { viewModel.navigateSearch() }
+                        .customClickable (rippleEnabled = false){ viewModel.navigateSearch() }
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
+                        .padding(horizontal = 16.dp),
+                    enable = false
                 )
             }
         )
@@ -152,7 +154,7 @@ fun MemoRoute(
             )
         }
     }
-    MemoFloatingButton()
+    MemoFloatingButton(navigateMemoAdd = navigateMemoAdd)
 }
 
 @Composable
