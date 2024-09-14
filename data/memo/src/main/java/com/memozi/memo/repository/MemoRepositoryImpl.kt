@@ -1,6 +1,7 @@
 package com.memozi.memo.repository
 
 import com.memozi.memo.model.Category
+import com.memozi.memo.model.SearchResult
 import com.memozi.memo.model.response.toDomain
 import com.memozi.memo.source.remote.MemoRemoteDataSource
 import com.memozi.model.exception.ApiError
@@ -70,7 +71,9 @@ class MemoRepositoryImpl @Inject constructor(
             }
         }
     }
-    override suspend fun getCategorySearch(): Result<List<Category>> {
-        TODO("Not yet implemented")
+    override suspend fun getCategorySearch(query:String): Result<SearchResult> = runCatching {
+        memoRemoteDataSource.getCategorySearch(query)
+    }.mapCatching {
+        it.toDomain()
     }
 }

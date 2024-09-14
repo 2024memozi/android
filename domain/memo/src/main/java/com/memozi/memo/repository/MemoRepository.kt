@@ -1,6 +1,7 @@
 package com.memozi.memo.repository
 
 import com.memozi.memo.model.Category
+import com.memozi.memo.model.SearchResult
 
 interface MemoRepository {
     suspend fun delCategory(categoryId: Int): Result<Unit>
@@ -29,5 +30,5 @@ interface MemoRepository {
         image: String?
     ): Result<Unit>
 
-    suspend fun getCategorySearch(): Result<List<Category>>
+    suspend fun getCategorySearch(query: String): Result<SearchResult>
 }

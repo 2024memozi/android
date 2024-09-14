@@ -1,6 +1,7 @@
 package com.memozi.memo.source.remote
 
 import com.memozi.memo.model.response.ResponseCategory
+import com.memozi.memo.model.response.ResponseSearch
 
 interface MemoRemoteDataSource {
 
@@ -31,5 +32,5 @@ interface MemoRemoteDataSource {
     ): ResponseCategory
 
     suspend fun delCategory(categoryId: Int)
-//    suspend fun getCategorySearch(): Result<List<Category>>
+    suspend fun getCategorySearch(query:String): ResponseSearch
 }

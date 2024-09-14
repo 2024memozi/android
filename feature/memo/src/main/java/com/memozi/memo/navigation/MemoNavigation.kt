@@ -9,7 +9,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.memozi.memo.MemoRoute
-import com.memozi.memo.MemoSearchScreen
+import com.memozi.memo.search.MemoSearchScreen
 import com.memozi.memo.screen.MemoCategoryScreen
 
 fun NavController.navigateMemo(navOptions: NavOptions) {

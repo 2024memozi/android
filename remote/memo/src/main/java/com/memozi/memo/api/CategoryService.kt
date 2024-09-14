@@ -2,6 +2,7 @@ package com.memozi.memo.api
 
 import com.memozi.memo.model.request.RequestPageable
 import com.memozi.memo.model.response.ResponseCategory
+import com.memozi.memo.model.response.ResponseSearch
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.DELETE
@@ -52,4 +53,10 @@ interface CategoryService {
         @Part("txtColor") txtColor: RequestBody,
         @Part images: MultipartBody.Part?
     ): ResponseCategory
+
+
+    @GET("/category/search")
+    suspend fun searchMemo(
+        @Query("query") query: String,
+    ): ResponseSearch
 }

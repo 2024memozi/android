@@ -1,4 +1,4 @@
-package com.memozi.memo
+package com.memozi.memo.search
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -23,24 +23,31 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.memozi.component.textfield.MemoziSearchTextField
 import com.memozi.component.top.MemoziBackground
 import com.memozi.designsystem.MemoziTheme
 import com.memozi.designsystem.R
+import com.memozi.memo.MemoFloatingButton
 import com.memozi.memo.model.MemoItem
+import com.memozi.memo.model.SearchResult
 import com.memozi.memo.model.dummyMemoItems
 
 @Composable
-fun MemoSearchScreen() {
+fun MemoSearchScreen(
+    viewModel: MemoSearchViewModel = hiltViewModel()
+) {
     MemoziBackground(topWeight = 5f, bottomWeight = 25f)
     val navigationBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
-
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
     Column(
         modifier =
         Modifier
@@ -59,15 +66,11 @@ fun MemoSearchScreen() {
             Spacer(modifier = Modifier.width(16.dp))
         }
 
-        val dummyData =
-            listOf(
-                "투두 리스트" to dummyMemoItems().subList(3, 6),
-                "구매 리스트" to dummyMemoItems().subList(0, 3)
-            )
-        if (dummyData.all { it.second.isEmpty() }) {
+
+        if (state.result.isEmpty()) {
             EmptySearchList()
         } else {
-            memoSearchList(dummyData)
+            memoSearchList(state.result)
         }
     }
 }
@@ -162,14 +165,14 @@ fun MemoItemCard(
 }
 
 @Composable
-fun memoSearchList(dummyData: List<Pair<String, List<MemoItem>>>) {
+fun memoSearchList(searchResults: List<SearchResult>) {
     LazyColumn(
         modifier =
         Modifier
             .fillMaxSize()
             .padding(vertical = 10.dp)
     ) {
-        dummyData.forEach { (title, memoItems) ->
+        searchResults.forEach { searchResult ->
             item {
                 Row(
                     modifier =
@@ -179,24 +182,24 @@ fun memoSearchList(dummyData: List<Pair<String, List<MemoItem>>>) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = title,
+                        text = searchResult.name,
                         style = MemoziTheme.typography.ngBold15,
                         modifier = Modifier.alignByBaseline()
                     )
                     Spacer(modifier = Modifier.padding(end = 4.dp))
                     Text(
-                        text = "카테고리에서 ${memoItems.size}개의 메모를 발견했습니다!",
+                        text = "카테고리에서 ${searchResult.count}개의 메모를 발견했습니다!",
                         style = MemoziTheme.typography.ngReg8,
                         modifier = Modifier.alignByBaseline()
                     )
                 }
             }
 
-            items(memoItems) { memo ->
+            items(searchResult.memos) { memo ->
                 MemoItemCard(
                     memoTitle = memo.title,
                     memoContent = memo.content,
-                    memoDate = memo.date
+                    memoDate = memo.dayOfWeek
                 )
             }
         }

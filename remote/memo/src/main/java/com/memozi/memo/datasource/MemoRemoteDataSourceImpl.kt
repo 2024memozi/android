@@ -6,6 +6,7 @@ import com.memozi.memo.FileConverter
 import com.memozi.memo.api.CategoryService
 import com.memozi.memo.model.request.RequestPageable
 import com.memozi.memo.model.response.ResponseCategory
+import com.memozi.memo.model.response.ResponseSearch
 import com.memozi.memo.source.remote.MemoRemoteDataSource
 import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -104,4 +105,8 @@ class MemoRemoteDataSourceImpl @Inject constructor(
     override suspend fun delCategory(categoryId: Int) {
         categoryService.deleteCategory(categoryId)
     }
+
+    override suspend fun getCategorySearch(query: String): ResponseSearch =
+        categoryService.searchMemo(query)
+
 }
