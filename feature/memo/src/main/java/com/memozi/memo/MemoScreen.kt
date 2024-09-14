@@ -117,7 +117,11 @@ fun MemoRoute(
             }
         }
     }
-    if (pagerState.currentPage < state.categoryList.size) viewModel.getCategory(state.categoryList[pagerState.currentPage].categoryId)
+    if (pagerState.currentPage < state.categoryList.size) {
+        viewModel.getCategory(state.categoryList[pagerState.currentPage].categoryId)
+    } else {
+        viewModel.setMemoEmpty()
+    }
     MemoziBackground()
     Column {
         MemoziTopAppbar(
@@ -160,39 +164,43 @@ fun MemoRoute(
         }
     }
     MemoFloatingButton(
-        navigateMemoAdd = { viewModel.navigateMemoAdd() }
+        navigateMemoAdd = { viewModel.navigateMemoAdd() },
+        visibility = pagerState.currentPage != pagerState.pageCount - 1
     )
 }
 
 @Composable
 fun MemoFloatingButton(
-    navigateMemoAdd: () -> Unit = {}
+    navigateMemoAdd: () -> Unit = {},
+    visibility: Boolean = true
 ) {
     val navigationBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
-    Box(
-        modifier = Modifier
-            .fillMaxSize(),
-        contentAlignment = Alignment.BottomEnd
-    ) {
+    if (visibility) {
         Box(
             modifier = Modifier
-                .padding(bottom = 51.dp + navigationBarHeight)
-                .padding(end = 8.dp)
-                .background(Color.Transparent)
-                .width(55.dp)
-                .height(55.dp)
-                .customClickable(rippleEnabled = false) { navigateMemoAdd() }
-                .background(
-                    color = MemoziTheme.colors.mainPurple02,
-                    shape = CircleShape
-                )
+                .fillMaxSize(),
+            contentAlignment = Alignment.BottomEnd
         ) {
-            Icon(
-                painterResource(id = R.drawable.ic_plus_white_34),
-                contentDescription = "Add Memo",
-                tint = MemoziTheme.colors.white,
-                modifier = Modifier.align(Alignment.Center)
-            )
+            Box(
+                modifier = Modifier
+                    .padding(bottom = 51.dp + navigationBarHeight)
+                    .padding(end = 8.dp)
+                    .background(Color.Transparent)
+                    .width(55.dp)
+                    .height(55.dp)
+                    .customClickable(rippleEnabled = false) { navigateMemoAdd() }
+                    .background(
+                        color = MemoziTheme.colors.mainPurple02,
+                        shape = CircleShape
+                    )
+            ) {
+                Icon(
+                    painterResource(id = R.drawable.ic_plus_white_34),
+                    contentDescription = "Add Memo",
+                    tint = MemoziTheme.colors.white,
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
         }
     }
 }
