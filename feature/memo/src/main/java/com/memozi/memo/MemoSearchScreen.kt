@@ -43,17 +43,17 @@ fun MemoSearchScreen() {
 
     Column(
         modifier =
-            Modifier
-                .fillMaxSize()
-                .padding(horizontal = 16.dp)
-                .padding(top = 20.dp + navigationBarHeight),
+        Modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp)
+            .padding(top = 20.dp + navigationBarHeight)
     ) {
         Row(
             modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 15.dp),
-            verticalAlignment = Alignment.CenterVertically,
+            Modifier
+                .fillMaxWidth()
+                .padding(bottom = 15.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             MemoziSearchTextField()
             Spacer(modifier = Modifier.width(16.dp))
@@ -62,7 +62,7 @@ fun MemoSearchScreen() {
         val dummyData =
             listOf(
                 "투두 리스트" to dummyMemoItems().subList(3, 6),
-                "구매 리스트" to dummyMemoItems().subList(0, 3),
+                "구매 리스트" to dummyMemoItems().subList(0, 3)
             )
         if (dummyData.all { it.second.isEmpty() }) {
             EmptySearchList()
@@ -76,27 +76,27 @@ fun MemoSearchScreen() {
 fun EmptySearchList() {
     Box(
         modifier =
-            Modifier
-                .fillMaxSize()
-                .padding(horizontal = 16.dp),
+        Modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp)
     ) {
         Column(
             modifier =
-                Modifier
-                    .align(Alignment.Center),
+            Modifier
+                .align(Alignment.Center),
             // 중앙 정렬
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
                 painter = painterResource(id = R.drawable.ic_hing),
-                contentDescription = null,
+                contentDescription = null
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = "항목을 찾을 수 없어요ㅠ",
                 style = MemoziTheme.typography.ssuLight15,
-                color = MemoziTheme.colors.black,
+                color = MemoziTheme.colors.black
             )
         }
         MemoFloatingButton()
@@ -107,47 +107,47 @@ fun EmptySearchList() {
 fun MemoItemCard(
     memoTitle: String,
     memoContent: String,
-    memoDate: String,
+    memoDate: String
 ) {
     Card(
         modifier =
-            Modifier
-                .fillMaxWidth()
-                .aspectRatio(328f / 111f)
-                .padding(vertical = 8.dp),
+        Modifier
+            .fillMaxWidth()
+            .aspectRatio(328f / 111f)
+            .padding(vertical = 8.dp),
         shape = RoundedCornerShape(8.dp),
-        elevation = CardDefaults.cardElevation(4.dp),
+        elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Column(
             modifier =
-                Modifier
-                    .fillMaxSize()
-                    .background(Color.White)
-                    .padding(18.dp),
+            Modifier
+                .fillMaxSize()
+                .background(Color.White)
+                .padding(18.dp)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         text = "|",
                         style = MemoziTheme.typography.ngReg15,
-                        color = MemoziTheme.colors.gray07,
+                        color = MemoziTheme.colors.gray07
                     )
                     Spacer(modifier = Modifier.width(4.dp))
 
                     Text(
                         text = memoTitle,
                         style = MemoziTheme.typography.ngReg15,
-                        color = MemoziTheme.colors.black,
+                        color = MemoziTheme.colors.black
                     )
                 }
                 Text(
                     text = memoDate,
                     style = MemoziTheme.typography.ngReg11,
-                    color = MemoziTheme.colors.black,
+                    color = MemoziTheme.colors.black
                 )
             }
 
@@ -155,7 +155,7 @@ fun MemoItemCard(
             Text(
                 text = memoContent,
                 style = MemoziTheme.typography.ngReg13,
-                color = MemoziTheme.colors.black,
+                color = MemoziTheme.colors.black
             )
         }
     }
@@ -165,29 +165,29 @@ fun MemoItemCard(
 fun memoSearchList(dummyData: List<Pair<String, List<MemoItem>>>) {
     LazyColumn(
         modifier =
-            Modifier
-                .fillMaxSize()
-                .padding(vertical = 10.dp),
+        Modifier
+            .fillMaxSize()
+            .padding(vertical = 10.dp)
     ) {
         dummyData.forEach { (title, memoItems) ->
             item {
                 Row(
                     modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(top = 30.dp),
-                    verticalAlignment = Alignment.CenterVertically,
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(top = 30.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         text = title,
                         style = MemoziTheme.typography.ngBold15,
-                        modifier = Modifier.alignByBaseline(),
+                        modifier = Modifier.alignByBaseline()
                     )
                     Spacer(modifier = Modifier.padding(end = 4.dp))
                     Text(
                         text = "카테고리에서 ${memoItems.size}개의 메모를 발견했습니다!",
                         style = MemoziTheme.typography.ngReg8,
-                        modifier = Modifier.alignByBaseline(),
+                        modifier = Modifier.alignByBaseline()
                     )
                 }
             }
@@ -196,7 +196,7 @@ fun memoSearchList(dummyData: List<Pair<String, List<MemoItem>>>) {
                 MemoItemCard(
                     memoTitle = memo.title,
                     memoContent = memo.content,
-                    memoDate = memo.date,
+                    memoDate = memo.date
                 )
             }
         }

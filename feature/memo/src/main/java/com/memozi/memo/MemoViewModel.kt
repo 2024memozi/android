@@ -47,7 +47,7 @@ class MemoViewModel @Inject constructor(
         postSideEffect(MemoSideEffect.NavigateToCategoryAdd)
     }
 
-    fun navigateSearch(){
+    fun navigateSearch() {
         postSideEffect(MemoSideEffect.NavigateSearch)
     }
 }

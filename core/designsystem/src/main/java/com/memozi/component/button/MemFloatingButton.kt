@@ -26,29 +26,29 @@ fun MemoFloatingButton(navigateMemoAdd: () -> Unit = {}) {
     val navigationBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
     Box(
         modifier =
-            Modifier
-                .fillMaxSize(),
-        contentAlignment = Alignment.BottomEnd,
+        Modifier
+            .fillMaxSize(),
+        contentAlignment = Alignment.BottomEnd
     ) {
         Box(
             modifier =
-                Modifier
-                    .padding(bottom = 51.dp + navigationBarHeight)
-                    .padding(end = 8.dp)
-                    .background(Color.Transparent)
-                    .width(55.dp)
-                    .height(55.dp)
-                    .customClickable(rippleEnabled = false) { navigateMemoAdd() } // 나중에 커스텀 clickable 추가
-                    .background(
-                        color = MemoziTheme.colors.mainPurple02,
-                        shape = CircleShape,
-                    ),
+            Modifier
+                .padding(bottom = 51.dp + navigationBarHeight)
+                .padding(end = 8.dp)
+                .background(Color.Transparent)
+                .width(55.dp)
+                .height(55.dp)
+                .customClickable(rippleEnabled = false) { navigateMemoAdd() } // 나중에 커스텀 clickable 추가
+                .background(
+                    color = MemoziTheme.colors.mainPurple02,
+                    shape = CircleShape
+                )
         ) {
             Icon(
                 painterResource(id = R.drawable.ic_plus_white_34),
                 contentDescription = "Add Memo",
                 tint = MemoziTheme.colors.white,
-                modifier = Modifier.align(Alignment.Center),
+                modifier = Modifier.align(Alignment.Center)
             )
         }
     }

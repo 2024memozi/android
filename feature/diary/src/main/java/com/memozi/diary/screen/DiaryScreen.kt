@@ -59,7 +59,6 @@ import com.memozi.diary.utils.CalendarUtils
 import java.time.LocalDate
 import java.time.YearMonth
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DiaryScreen(
@@ -123,7 +122,7 @@ fun DiaryScreen(
                 location = location,
                 isLocationExist = isLocationExist,
                 isDiaryAvailable = isDiaryAvailable,
-                onChangedDiaryWritten = { isDiaryWritten = it },
+                onChangedDiaryWritten = { isDiaryWritten = it }
             )
         }
 
@@ -161,7 +160,7 @@ fun DiaryScreen(
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.ic_diary_feed_pin),
-                            contentDescription = null,
+                            contentDescription = null
                         )
                         BasicTextField(
                             value = location,
@@ -175,7 +174,7 @@ fun DiaryScreen(
                             .fillMaxWidth()
                             .padding(horizontal = (LocalConfiguration.current.screenWidthDp * 0.76 * 0.118).dp)
                             .height(1.dp)
-                            .background(color = MemoziTheme.colors.gray07),
+                            .background(color = MemoziTheme.colors.gray07)
                     )
                     Spacer(Modifier.weight(1f))
                     Row(
@@ -211,7 +210,8 @@ fun DiaryScreen(
                                     onClick = {
                                         onChangedLocationDialogState(false)
                                         onChangedLocationExist(true)
-                                    }),
+                                    }
+                                ),
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
@@ -242,7 +242,7 @@ fun DiaryScreen(
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.ic_calendar_bottomsheet_back),
@@ -528,7 +528,7 @@ fun DiaryFeedWriteCard(
     location: String = "",
     isLocationExist: Boolean = false,
     isDiaryAvailable: Boolean,
-    onChangedDiaryWritten: (Boolean) -> Unit,
+    onChangedDiaryWritten: (Boolean) -> Unit
 ) {
     ElevatedCard(
         modifier = Modifier
@@ -794,6 +794,5 @@ fun DailyDiaryItem(
 @Composable
 fun ShowDiaryFeedScreen() {
     MemoziTheme {
-
     }
 }
