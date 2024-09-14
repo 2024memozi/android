@@ -6,8 +6,8 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.memozi.diary.screen.DiaryScreen
 
-fun NavController.navigateDiary(navOptions: NavOptions) {
-    navigate(DiaryRoute.route, navOptions)
+fun NavController.navigateDiary() {
+    navigate(DiaryRoute.route)
 }
 
 fun NavGraphBuilder.diaryNavGraph(

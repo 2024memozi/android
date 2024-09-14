@@ -31,6 +31,7 @@ fun NavController.navigateMemoAdd() {
 fun NavGraphBuilder.memoNavGraph(
     padding: PaddingValues = PaddingValues(0.dp),
     modifier: Modifier = Modifier,
+    navigateDiary: () -> Unit = {},
     navigateMemo: () -> Unit = {},
     navigateMemoAdd: () -> Unit,
     navigateToMemoDetail: (Int) -> Unit = {},
@@ -43,6 +44,7 @@ fun NavGraphBuilder.memoNavGraph(
         MemoRoute(
             padding = padding,
             modifier = modifier,
+            navigateDiary= navigateDiary,
             navigateMemoDetail = navigateToMemoDetail,
             navigateMemoAdd = navigateMemoAdd,
             navigateToCategoryEdit = navigateToCategoryEdit,

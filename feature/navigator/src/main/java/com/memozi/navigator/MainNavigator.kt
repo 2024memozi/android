@@ -7,6 +7,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.memozi.diary.navigation.DiaryRoute
+import com.memozi.diary.navigation.navigateDiary
 import com.memozi.login.navigation.LoginRoute
 import com.memozi.memo.navigation.MemoRoute
 import com.memozi.memo.navigation.navigateCategory
@@ -40,8 +41,7 @@ internal class MainNavigator(
     }
 
     fun navigateDiary() {
-        navController.navigate(DiaryRoute.route) {
-        }
+        navController.navigateDiary()
     }
 
     fun navigateCategoryAdd() {
@@ -60,6 +60,7 @@ internal class MainNavigator(
     fun navigateSearch() {
         navController.navigateSearch()
     }
+
     fun navigateMemoAdd() {
         navController.navigateMemoAdd()
     }

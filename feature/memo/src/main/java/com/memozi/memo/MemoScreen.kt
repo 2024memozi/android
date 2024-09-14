@@ -69,6 +69,7 @@ fun MemoRoute(
     padding: PaddingValues,
     modifier: Modifier = Modifier,
     viewModel: MemoViewModel = hiltViewModel(),
+    navigateDiary: () ->Unit,
     navigateMemoDetail: (Int) -> Unit = {},
     navigateMemoAdd: () -> Unit = {},
     navigateToCategoryEdit: (String, Int, String, String) -> Unit,
@@ -118,6 +119,7 @@ fun MemoRoute(
     Column {
         MemoziTopAppbar(
             navigateToSetting = navigateSetting,
+            navigateToFirst = navigateDiary,
             innerComposable = {
                 MemoziSearchTextField(
                     modifier = Modifier
