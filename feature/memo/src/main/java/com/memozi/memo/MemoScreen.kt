@@ -72,7 +72,8 @@ fun MemoRoute(
     navigateMemoDetail: (Int) -> Unit = {},
     navigateToCategoryEdit: (String, Int, String, String) -> Unit,
     navigateToCategoryAdd: () -> Unit = {},
-    navigateSetting: () -> Unit = {}
+    navigateSetting: () -> Unit = {},
+    navigateSearch: () -> Unit = {},
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val pagerState =
@@ -103,6 +104,10 @@ fun MemoRoute(
                 MemoSideEffect.NavigateToSettings -> {
                     navigateSetting()
                 }
+
+                MemoSideEffect.NavigateSearch -> {
+                    navigateSearch()
+                }
             }
         }
     }
@@ -116,6 +121,8 @@ fun MemoRoute(
                 MemoziSearchTextField(
                     modifier = Modifier
                         .height(40.dp)
+                        .customClickable { viewModel.navigateSearch() }
+                        .fillMaxWidth()
                         .padding(horizontal = 16.dp)
                 )
             }

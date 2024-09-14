@@ -8,6 +8,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.memozi.memo.MemoRoute
+import com.memozi.memo.MemoSearchScreen
 import com.memozi.memo.screen.MemoCategoryScreen
 
 fun NavController.navigateMemo(navOptions: NavOptions) {
@@ -18,6 +19,10 @@ fun NavController.navigateCategory(img: String, categoryId: Int, name: String, t
     navigate(MemoRoute.editRoute(img, categoryId.toString(), name, txtcolor))
 }
 
+fun NavController.navigateSearch() {
+    navigate(MemoRoute.search)
+}
+
 fun NavGraphBuilder.memoNavGraph(
     padding: PaddingValues = PaddingValues(0.dp),
     modifier: Modifier = Modifier,
@@ -25,7 +30,8 @@ fun NavGraphBuilder.memoNavGraph(
     navigateToMemoDetail: (Int) -> Unit = {},
     navigateToCategoryEdit: (String, Int, String, String) -> Unit,
     navigateToCategoryAdd: () -> Unit = {},
-    navigateToSetting: () -> Unit = {}
+    navigateToSetting: () -> Unit = {},
+    navigateSearch: () -> Unit = {}
 ) {
     composable(route = MemoRoute.route) {
         MemoRoute(
@@ -34,11 +40,15 @@ fun NavGraphBuilder.memoNavGraph(
             navigateMemoDetail = navigateToMemoDetail,
             navigateToCategoryEdit = navigateToCategoryEdit,
             navigateToCategoryAdd = navigateToCategoryAdd,
-            navigateSetting = navigateToSetting
+            navigateSetting = navigateToSetting,
+            navigateSearch = navigateSearch
         )
     }
     composable(route = MemoRoute.categoryAdd) {
         MemoCategoryScreen(navigateMemo = navigateMemo)
+    }
+    composable(route = MemoRoute.search) {
+        MemoSearchScreen()
     }
     composable(
         route = MemoRoute.editRoute(
@@ -58,6 +68,7 @@ object MemoRoute {
     const val route = "memo"
     const val categoryAdd = "category/Add"
     const val edit = "category"
+    const val search = "search"
     const val CATEGORY_IMAGE = "category_img"
     const val CATEGORY_ID = "category_id"
     const val CATEGORY_NAME = "category_name"

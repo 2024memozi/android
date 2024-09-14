@@ -10,6 +10,7 @@ import com.memozi.diary.navigation.DiaryRoute
 import com.memozi.login.navigation.LoginRoute
 import com.memozi.memo.navigation.MemoRoute
 import com.memozi.memo.navigation.navigateCategory
+import com.memozi.memo.navigation.navigateSearch
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
@@ -46,6 +47,7 @@ internal class MainNavigator(
     fun navigateCategoryAdd() {
         navController.navigate(MemoRoute.categoryAdd) {}
     }
+
     fun navigateCategoryEdit(img: String, categoryId: Int, name: String, txtColor: String) {
         val encodedImg = URLEncoder.encode(img, StandardCharsets.UTF_8.toString())
         navController.navigateCategory(encodedImg, categoryId, name, txtColor)
@@ -55,6 +57,10 @@ internal class MainNavigator(
         navController.navigate(MemoRoute.route) {
             // todo 나중에 stetting으로 Route 변경
         }
+    }
+
+    fun navigateSearch() {
+        navController.navigateSearch()
     }
 
     fun popBackStackIfNotLogin() {

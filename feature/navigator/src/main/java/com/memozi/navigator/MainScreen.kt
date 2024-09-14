@@ -45,7 +45,8 @@ internal fun MainScreen(
                     navigateToMemoDetail = {},
                     navigateToCategoryEdit = navigator::navigateCategoryEdit,
                     navigateToCategoryAdd = navigator::navigateCategoryAdd,
-                    navigateToSetting = navigator::navigateSetting
+                    navigateToSetting = navigator::navigateSetting,
+                    navigateSearch = navigator::navigateSearch
                 )
                 diaryNavGraph(
                     navigateToMemo = navigator::navigateMemo,
