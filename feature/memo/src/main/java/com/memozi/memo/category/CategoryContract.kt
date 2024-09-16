@@ -1,4 +1,4 @@
-package com.memozi.memo.screen
+package com.memozi.memo.category
 
 import com.memozi.ui.base.SideEffect
 import com.memozi.ui.base.UiState

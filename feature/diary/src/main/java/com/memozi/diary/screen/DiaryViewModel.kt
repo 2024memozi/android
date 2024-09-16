@@ -6,12 +6,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class DiaryViewModel @Inject constructor(
-
-): BaseViewModel<DiaryState, DiaryEffect>(DiaryState()) {
+class DiaryViewModel @Inject constructor() : BaseViewModel<DiaryState, DiaryEffect>(DiaryState()) {
 
     fun getName(name: String) {
-        intent{ copy(name = name) }
+        intent { copy(name = name) }
     }
 
     fun navigateToMemo() {

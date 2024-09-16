@@ -19,6 +19,14 @@ class LoginViewModel @Inject constructor(
         postSideEffect(LoginSideEffect.StartLogin)
     }
 
+    fun getUser() {
+        viewModelScope.launch {
+            authRepository.getLocalData().onSuccess {
+                if (it.accessToken.isNotEmpty()) postSideEffect(LoginSideEffect.LoginSuccess)
+            }
+        }
+    }
+
     fun signIn(socialToken: String) {
         viewModelScope.launch {
             authRepository.signIn(socialToken)

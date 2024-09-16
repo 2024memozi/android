@@ -46,11 +46,14 @@ internal fun MainScreen(
                 )
                 memoNavGraph(
                     padding = innerPadding,
+                    navigateDiary = navigator::navigateDiary,
                     navigateMemo = navigator::navigateMemo,
                     navigateToMemoDetail = {},
+                    navigateMemoAdd = navigator::navigateMemoAdd,
                     navigateToCategoryEdit = navigator::navigateCategoryEdit,
                     navigateToCategoryAdd = navigator::navigateCategoryAdd,
-                    navigateToSetting = navigator::navigateSetting
+                    navigateToSetting = navigator::navigateSetting,
+                    navigateSearch = navigator::navigateSearch
                 )
                 diaryNavGraph(
                     navigateToMemo = navigator::navigateMemo,

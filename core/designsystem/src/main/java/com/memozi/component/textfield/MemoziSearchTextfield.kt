@@ -46,6 +46,7 @@ fun MemoziSearchTextField(
     onCancelClick: () -> Unit = {},
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Default),
     keyboardActions: KeyboardActions = KeyboardActions.Default,
+    enable: Boolean = true
 ) {
     var value by remember { mutableStateOf("") }
     var isFocused by remember { mutableStateOf(false) }
@@ -53,18 +54,18 @@ fun MemoziSearchTextField(
 
     Row(
         modifier =
-            modifier
-                .background(shape = shape, color = MemoziTheme.colors.white),
-        verticalAlignment = Alignment.CenterVertically,
+        modifier
+            .background(shape = shape, color = MemoziTheme.colors.white),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
             modifier =
-                Modifier
-                    .height(26.dp)
-                    .width(26.dp)
-                    .padding(start = 8.dp),
+            Modifier
+                .height(26.dp)
+                .width(26.dp)
+                .padding(start = 8.dp),
             painter = painterResource(id = R.drawable.ic_search),
-            contentDescription = null,
+            contentDescription = null
         )
 
         BasicTextField(
@@ -76,10 +77,10 @@ fun MemoziSearchTextField(
                 }
             },
             modifier =
-                Modifier
-                    .padding(start = 18.dp)
-                    .onFocusChanged { isFocused = it.isFocused }
-                    .wrapContentHeight(Alignment.CenterVertically),
+            Modifier
+                .padding(start = 18.dp)
+                .onFocusChanged { isFocused = it.isFocused }
+                .wrapContentHeight(Alignment.CenterVertically),
             textStyle = textStyle.copy(color = MemoziTheme.colors.black),
             keyboardOptions = keyboardOptions,
             keyboardActions = keyboardActions,
@@ -89,11 +90,12 @@ fun MemoziSearchTextField(
                 if (value.isEmpty() && !isFocused) {
                     Text(
                         text = placeholder,
-                        style = textStyle.copy(color = MemoziTheme.colors.gray05),
+                        style = textStyle.copy(color = MemoziTheme.colors.gray05)
                     )
                 }
                 innerTextField()
             },
+            enabled = enable
         )
     }
     if (isFocused) {
@@ -102,12 +104,12 @@ fun MemoziSearchTextField(
             text = "취소",
             style = textStyle.copy(color = MemoziTheme.colors.white),
             modifier =
-                Modifier
-                    .clickable {
-                        value = ""
-                        isFocused = false
-                        onCancelClick()
-                    },
+            Modifier
+                .clickable {
+                    value = ""
+                    isFocused = false
+                    onCancelClick()
+                }
         )
     }
 }

@@ -17,4 +17,6 @@ sealed interface MemoSideEffect : SideEffect {
     data class NavigateToCategory(val categoryId: Int) : MemoSideEffect
     data object NavigateToCategoryAdd : MemoSideEffect
     data object NavigateToSettings : MemoSideEffect
+    data object NavigateSearch : MemoSideEffect
+    data object NavigateMemoAdd : MemoSideEffect
 }

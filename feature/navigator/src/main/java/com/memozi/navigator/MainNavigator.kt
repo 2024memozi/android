@@ -6,10 +6,12 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.memozi.diary.navigation.DiaryRoute
+import com.memozi.diary.navigation.navigateDiary
 import com.memozi.login.navigation.LoginRoute
 import com.memozi.memo.navigation.MemoRoute
 import com.memozi.memo.navigation.navigateCategory
+import com.memozi.memo.navigation.navigateMemoAdd
+import com.memozi.memo.navigation.navigateSearch
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
@@ -38,23 +40,28 @@ internal class MainNavigator(
     }
 
     fun navigateDiary() {
-        navController.navigate(DiaryRoute.route) {
-
-        }
+        navController.navigateDiary()
     }
 
     fun navigateCategoryAdd() {
         navController.navigate(MemoRoute.categoryAdd) {}
     }
+
     fun navigateCategoryEdit(img: String, categoryId: Int, name: String, txtColor: String) {
         val encodedImg = URLEncoder.encode(img, StandardCharsets.UTF_8.toString())
         navController.navigateCategory(encodedImg, categoryId, name, txtColor)
     }
 
     fun navigateSetting() {
-        navController.navigate(MemoRoute.route) {
-            // todo 나중에 stetting으로 Route 변경
-        }
+        navController.navigate(MemoRoute.route)
+    }
+
+    fun navigateSearch() {
+        navController.navigateSearch()
+    }
+
+    fun navigateMemoAdd(categoryId: Int) {
+        navController.navigateMemoAdd(categoryId)
     }
 
     fun popBackStackIfNotLogin() {

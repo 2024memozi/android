@@ -1,4 +1,4 @@
-package com.memozi.memo.screen
+package com.memozi.memo.category
 
 import android.app.Activity
 import android.content.Intent

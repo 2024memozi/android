@@ -2,12 +2,11 @@ package com.memozi.diary.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.memozi.diary.screen.DiaryScreen
 
-fun NavController.navigateDiary(navOptions: NavOptions) {
-    navigate(DiaryRoute.route, navOptions)
+fun NavController.navigateDiary() {
+    navigate(DiaryRoute.route)
 }
 
 fun NavGraphBuilder.diaryNavGraph(

@@ -42,6 +42,6 @@ fun CheckBoxUnSelected(onClick: () -> Unit) {
             .size(20.dp)
             .clip(CircleShape)
             .background(MemoziTheme.colors.gray02)
-            .clickable { onClick() },
+            .clickable { onClick() }
     )
 }

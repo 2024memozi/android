@@ -69,17 +69,20 @@ fun MemoRoute(
     padding: PaddingValues,
     modifier: Modifier = Modifier,
     viewModel: MemoViewModel = hiltViewModel(),
+    navigateDiary: () -> Unit,
     navigateMemoDetail: (Int) -> Unit = {},
+    navigateMemoAdd: (Int) -> Unit = {},
     navigateToCategoryEdit: (String, Int, String, String) -> Unit,
     navigateToCategoryAdd: () -> Unit = {},
-    navigateSetting: () -> Unit = {}
+    navigateSetting: () -> Unit = {},
+    navigateSearch: () -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val pagerState =
         rememberPagerState(initialPage = 0, pageCount = { state.categoryList.size + 1 })
     val navigationBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
-    LaunchedEffectWithLifecycle() {
+    LaunchedEffectWithLifecycle {
         viewModel.getCategory()
         viewModel.sideEffect.collectLatest { sideEffect ->
             when (sideEffect) {
@@ -103,20 +106,35 @@ fun MemoRoute(
                 MemoSideEffect.NavigateToSettings -> {
                     navigateSetting()
                 }
+
+                MemoSideEffect.NavigateSearch -> {
+                    navigateSearch()
+                }
+
+                is MemoSideEffect.NavigateMemoAdd -> {
+                    navigateMemoAdd(state.categoryList[pagerState.currentPage].categoryId)
+                }
             }
         }
     }
-
-    viewModel.setMemo(pagerState.currentPage)
+    if (pagerState.currentPage < state.categoryList.size) {
+        viewModel.getCategory(state.categoryList[pagerState.currentPage].categoryId)
+    } else {
+        viewModel.setMemoEmpty()
+    }
     MemoziBackground()
     Column {
         MemoziTopAppbar(
             navigateToSetting = navigateSetting,
+            navigateToFirst = navigateDiary,
             innerComposable = {
                 MemoziSearchTextField(
                     modifier = Modifier
                         .height(40.dp)
-                        .padding(horizontal = 16.dp)
+                        .customClickable(rippleEnabled = false) { viewModel.navigateSearch() }
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    enable = false
                 )
             }
         )
@@ -145,38 +163,44 @@ fun MemoRoute(
             )
         }
     }
-    MemoFloatingButton()
+    MemoFloatingButton(
+        navigateMemoAdd = { viewModel.navigateMemoAdd() },
+        visibility = pagerState.currentPage != pagerState.pageCount - 1
+    )
 }
 
 @Composable
 fun MemoFloatingButton(
-    navigateMemoAdd: () -> Unit = {}
+    navigateMemoAdd: () -> Unit = {},
+    visibility: Boolean = true
 ) {
     val navigationBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
-    Box(
-        modifier = Modifier
-            .fillMaxSize(),
-        contentAlignment = Alignment.BottomEnd
-    ) {
+    if (visibility) {
         Box(
             modifier = Modifier
-                .padding(bottom = 51.dp + navigationBarHeight)
-                .padding(end = 8.dp)
-                .background(Color.Transparent)
-                .width(55.dp)
-                .height(55.dp)
-                .customClickable(rippleEnabled = false) { navigateMemoAdd() }
-                .background(
-                    color = MemoziTheme.colors.mainPurple02,
-                    shape = CircleShape
-                )
+                .fillMaxSize(),
+            contentAlignment = Alignment.BottomEnd
         ) {
-            Icon(
-                painterResource(id = R.drawable.ic_plus_white_34),
-                contentDescription = "Add Memo",
-                tint = MemoziTheme.colors.white,
-                modifier = Modifier.align(Alignment.Center)
-            )
+            Box(
+                modifier = Modifier
+                    .padding(bottom = 51.dp + navigationBarHeight)
+                    .padding(end = 8.dp)
+                    .background(Color.Transparent)
+                    .width(55.dp)
+                    .height(55.dp)
+                    .customClickable(rippleEnabled = false) { navigateMemoAdd() }
+                    .background(
+                        color = MemoziTheme.colors.mainPurple02,
+                        shape = CircleShape
+                    )
+            ) {
+                Icon(
+                    painterResource(id = R.drawable.ic_plus_white_34),
+                    contentDescription = "Add Memo",
+                    tint = MemoziTheme.colors.white,
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
         }
     }
 }

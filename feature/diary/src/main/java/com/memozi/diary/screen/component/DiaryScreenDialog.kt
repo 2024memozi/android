@@ -37,7 +37,7 @@ fun DiaryScreenDialog(
                 .height(height)
                 .clip(shape = RoundedCornerShape(8.dp))
                 .background(color = MemoziTheme.colors.white),
-            contentAlignment = Alignment.TopCenter,
+            contentAlignment = Alignment.TopCenter
         ) {
             content()
         }
@@ -48,6 +48,5 @@ fun DiaryScreenDialog(
 @Composable
 fun ShowMemoziDialog() {
     MemoziTheme {
-
     }
 }

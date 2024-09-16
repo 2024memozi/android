@@ -1,12 +1,27 @@
 package com.memozi.memo.source.remote
 
+import com.memozi.memo.model.request.RequestCheckBox
 import com.memozi.memo.model.response.ResponseCategory
+import com.memozi.memo.model.response.ResponseCategoryByID
+import com.memozi.memo.model.response.ResponseMemo
+import com.memozi.memo.model.response.ResponseSearch
 
 interface MemoRemoteDataSource {
 
-    //    suspend fun putCategory(categoryId: Int): Result<Category>
-//    suspend fun getCategory(categoryId: Int): Result<Category>
-//
+    suspend fun putMemo(
+        categoryId: Int,
+        title: String,
+        content: String,
+        checkBoxs: List<RequestCheckBox>
+    ): ResponseMemo
+
+    suspend fun getCategory(
+        categoryId: Int,
+        page: Int,
+        size: Int,
+        sort: List<String>
+    ): ResponseCategoryByID
+
     suspend fun getCategory(
         page: Int,
         size: Int,
@@ -31,5 +46,5 @@ interface MemoRemoteDataSource {
     ): ResponseCategory
 
     suspend fun delCategory(categoryId: Int)
-//    suspend fun getCategorySearch(): Result<List<Category>>
+    suspend fun getCategorySearch(query: String): List<ResponseSearch>
 }

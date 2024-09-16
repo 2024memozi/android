@@ -35,67 +35,67 @@ import com.memozi.designsystem.R
 fun CustomDialogContent() {
     Box(
         modifier =
-            Modifier
-                .fillMaxWidth()
-                .aspectRatio(272f / 132f)
-                .clip(RoundedCornerShape(8.dp))
-                .background(Color.White)
-                .border(
-                    BorderStroke(1.dp, Color.Gray),
-                    shape = RoundedCornerShape(8.dp),
-                ),
-        contentAlignment = Alignment.Center,
+        Modifier
+            .fillMaxWidth()
+            .aspectRatio(272f / 132f)
+            .clip(RoundedCornerShape(8.dp))
+            .background(Color.White)
+            .border(
+                BorderStroke(1.dp, Color.Gray),
+                shape = RoundedCornerShape(8.dp)
+            ),
+        contentAlignment = Alignment.Center
     ) {
         Column(
             modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 35.dp),
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 35.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
+            verticalArrangement = Arrangement.Center
         ) {
             Image(
                 painter = painterResource(id = R.drawable.ic_caution),
                 contentDescription = null,
-                modifier = Modifier.size(24.dp),
+                modifier = Modifier.size(24.dp)
             )
             Spacer(modifier = Modifier.height(6.dp))
             Text(
                 text = "삭제된 메모는 복구할 수 없습니다",
                 style = MemoziTheme.typography.ngReg12_140,
                 color = MemoziTheme.colors.black,
-                textAlign = TextAlign.Center,
+                textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(3.dp))
             Text(
                 text = "메모를 삭제하시겠습니까?",
                 style = MemoziTheme.typography.ngReg12_140,
                 color = MemoziTheme.colors.black,
-                textAlign = TextAlign.Center,
+                textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(16.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center,
+                horizontalArrangement = Arrangement.Center
             ) {
                 Button(
                     onClick = {},
                     shape = RoundedCornerShape(8.dp),
                     colors =
-                        ButtonDefaults.buttonColors(
-                            containerColor = MemoziTheme.colors.gray01,
-                        ),
+                    ButtonDefaults.buttonColors(
+                        containerColor = MemoziTheme.colors.gray01
+                    ),
                     modifier =
-                        Modifier
-                            .width(88.dp)
-                            .height(30.dp),
+                    Modifier
+                        .width(88.dp)
+                        .height(30.dp)
                 ) {
                     Text(
                         text = "취소",
                         style = MemoziTheme.typography.ngReg12_140,
                         color = MemoziTheme.colors.gray04,
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.align(Alignment.CenterVertically),
+                        modifier = Modifier.align(Alignment.CenterVertically)
                     )
                 }
                 Spacer(modifier = Modifier.width(35.dp))
@@ -103,20 +103,20 @@ fun CustomDialogContent() {
                     onClick = {},
                     shape = RoundedCornerShape(8.dp),
                     colors =
-                        ButtonDefaults.buttonColors(
-                            containerColor = MemoziTheme.colors.cautionRed,
-                        ),
+                    ButtonDefaults.buttonColors(
+                        containerColor = MemoziTheme.colors.cautionRed
+                    ),
                     modifier =
-                        Modifier
-                            .width(88.dp)
-                            .height(30.dp),
+                    Modifier
+                        .width(88.dp)
+                        .height(30.dp)
                 ) {
                     Text(
                         text = "삭제",
                         style = MemoziTheme.typography.ngReg12_140,
                         color = Color.White,
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.align(Alignment.CenterVertically),
+                        modifier = Modifier.align(Alignment.CenterVertically)
                     )
                 }
             }

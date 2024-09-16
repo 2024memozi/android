@@ -38,9 +38,9 @@ fun WeekHeader() {
         weekLabelArray.forEach { dayOfWeek ->
             // 일요일과 토요일의 색상을 구분하여 적용
             val textColor = when (dayOfWeek) {
-                DayOfWeek.SUNDAY -> MemoziTheme.colors.cautionRed  // 일요일은 빨간색
+                DayOfWeek.SUNDAY -> MemoziTheme.colors.cautionRed // 일요일은 빨간색
                 DayOfWeek.SATURDAY -> MemoziTheme.colors.blue02 // 토요일은 파란색
-                else -> Color.Black  // 나머지는 검은색
+                else -> Color.Black // 나머지는 검은색
             }
 
             Box(
