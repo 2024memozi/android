@@ -24,5 +24,6 @@ fun ResponseDiary.toDomain() = Diary(
     diaryId = diaryId,
     createdAt = createdAt,
     dayOfWeek = dayOfWeek,
-    images = emptyList()
+    images = emptyList(),
+    location = null
 )

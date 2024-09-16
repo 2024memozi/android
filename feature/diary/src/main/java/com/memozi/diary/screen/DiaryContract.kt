@@ -4,7 +4,10 @@ import com.memozi.ui.base.SideEffect
 import com.memozi.ui.base.UiState
 
 data class DiaryState(
-    var name: String = ""
+    var name: String = "",
+    var location: String? = null,
+    var content: String = "",
+    var image: String = ""
 ) : UiState
 
 sealed interface DiaryEffect : SideEffect {

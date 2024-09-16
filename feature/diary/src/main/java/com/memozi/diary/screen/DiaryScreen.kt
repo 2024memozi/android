@@ -56,6 +56,7 @@ import com.memozi.designsystem.R
 import com.memozi.diary.screen.component.DiaryScreenDialog
 import com.memozi.diary.screen.component.WeekHeader
 import com.memozi.diary.utils.CalendarUtils
+import com.memozi.ui.lifecycle.LaunchedEffectWithLifecycle
 import java.time.LocalDate
 import java.time.YearMonth
 
@@ -87,6 +88,10 @@ fun DiaryScreen(
     val onChangedLocationExist: (Boolean) -> Unit = { newValue -> isLocationExist = newValue }
     var calendarBottomSheetState by remember { mutableStateOf(false) }
     val isDiaryExistDay by remember { mutableStateOf(false) }
+
+    LaunchedEffectWithLifecycle {
+        diaryViewModel.getDiary()
+    }
 
     MemoziBackground()
 
@@ -122,7 +127,10 @@ fun DiaryScreen(
                 location = location,
                 isLocationExist = isLocationExist,
                 isDiaryAvailable = isDiaryAvailable,
-                onChangedDiaryWritten = { isDiaryWritten = it }
+                onChangedDiaryWritten = { isDiaryWritten = it },
+                postDiary = { content, location, Image ->
+                    diaryViewModel.postDiary(content = content, location = location, image = Image)
+                }
             )
         }
 
@@ -528,7 +536,8 @@ fun DiaryFeedWriteCard(
     location: String = "",
     isLocationExist: Boolean = false,
     isDiaryAvailable: Boolean,
-    onChangedDiaryWritten: (Boolean) -> Unit
+    onChangedDiaryWritten: (Boolean) -> Unit,
+    postDiary: (String, String, String?) -> Unit
 ) {
     ElevatedCard(
         modifier = Modifier
@@ -633,7 +642,10 @@ fun DiaryFeedWriteCard(
                                 .align(Alignment.Bottom)
                         )
                         Button(
-                            onClick = { onChangedDiaryWritten(true) /* 일기 작성 완료 */ },
+                            onClick = {
+                                onChangedDiaryWritten(true) /* 일기 작성 완료 */
+                                postDiary(diaryContent, location, "")
+                            },
                             modifier = Modifier
                                 .width(68.dp)
                                 .height(34.dp)

@@ -25,5 +25,6 @@ dependencies {
     implementation(projects.local.auth)
     implementation(projects.remote.auth)
     implementation(projects.remote.memo)
+    implementation(projects.remote.diary)
     implementation(libs.kakao.login)
 }

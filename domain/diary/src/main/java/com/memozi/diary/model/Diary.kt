@@ -5,6 +5,7 @@ data class Diary(
     val title: String,
     val content: String,
     val images: List<String>,
+    val location: String?,
     val dayOfWeek: String,
     val createdAt: String
 )
