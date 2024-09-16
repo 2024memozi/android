@@ -21,6 +21,7 @@ dependencies {
     implementation(projects.data.auth)
     implementation(projects.data.oauth)
     implementation(projects.data.memo)
+    implementation(projects.data.diary)
     implementation(projects.local.auth)
     implementation(projects.remote.auth)
     implementation(projects.remote.memo)
