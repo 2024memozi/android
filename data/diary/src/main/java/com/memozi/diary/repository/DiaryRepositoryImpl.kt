@@ -15,6 +15,16 @@ class DiaryRepositoryImpl @Inject constructor(
         remoteDataSource.getDiary()
     }.mapCatching {
         it.map { it.toDomain() }
+    }.onFailure { exception ->
+        when (exception) {
+            is IOException -> {
+                throw ApiError("IOException")
+            }
+
+            else -> {
+                throw exception
+            }
+        }
     }
 
     override suspend fun getDiaryByID(diaryId: Int) = runCatching {

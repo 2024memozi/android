@@ -1,5 +1,6 @@
 package com.memozi.diary.screen
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.memozi.diary.repository.DiaryRepository
 import com.memozi.ui.base.BaseViewModel
@@ -18,7 +19,11 @@ class DiaryViewModel @Inject constructor(
 
     fun getDiary() {
         viewModelScope.launch {
-            diaryRepository.getDiary()
+            diaryRepository.getDiary().onSuccess {
+                intent { copy(diaryList = it) }
+            }.onFailure {
+                Log.d("실패", " ${it.message}")
+            }
         }
     }
 
@@ -27,6 +32,7 @@ class DiaryViewModel @Inject constructor(
             diaryRepository.postDiary(content, image, location)
         }
     }
+
     fun postDiary() {
         viewModelScope.launch {
             diaryRepository.postDiary("123", "", "")

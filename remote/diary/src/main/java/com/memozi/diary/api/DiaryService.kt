@@ -10,7 +10,6 @@ import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Path
-import retrofit2.http.Query
 
 interface DiaryService {
     @GET("/diary/{diaryId}")
@@ -18,12 +17,14 @@ interface DiaryService {
         @Path("diaryId") diaryId: Int
     ): ResponseDiary
 
+    @Multipart
     @PUT("/diary/{diaryId}")
     suspend fun putDiaryById(
         @Path("diaryId") diaryId: Int,
-        @Query("title") title: String,
-        @Query("content") content: String,
-        @Query("location") location: String
+        @Part("title") title: String,
+        @Part("content") content: String,
+        @Part("location") location: String,
+        @Part images: MultipartBody.Part?
     ): ResponseDiary
 
     @DELETE("/diary/{diaryId}")

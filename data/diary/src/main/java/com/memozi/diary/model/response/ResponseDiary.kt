@@ -15,7 +15,9 @@ data class ResponseDiary(
     @SerialName("dayOfWeek")
     val dayOfWeek: String,
     @SerialName("createdAt")
-    val createdAt: String
+    val createdAt: String,
+    @SerialName("images")
+    val images: List<String>
 )
 
 fun ResponseDiary.toDomain() = Diary(
@@ -24,6 +26,6 @@ fun ResponseDiary.toDomain() = Diary(
     diaryId = diaryId,
     createdAt = createdAt,
     dayOfWeek = dayOfWeek,
-    images = emptyList(),
+    images = images,
     location = null
 )
