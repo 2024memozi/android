@@ -11,4 +11,5 @@ dependencies {
     implementation(projects.feature.login)
     implementation(projects.feature.memo)
     implementation(projects.feature.diary)
+    implementation(projects.feature.onboarding)
 }
