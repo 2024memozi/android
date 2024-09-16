@@ -1,9 +1,10 @@
 package com.memozi.diary.repository
 
 import com.memozi.diary.model.Diary
-import com.memozi.diary.model.request.RequestDiary
 import com.memozi.diary.model.response.toDomain
 import com.memozi.diary.source.remote.DiaryRemoteDataSource
+import com.memozi.model.exception.ApiError
+import java.io.IOException
 import javax.inject.Inject
 
 class DiaryRepositoryImpl @Inject constructor(
@@ -32,9 +33,22 @@ class DiaryRepositoryImpl @Inject constructor(
         location: String?
     ): Result<Diary> = runCatching {
         remoteDataSource.postDiary(
-            RequestDiary(title = "", content = content, location = location, images = emptyList())
+            title = "",
+            content = content,
+            location = location,
+            image
         )
     }.mapCatching {
         it.toDomain()
+    }.recoverCatching { exception ->
+        when (exception) {
+            is IOException -> {
+                throw ApiError("IOException")
+            }
+
+            else -> {
+                throw exception
+            }
+        }
     }
 }

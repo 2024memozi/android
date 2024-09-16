@@ -644,7 +644,7 @@ fun DiaryFeedWriteCard(
                         Button(
                             onClick = {
                                 onChangedDiaryWritten(true) /* 일기 작성 완료 */
-                                postDiary(diaryContent, location, "")
+                                postDiary(diaryContent, location, null)
                             },
                             modifier = Modifier
                                 .width(68.dp)
