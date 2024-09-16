@@ -1,6 +1,7 @@
 package com.memozi.memo.model
 
 data class Memo(
+    val memoId: Int,
     val title: String,
     val content: String,
     val dayOfWeek: String,

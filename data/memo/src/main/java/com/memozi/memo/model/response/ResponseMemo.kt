@@ -6,6 +6,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ResponseMemo(
+    @SerialName("memoId")
+    val memoId: Int,
     @SerialName("title")
     val title: String,
     @SerialName("content")
@@ -21,6 +23,7 @@ data class ResponseMemo(
 )
 
 fun ResponseMemo.toDomain() = Memo(
+    memoId = memoId,
     title = title,
     content = content,
     dayOfWeek = dayOfWeek,
