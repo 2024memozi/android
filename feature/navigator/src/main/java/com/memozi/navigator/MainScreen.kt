@@ -48,7 +48,7 @@ internal fun MainScreen(
                     padding = innerPadding,
                     navigateDiary = navigator::navigateDiary,
                     navigateMemo = navigator::navigateMemo,
-                    navigateToMemoDetail = {},
+                    navigateToMemoDetail = navigator::navigateMemoDetail,
                     navigateMemoAdd = navigator::navigateMemoAdd,
                     navigateToCategoryEdit = navigator::navigateCategoryEdit,
                     navigateToCategoryAdd = navigator::navigateCategoryAdd,

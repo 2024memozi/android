@@ -19,6 +19,21 @@ class MemoDetailViewModel @Inject constructor(
     val categoryId =
         savedStateHandle.get<String>(MemoRoute.CATEGORY_ID)?.toInt()
 
+    val memoId =
+        savedStateHandle.get<String>(MemoRoute.MEMO_ID)?.toInt()
+
+    fun getMemo() {
+        viewModelScope.launch {
+            categoryId?.let {
+                memoId?.let {
+                    memoRepository.getMemo(categoryId, memoId)
+                }?.onSuccess {
+                    intent { copy(memo = it) }
+                }
+            }
+        }
+    }
+
     fun putmemo(
         title: String,
         content: String,

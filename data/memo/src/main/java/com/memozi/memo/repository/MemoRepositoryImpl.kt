@@ -99,21 +99,22 @@ class MemoRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getCategorySearch(query: String): Result<List<SearchResult>> = runCatching {
-        memoRemoteDataSource.getCategorySearch(query)
-    }.mapCatching {
-        it.map { it.toDomain() }
-    }.recoverCatching { exception ->
-        when (exception) {
-            is HttpException -> {
-                throw ApiError(exception.message())
-            }
+    override suspend fun getCategorySearch(query: String): Result<List<SearchResult>> =
+        runCatching {
+            memoRemoteDataSource.getCategorySearch(query)
+        }.mapCatching {
+            it.map { it.toDomain() }
+        }.recoverCatching { exception ->
+            when (exception) {
+                is HttpException -> {
+                    throw ApiError(exception.message())
+                }
 
-            else -> {
-                throw exception
+                else -> {
+                    throw exception
+                }
             }
         }
-    }
 
     override suspend fun putMemo(
         categoryId: Int,
@@ -127,6 +128,12 @@ class MemoRepositoryImpl @Inject constructor(
             content = content,
             checkBoxs = checkBoxs.map { RequestCheckBox(it.id, it.content, it.checked) }
         )
+    }.mapCatching {
+        it.toDomain()
+    }
+
+    override suspend fun getMemo(categoryId: Int, memoId: Int): Result<Memo> = runCatching {
+        memoRemoteDataSource.getMemo(categoryId, memoId)
     }.mapCatching {
         it.toDomain()
     }
