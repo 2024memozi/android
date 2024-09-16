@@ -31,12 +31,15 @@ include(":domain:memozi")
 include(":domain:memo")
 include(":domain:auth")
 include(":domain:oauth")
+include(":domain:diary")
 
 // data
 include(":data:memozi")
 include(":data:auth")
 include(":data:oauth")
 include(":data:memo")
+include(":data:diary")
+
 // local
 include(":local:memozi")
 include(":local:auth")
@@ -52,3 +55,4 @@ include(":feature:login")
 include(":feature:navigator")
 include(":feature:diary")
 include(":feature:onboarding")
+
