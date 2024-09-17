@@ -346,7 +346,10 @@ fun DiaryScreen(
                                             ) {
                                                 // null인 경우는 아무것도 출력하지 않음
                                                 date?.let {
-                                                    if (isDiaryExistDay) {
+                                                    val hasDiaryEntry = diaryState.diaryList.any { diary ->
+                                                        LocalDate.parse(diary.createdAt) == it
+                                                    }
+                                                    if (hasDiaryEntry) {
                                                         Box(
                                                             modifier = Modifier
                                                                 .size(20.dp)
@@ -416,6 +419,101 @@ fun DiaryScreen(
         ) {}
     }
 }
+@Composable
+fun DiaryCalendar(
+    year: Int,
+    month: Int,
+    diaryEntryDates: List<Diary>,
+    onDateClicked: (LocalDate) -> Unit
+) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        WeekHeader()
+        Box(
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                val yearMonth = YearMonth.of(year, month)
+                val firstDayOfMonth = yearMonth.atDay(1)
+                val daysInMonth = yearMonth.lengthOfMonth()
+                val firstDayOfWeek = firstDayOfMonth.dayOfWeek
+
+                // Calculate the day index (e.g., 0 for Sunday, 1 for Monday, etc.)
+                val dayOfWeekIndex = firstDayOfWeek.value % 7
+
+                // Generate list of days in the month
+                val calendarDays = (1..daysInMonth).map { LocalDate.of(year, month, it) }
+
+                // Leading and trailing empty days (for aligning the calendar)
+                val leadingEmptyDays = List(dayOfWeekIndex) { null }
+                val trailingEmptyDays = List((7 - (calendarDays.size + leadingEmptyDays.size) % 7) % 7) { null }
+
+                // Combine everything to create full calendar days (including empty spots)
+                val fullCalendarDays = leadingEmptyDays + calendarDays + trailingEmptyDays
+                val rows = fullCalendarDays.chunked(7) // Split into weeks
+
+                rows.forEach { week ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        week.forEach { date ->
+                            Box(
+                                modifier = Modifier
+                                    .height((LocalConfiguration.current.screenHeightDp * 0.046f).dp)
+                                    .width(((LocalConfiguration.current.screenWidthDp - 40) / 7).dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                date?.let {
+                                    // Check if the current date has a diary entry
+                                    val hasDiaryEntry = diaryEntryDates.any { diary ->
+                                        LocalDate.parse(diary.createdAt) == it
+                                    }
+
+                                    if (hasDiaryEntry) {
+                                        // Highlight date if a diary entry exists
+                                        Box(
+                                            modifier = Modifier
+                                                .size(20.dp)
+                                                .background(
+                                                    color = MemoziTheme.colors.mainPurple,
+                                                    shape = CircleShape
+                                                )
+                                                .clickable { onDateClicked(it) }
+                                        ) {
+                                            Text(
+                                                text = it.dayOfMonth.toString(),
+                                                modifier = Modifier.align(Alignment.Center),
+                                                color = MemoziTheme.colors.white,
+                                                style = MemoziTheme.typography.ngReg12_140
+                                            )
+                                        }
+                                    } else {
+                                        // Normal day without diary entry
+                                        Text(
+                                            text = it.dayOfMonth.toString(),
+                                            modifier = Modifier.align(Alignment.Center),
+                                            color = MemoziTheme.colors.black,
+                                            style = MemoziTheme.typography.ngReg12_140
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 
 @Composable
 fun DiaryFeedTopAppBar(
