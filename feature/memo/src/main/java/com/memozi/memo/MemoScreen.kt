@@ -26,10 +26,18 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -56,6 +64,7 @@ import com.memozi.component.top.MemoziBackground
 import com.memozi.component.top.MemoziTopAppbar
 import com.memozi.designsystem.MemoziTheme
 import com.memozi.designsystem.R
+import com.memozi.memo.component.MemoItemCard
 import com.memozi.memo.model.Category
 import com.memozi.memo.model.Memo
 import com.memozi.ui.extension.customClickable
@@ -399,7 +408,12 @@ fun MemoList(
             items(memoItems.size) { index ->
                 if (memoItems.size > 1 && index != memoItems.size - 1) {
                     MemoItemCard(
-                        Modifier.customClickable { clickEvnet(categoryId, memoItems[index].memoId) },
+                        Modifier.customClickable {
+                            clickEvnet(
+                                categoryId,
+                                memoItems[index].memoId
+                            )
+                        },
                         memoItems[index]
                     )
                     Box(
@@ -411,48 +425,17 @@ fun MemoList(
                     )
                 } else {
                     MemoItemCard(
-                        Modifier.customClickable { clickEvnet(categoryId, memoItems[index].memoId) },
+                        Modifier.customClickable {
+                            clickEvnet(
+                                categoryId,
+                                memoItems[index].memoId
+                            )
+                        },
                         memoItems[index]
                     )
                 }
             }
         }
-    }
-}
-
-@Composable
-fun MemoItemCard(modifier: Modifier, memo: Memo) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .background(color = MemoziTheme.colors.white, shape = RoundedCornerShape(8.dp))
-            .padding(16.dp)
-    ) {
-        Row {
-            Text(
-                text = "|",
-                style = MemoziTheme.typography.ngReg15,
-                color = MemoziTheme.colors.gray07
-            )
-            Spacer(modifier = Modifier.width(4.dp))
-            Text(
-                text = memo.title,
-                style = MemoziTheme.typography.ngReg15,
-                color = MemoziTheme.colors.black
-            )
-            Spacer(modifier = Modifier.weight(1f))
-            Text(
-                text = memo.dayOfWeek,
-                style = MemoziTheme.typography.ngReg11,
-                color = MemoziTheme.colors.gray03
-            )
-        }
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = memo.content,
-            style = MemoziTheme.typography.ssuLight12,
-            color = MemoziTheme.colors.gray05
-        )
     }
 }
 
