@@ -56,6 +56,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.memozi.component.MoreOptionsMenu
 import com.memozi.component.top.MemoziBackground
 import com.memozi.designsystem.MemoziTheme
 import com.memozi.designsystem.R
@@ -144,7 +145,8 @@ fun DiaryScreen(
         }
 
         if (isDiaryExist) {
-            DiaryFeedDisplayCard(diaryState.diaryList)
+            DiaryFeedDisplayCard(diaryState.diaryList,
+                editEvent = {}, deleteEvent = { diaryViewModel.delteDiary(it) })
         }
     }
 
@@ -346,9 +348,10 @@ fun DiaryScreen(
                                             ) {
                                                 // null인 경우는 아무것도 출력하지 않음
                                                 date?.let {
-                                                    val hasDiaryEntry = diaryState.diaryList.any { diary ->
-                                                        LocalDate.parse(diary.createdAt) == it
-                                                    }
+                                                    val hasDiaryEntry =
+                                                        diaryState.diaryList.any { diary ->
+                                                            LocalDate.parse(diary.createdAt) == it
+                                                        }
                                                     if (hasDiaryEntry) {
                                                         Box(
                                                             modifier = Modifier
@@ -698,7 +701,11 @@ fun DiaryFeedWriteOption(
 }
 
 @Composable
-fun DiaryFeedDisplayCard(diary: List<Diary>) {
+fun DiaryFeedDisplayCard(
+    diary: List<Diary>,
+    editEvent: () -> Unit = {},
+    deleteEvent: (Int) -> Unit = {}
+) {
     ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
@@ -748,7 +755,8 @@ fun DiaryFeedDisplayCard(diary: List<Diary>) {
                                 day = it.createdAt.substring(8, 10).toInt(),
                                 dayOfWeek = it.dayOfWeek,
                                 diaryContent = it.content,
-                                imageUrl = if (it.images.isNotEmpty()) it.images[0] else null
+                                imageUrl = if (it.images.isNotEmpty()) it.images[0] else null,
+                                deleteEvent = { deleteEvent(it.diaryId) },
                             )
                         }
                     }
@@ -766,60 +774,74 @@ fun DailyDiaryItem(
     dayOfWeek: String,
     diaryContent: String,
     imageUrl: String? = null,
-    location: String? = null
+    location: String? = null,
+    editEvent: () -> Unit = {},
+    deleteEvent: () -> Unit = {},
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+    Box(
+        modifier = Modifier.fillMaxWidth(),
     ) {
-        Text(
-            text = "${year}년 ${month}월 ${day}일 | $dayOfWeek",
-            modifier = Modifier.padding(top = 16.dp, bottom = 6.dp),
-            style = MemoziTheme.typography.ssuLight12
-        )
-        if (imageUrl != null) {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(imageUrl)
-                    .crossfade(true)
-                    .build(),
-                contentDescription = "카테고리",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxWidth(0.3f)
-                    .padding(vertical = 7.dp)
-            )
+        Row {
+            Spacer(modifier = Modifier.weight(1f))
+            MoreOptionsMenu(
+                modifier = Modifier.padding(end = 10.dp),
+                onEditClick = { editEvent() },
+                onDeleteClick = { deleteEvent() })
         }
-        if (location != null) {
-            Row(
-                modifier = Modifier.padding(bottom = 8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_diary_feed_pin_small),
-                    contentDescription = null,
-                    modifier = Modifier.padding(end = 2.dp)
-                )
-                Text(
-                    text = location,
-                    style = MemoziTheme.typography.ngReg8
-                )
-            }
-        }
-        Text(
-            text = diaryContent,
-            modifier = Modifier.padding(bottom = 16.dp),
-            style = MemoziTheme.typography.ngReg12_140
-        )
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(1.dp)
-                .background(MemoziTheme.colors.gray02)
-        )
+                .padding(horizontal = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "${year}년 ${month}월 ${day}일 | $dayOfWeek",
+                modifier = Modifier.padding(top = 16.dp, bottom = 6.dp),
+                style = MemoziTheme.typography.ssuLight12
+            )
+            if (imageUrl != null) {
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(imageUrl)
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = "카테고리",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxWidth(0.3f)
+                        .padding(vertical = 7.dp)
+                )
+            }
+            if (location != null) {
+                Row(
+                    modifier = Modifier.padding(bottom = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_diary_feed_pin_small),
+                        contentDescription = null,
+                        modifier = Modifier.padding(end = 2.dp)
+                    )
+                    Text(
+                        text = location,
+                        style = MemoziTheme.typography.ngReg8
+                    )
+                }
+            }
+            Text(
+                text = diaryContent,
+                modifier = Modifier.padding(bottom = 16.dp),
+                style = MemoziTheme.typography.ngReg12_140
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .background(MemoziTheme.colors.gray02)
+            )
+        }
     }
+
 }
 
 @Preview(showBackground = true)

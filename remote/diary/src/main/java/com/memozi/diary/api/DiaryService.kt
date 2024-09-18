@@ -30,7 +30,7 @@ interface DiaryService {
     @DELETE("/diary/{diaryId}")
     suspend fun delDiaryById(
         @Path("diaryId") diaryId: Int
-    ): ResponseDiary
+    )
 
     @GET("/diary")
     suspend fun getDiary(): List<ResponseDiary>

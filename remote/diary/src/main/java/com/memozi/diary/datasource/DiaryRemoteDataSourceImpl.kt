@@ -24,7 +24,7 @@ class DiaryRemoteDataSourceImpl @Inject constructor(
     override suspend fun getDiaryByID(diaryId: Int): ResponseDiary =
         diaryService.getDiaryById(diaryId)
 
-    override suspend fun deleteDiary(diaryId: Int): ResponseDiary =
+    override suspend fun deleteDiary(diaryId: Int) =
         diaryService.delDiaryById(diaryId)
 
     override suspend fun postDiary(

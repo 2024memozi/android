@@ -29,7 +29,17 @@ class DiaryViewModel @Inject constructor(
 
     fun postDiary(content: String, image: String?, location: String?) {
         viewModelScope.launch {
-            diaryRepository.postDiary(content, image, location)
+            diaryRepository.postDiary(content, image, location).onSuccess {
+                getDiary()
+            }
+        }
+    }
+
+    fun delteDiary(diaryId: Int) {
+        viewModelScope.launch {
+            diaryRepository.deleteDiary(diaryId).onSuccess {
+                getDiary()
+            }
         }
     }
 

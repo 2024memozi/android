@@ -7,7 +7,7 @@ interface DiaryRemoteDataSource {
 
     suspend fun getDiaryByID(diaryId: Int): ResponseDiary
 
-    suspend fun deleteDiary(diaryId: Int): ResponseDiary
+    suspend fun deleteDiary(diaryId: Int)
     suspend fun postDiary(
         title: String,
         content: String,
