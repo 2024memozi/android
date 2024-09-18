@@ -37,7 +37,7 @@ class MemoDetailViewModel @Inject constructor(
     fun putmemo(
         title: String,
         content: String,
-        checkBoxs: List<CheckBox> = emptyList()
+        checkBoxs: List<CheckBox>
     ) {
         viewModelScope.launch {
             categoryId?.let {
