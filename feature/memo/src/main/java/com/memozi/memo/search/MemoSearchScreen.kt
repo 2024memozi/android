@@ -55,7 +55,7 @@ fun MemoSearchScreen(
         Modifier
             .fillMaxSize()
             .padding(horizontal = 16.dp)
-            .padding(top = 20.dp + navigationBarHeight)
+            .padding(top = navigationBarHeight)
     ) {
         Row(
             modifier =
@@ -118,71 +118,12 @@ fun EmptySearchList() {
     }
 }
 
-//@Composable
-//fun MemoItemCard(
-//    memoTitle: String,
-//    memoContent: String,
-//    memoDate: String
-//) {
-//    Card(
-//        modifier =
-//        Modifier
-//            .fillMaxWidth()
-//            .aspectRatio(328f / 111f)
-//            .padding(vertical = 8.dp),
-//        shape = RoundedCornerShape(8.dp),
-//        elevation = CardDefaults.cardElevation(4.dp)
-//    ) {
-//        Column(
-//            modifier =
-//            Modifier
-//                .fillMaxSize()
-//                .background(Color.White)
-//                .padding(18.dp)
-//        ) {
-//            Row(
-//                modifier = Modifier.fillMaxWidth(),
-//                verticalAlignment = Alignment.CenterVertically,
-//                horizontalArrangement = Arrangement.SpaceBetween
-//            ) {
-//                Row(verticalAlignment = Alignment.CenterVertically) {
-//                    Text(
-//                        text = "|",
-//                        style = MemoziTheme.typography.ngReg15,
-//                        color = MemoziTheme.colors.gray07
-//                    )
-//                    Spacer(modifier = Modifier.width(4.dp))
-//
-//                    Text(
-//                        text = memoTitle,
-//                        style = MemoziTheme.typography.ngReg15,
-//                        color = MemoziTheme.colors.black
-//                    )
-//                }
-//                Text(
-//                    text = memoDate,
-//                    style = MemoziTheme.typography.ngReg11,
-//                    color = MemoziTheme.colors.black
-//                )
-//            }
-//
-//            Spacer(modifier = Modifier.height(18.dp))
-//            Text(
-//                text = memoContent,
-//                style = MemoziTheme.typography.ngReg13,
-//                color = MemoziTheme.colors.black
-//            )
-//        }
-//    }
-//}
-
 @Composable
 fun memoSearchList(searchResults: List<SearchResult>) {
     LazyColumn(
         modifier =
         Modifier
             .fillMaxSize()
-            .padding(vertical = 10.dp)
     ) {
         searchResults.forEach { searchResult ->
             item {
@@ -190,7 +131,7 @@ fun memoSearchList(searchResults: List<SearchResult>) {
                     modifier =
                     Modifier
                         .fillMaxWidth()
-                        .padding(top = 30.dp),
+                        .padding(top = 22.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
