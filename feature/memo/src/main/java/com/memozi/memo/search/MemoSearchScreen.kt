@@ -40,6 +40,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import com.memozi.component.top.MemoziBackground
 import com.memozi.designsystem.MemoziTheme
 import com.memozi.designsystem.R
@@ -47,7 +48,7 @@ import com.memozi.memo.MemoFloatingButton
 import com.memozi.memo.model.SearchResult
 
 @Composable
-fun MemoSearchScreen(viewModel: MemoSearchViewModel = hiltViewModel()) {
+fun MemoSearchScreen(viewModel: MemoSearchViewModel = hiltViewModel(),navController: NavController) {
     MemoziBackground(topWeight = 5f, bottomWeight = 25f)
     val navigationBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -66,7 +67,7 @@ fun MemoSearchScreen(viewModel: MemoSearchViewModel = hiltViewModel()) {
                     .padding(bottom = 15.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            MemoTextField(onValueChange = { viewModel.getResult(it) })
+            MemoTextField(onValueChange = { viewModel.getResult(it)},navController = navController)
         }
 
         if (state.result.isEmpty()) {
@@ -208,7 +209,7 @@ fun memoSearchList(searchResults: List<SearchResult>) {
 }
 
 @Composable
-fun MemoTextField(onValueChange: (String) -> Unit = { _ -> }) {
+fun MemoTextField(onValueChange: (String) -> Unit = { _ -> },navController: NavController) {
     var text by remember { mutableStateOf("") }
     val maxCharCount = 10
     val shape = RoundedCornerShape(8.dp)
@@ -288,6 +289,9 @@ fun MemoTextField(onValueChange: (String) -> Unit = { _ -> }) {
         Text(
             text = "취소",
             style = MemoziTheme.typography.ssuLight13.copy(color = MemoziTheme.colors.white),
+            modifier = Modifier.clickable{
+                navController.popBackStack()
+            }
         )
     }
 }
@@ -296,6 +300,5 @@ fun MemoTextField(onValueChange: (String) -> Unit = { _ -> }) {
 @Composable
 fun PreviewMemoSearchScreenWithEmptyView() {
     MemoziTheme {
-        MemoSearchScreen()
     }
 }
