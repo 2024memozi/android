@@ -81,6 +81,7 @@ fun MemoDetailScreen(
     var isVisible by remember { mutableStateOf(true) }
 
     LaunchedEffectWithLifecycle {
+        viewmodel.getMemo()
         viewmodel.sideEffect.collectLatest { sideeffect ->
             when (sideeffect) {
                 MemoDetailSideEffect.NavigateMemo -> { navigateMemo() }

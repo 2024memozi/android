@@ -45,4 +45,6 @@ interface MemoRepository {
         content: String,
         checkBoxs: List<CheckBox>
     ): Result<Memo>
+
+    suspend fun getMemo(categoryId: Int, memoId: Int): Result<Memo>
 }

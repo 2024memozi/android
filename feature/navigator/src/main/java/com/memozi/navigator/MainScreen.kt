@@ -19,7 +19,7 @@ import com.memozi.onboarding.navigation.onboardingNavGraph
 @Composable
 internal fun MainScreen(
     modifier: Modifier = Modifier,
-    navigator: MainNavigator = rememberMainNavigator()
+    navigator: MainNavigator = rememberMainNavigator(),
 ) {
     val context = LocalContext.current
     val navBackStackEntry by navigator.navController.currentBackStackEntryAsState()
@@ -34,32 +34,33 @@ internal fun MainScreen(
                 navController = navigator.navController,
                 startDestination = navigator.startDestination,
                 enterTransition = { EnterTransition.None },
-                exitTransition = { ExitTransition.None }
+                exitTransition = { ExitTransition.None },
             ) {
                 loginNavGraph(
                     padding = innerPadding,
-                    navigateMemo = navigator::navigateMemo
+                    navigateMemo = navigator::navigateMemo,
                 )
                 onboardingNavGraph(
                     padding = innerPadding,
-                    navigateHome = navigator::navigateMemo
+                    navigateHome = navigator::navigateMemo,
                 )
                 memoNavGraph(
                     padding = innerPadding,
                     navigateDiary = navigator::navigateDiary,
                     navigateMemo = navigator::navigateMemo,
-                    navigateToMemoDetail = {},
+                    navigateToMemoDetail = navigator::navigateMemoDetail,
                     navigateMemoAdd = navigator::navigateMemoAdd,
                     navigateToCategoryEdit = navigator::navigateCategoryEdit,
                     navigateToCategoryAdd = navigator::navigateCategoryAdd,
                     navigateToSetting = navigator::navigateSetting,
-                    navigateSearch = navigator::navigateSearch
+                    navigateSearch = navigator::navigateSearch,
+                    navController = navigator.navController,
                 )
                 diaryNavGraph(
                     navigateToMemo = navigator::navigateMemo,
-                    navigateToSetting = navigator::navigateSetting
+                    navigateToSetting = navigator::navigateSetting,
                 )
             }
-        }
+        },
     )
 }

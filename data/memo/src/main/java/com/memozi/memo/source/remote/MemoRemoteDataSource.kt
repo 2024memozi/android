@@ -47,4 +47,6 @@ interface MemoRemoteDataSource {
 
     suspend fun delCategory(categoryId: Int)
     suspend fun getCategorySearch(query: String): List<ResponseSearch>
+
+    suspend fun getMemo(categoryId: Int, memoId: Int): ResponseMemo
 }

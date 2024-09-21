@@ -70,7 +70,7 @@ fun MemoRoute(
     modifier: Modifier = Modifier,
     viewModel: MemoViewModel = hiltViewModel(),
     navigateDiary: () -> Unit,
-    navigateMemoDetail: (Int) -> Unit = {},
+    navigateMemoDetail: (Int, Int) -> Unit,
     navigateMemoAdd: (Int) -> Unit = {},
     navigateToCategoryEdit: (String, Int, String, String) -> Unit,
     navigateToCategoryAdd: () -> Unit = {},
@@ -87,7 +87,10 @@ fun MemoRoute(
         viewModel.sideEffect.collectLatest { sideEffect ->
             when (sideEffect) {
                 is MemoSideEffect.NavigateToMemo -> {
-                    navigateMemoDetail(sideEffect.memoId)
+                    navigateMemoDetail(
+                        state.categoryList[pagerState.currentPage].categoryId,
+                        sideEffect.memoId
+                    )
                 }
 
                 is MemoSideEffect.NavigateToCategory -> {
@@ -158,8 +161,12 @@ fun MemoRoute(
 
             Spacer(modifier = Modifier.height(16.dp))
             MemoList(
+                categoryId = if (pagerState.currentPage < state.categoryList.size) state.categoryList[pagerState.currentPage].categoryId else 0,
                 memoItems = state.memoList,
-                bottomPaddingValue = PaddingValues(bottom = 8.dp + navigationBarHeight)
+                bottomPaddingValue = PaddingValues(bottom = 8.dp + navigationBarHeight),
+                clickEvnet = { categoryId, memoId ->
+                    navigateMemoDetail(categoryId, memoId)
+                }
             )
         }
     }
@@ -370,13 +377,19 @@ fun MemoziHorizontalPagerIndicator(
 }
 
 @Composable
-fun MemoList(memoItems: List<Memo>, bottomPaddingValue: PaddingValues) {
+fun MemoList(
+    categoryId: Int,
+    memoItems: List<Memo>,
+    bottomPaddingValue: PaddingValues,
+    clickEvnet: (Int, Int) -> Unit
+) {
     Box(
         modifier = Modifier
             .padding(horizontal = 16.dp)
             .padding(bottomPaddingValue)
             .shadow(4.dp, shape = RoundedCornerShape(8.dp)) // elevation 효과를 위해 shadow 추가
             .background(color = MemoziTheme.colors.white, shape = RoundedCornerShape(8.dp))
+
     ) {
         LazyColumn(
             modifier = Modifier
@@ -385,7 +398,10 @@ fun MemoList(memoItems: List<Memo>, bottomPaddingValue: PaddingValues) {
         ) {
             items(memoItems.size) { index ->
                 if (memoItems.size > 1 && index != memoItems.size - 1) {
-                    MemoItemCard(memoItems[index])
+                    MemoItemCard(
+                        Modifier.customClickable { clickEvnet(categoryId, memoItems[index].memoId) },
+                        memoItems[index]
+                    )
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -394,7 +410,10 @@ fun MemoList(memoItems: List<Memo>, bottomPaddingValue: PaddingValues) {
                             .shadow(1.dp, shape = RoundedCornerShape(2.dp))
                     )
                 } else {
-                    MemoItemCard(memoItems[index])
+                    MemoItemCard(
+                        Modifier.customClickable { clickEvnet(categoryId, memoItems[index].memoId) },
+                        memoItems[index]
+                    )
                 }
             }
         }
@@ -402,9 +421,9 @@ fun MemoList(memoItems: List<Memo>, bottomPaddingValue: PaddingValues) {
 }
 
 @Composable
-fun MemoItemCard(memo: Memo) {
+fun MemoItemCard(modifier: Modifier, memo: Memo) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .background(color = MemoziTheme.colors.white, shape = RoundedCornerShape(8.dp))
             .padding(16.dp)

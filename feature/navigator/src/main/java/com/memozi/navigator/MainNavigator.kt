@@ -9,6 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import com.memozi.diary.navigation.navigateDiary
 import com.memozi.login.navigation.LoginRoute
 import com.memozi.memo.navigation.MemoRoute
+import com.memozi.memo.navigation.navgateMemoEdit
 import com.memozi.memo.navigation.navigateCategory
 import com.memozi.memo.navigation.navigateMemoAdd
 import com.memozi.memo.navigation.navigateSearch
@@ -54,6 +55,10 @@ internal class MainNavigator(
 
     fun navigateSetting() {
         navController.navigate(MemoRoute.route)
+    }
+
+    fun navigateMemoDetail(categoryId: Int, memoId: Int) {
+        navController.navgateMemoEdit(categoryId, memoId)
     }
 
     fun navigateSearch() {
