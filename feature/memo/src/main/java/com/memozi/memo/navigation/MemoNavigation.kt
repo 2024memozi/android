@@ -70,7 +70,7 @@ fun NavGraphBuilder.memoNavGraph(
         MemoCategoryScreen(navigateMemo = navigateMemo)
     }
     composable(route = MemoRoute.search) {
-        MemoSearchScreen(navController = navController)
+        MemoSearchScreen(navigateMemo = navigateMemo)
     }
     composable(
         route =

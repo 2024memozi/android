@@ -29,4 +29,8 @@ class MemoSearchViewModel
                     }
             }
         }
+
+        fun navigateMemo() {
+            postSideEffect(MemoSearchEffect.NavigateToMemo)
+        }
     }

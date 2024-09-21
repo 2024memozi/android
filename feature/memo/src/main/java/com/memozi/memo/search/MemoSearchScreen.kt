@@ -40,18 +40,32 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import com.memozi.component.top.MemoziBackground
 import com.memozi.designsystem.MemoziTheme
 import com.memozi.designsystem.R
 import com.memozi.memo.MemoFloatingButton
 import com.memozi.memo.model.SearchResult
+import com.memozi.ui.lifecycle.LaunchedEffectWithLifecycle
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
-fun MemoSearchScreen(viewModel: MemoSearchViewModel = hiltViewModel(),navController: NavController) {
+fun MemoSearchScreen(
+    viewModel: MemoSearchViewModel = hiltViewModel(),
+    navigateMemo: () -> Unit = {},
+) {
     MemoziBackground(topWeight = 5f, bottomWeight = 25f)
     val navigationBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffectWithLifecycle {
+        viewModel.sideEffect.collectLatest { sideEffect ->
+            when (sideEffect) {
+                is MemoSearchEffect.NavigateToMemo -> {
+                    navigateMemo()
+                }
+            }
+        }
+    }
 
     Column(
         modifier =
@@ -67,7 +81,10 @@ fun MemoSearchScreen(viewModel: MemoSearchViewModel = hiltViewModel(),navControl
                     .padding(bottom = 15.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            MemoTextField(onValueChange = { viewModel.getResult(it)},navController = navController)
+            MemoTextField(
+                onValueChange = { viewModel.getResult(it) },
+                navigateMemo = { viewModel.navigateMemo() },
+            )
         }
 
         if (state.result.isEmpty()) {
@@ -209,7 +226,10 @@ fun memoSearchList(searchResults: List<SearchResult>) {
 }
 
 @Composable
-fun MemoTextField(onValueChange: (String) -> Unit = { _ -> },navController: NavController) {
+fun MemoTextField(
+    onValueChange: (String) -> Unit = { _ -> },
+    navigateMemo: () -> Unit = {},
+) {
     var text by remember { mutableStateOf("") }
     val maxCharCount = 10
     val shape = RoundedCornerShape(8.dp)
@@ -289,9 +309,10 @@ fun MemoTextField(onValueChange: (String) -> Unit = { _ -> },navController: NavC
         Text(
             text = "취소",
             style = MemoziTheme.typography.ssuLight13.copy(color = MemoziTheme.colors.white),
-            modifier = Modifier.clickable{
-                navController.popBackStack()
-            }
+            modifier =
+                Modifier.clickable {
+                    navigateMemo()
+                },
         )
     }
 }
