@@ -9,18 +9,28 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MemoSearchViewModel @Inject constructor(
-    private val memoRepository: MemoRepository
-) : BaseViewModel<MemoSearchState, MemoSearchEffect>(MemoSearchState()) {
+class MemoSearchViewModel
+    @Inject
+    constructor(
+        private val memoRepository: MemoRepository,
+    ) : BaseViewModel<MemoSearchState, MemoSearchEffect>(MemoSearchState()) {
+        fun getResult(query: String) {
+            viewModelScope.launch {
+                memoRepository
+                    .getCategorySearch(query)
+                    .onSuccess { resultList ->
+                        if (resultList.isEmpty() || query.isEmpty()) {
+                            intent { copy(result = emptyList()) }
+                        } else {
+                            intent { copy(result = resultList) }
+                        }
+                    }.onFailure {
+                        Log.d("getResult 실패", "getResult: ${it.message}")
+                    }
+            }
+        }
 
-    fun getResult(query: String) {
-        viewModelScope.launch {
-            memoRepository.getCategorySearch(query)
-                .onSuccess {
-                    intent { copy(result = it) }
-                }.onFailure {
-                    Log.d("getResult 실패", "getResult: ${it.message}")
-                }
+        fun navigateMemo() {
+            postSideEffect(MemoSearchEffect.NavigateToMemo)
         }
     }
-}
