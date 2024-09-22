@@ -56,7 +56,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.memozi.component.MoreOptionsMenu
+import com.memozi.component.DropDownMenu
 import com.memozi.component.top.MemoziBackground
 import com.memozi.designsystem.MemoziTheme
 import com.memozi.designsystem.R
@@ -786,8 +786,9 @@ fun DailyDiaryItem(
     ) {
         Row {
             Spacer(modifier = Modifier.weight(1f))
-            MoreOptionsMenu(
+            DropDownMenu(
                 modifier = Modifier.padding(end = 10.dp),
+                topPaddingValues = PaddingValues(0.dp),
                 onEditClick = { editEvent() },
                 onDeleteClick = { deleteEvent() }
             )
