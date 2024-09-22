@@ -34,12 +34,26 @@ class KakaoAuthManager @Inject constructor(
                                     return@loginWithKakaoAccount
                                 }
                                 if (accountToken != null) {
-                                    it.resume(Result.success(KakaoToken(accountToken.accessToken, accountToken.refreshToken)))
+                                    it.resume(
+                                        Result.success(
+                                            KakaoToken(
+                                                accountToken.accessToken,
+                                                accountToken.refreshToken
+                                            )
+                                        )
+                                    )
                                     return@loginWithKakaoAccount
                                 }
                             }
                         } else if (token != null) {
-                            it.resume(Result.success(KakaoToken(token.accessToken, token.refreshToken)))
+                            it.resume(
+                                Result.success(
+                                    KakaoToken(
+                                        token.accessToken,
+                                        token.refreshToken
+                                    )
+                                )
+                            )
                             return@loginWithKakaoTalk
                         }
                     }
@@ -53,7 +67,14 @@ class KakaoAuthManager @Inject constructor(
                             return@loginWithKakaoAccount
                         }
                         if (token != null) {
-                            it.resume(Result.success(KakaoToken(token.accessToken, token.refreshToken)))
+                            it.resume(
+                                Result.success(
+                                    KakaoToken(
+                                        token.accessToken,
+                                        token.refreshToken
+                                    )
+                                )
+                            )
                             return@loginWithKakaoAccount
                         }
                         it.resumeWithException(Throwable("Unreachable code"))
@@ -68,5 +89,19 @@ class KakaoAuthManager @Inject constructor(
 
     override fun withdraw() {
         client.unlink(Timber::e)
+    }
+
+    override suspend fun getUser(): String {
+        return suspendCancellableCoroutine { continuation ->
+            client.me { user, error ->
+                if (error != null) {
+                    Log.e("카카오로그인 test", "사용자 정보 요청 실패", error)
+                    continuation.resumeWithException(error)
+                } else if (user != null) {
+                    val nickname = user.kakaoAccount?.profile?.nickname ?: ""
+                    continuation.resume(nickname)
+                }
+            }
+        }
     }
 }

@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,8 +22,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -44,7 +41,9 @@ import com.memozi.component.top.MemoziBackground
 import com.memozi.designsystem.MemoziTheme
 import com.memozi.designsystem.R
 import com.memozi.memo.MemoFloatingButton
+import com.memozi.memo.component.MemoItemCard
 import com.memozi.memo.model.SearchResult
+import com.memozi.ui.extension.customClickable
 import com.memozi.ui.lifecycle.LaunchedEffectWithLifecycle
 import kotlinx.coroutines.flow.collectLatest
 
@@ -53,7 +52,7 @@ fun MemoSearchScreen(
     viewModel: MemoSearchViewModel = hiltViewModel(),
     navigateMemo: () -> Unit = {},
 ) {
-    MemoziBackground(topWeight = 5f, bottomWeight = 25f)
+    MemoziBackground(topWeight = 1f, bottomWeight = 5f)
     val navigationBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -76,21 +75,32 @@ fun MemoSearchScreen(
     ) {
         Row(
             modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 15.dp),
-            verticalAlignment = Alignment.CenterVertically,
+            Modifier
+                .fillMaxWidth()
+                .weight(1f)
+                .padding(bottom = 15.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             MemoTextField(
                 onValueChange = { viewModel.getResult(it) },
                 navigateMemo = { viewModel.navigateMemo() },
             )
+            Spacer(modifier = Modifier.width(16.dp))
+            if(state.query.isNotEmpty()) Icon(
+                painter = painterResource(id = R.drawable.ic_x_white_13),
+                tint = Color.Unspecified,
+                contentDescription = "삭제버튼",
+                modifier = Modifier.customClickable {
+                    viewModel
+                }
+            )
         }
-
-        if (state.result.isEmpty()) {
-            EmptySearchList()
-        } else {
-            memoSearchList(state.result)
+        Box(modifier = Modifier.weight(5f)){
+            if (state.result.isEmpty()) {
+                EmptySearchList()
+            } else {
+                memoSearchList(state.result)
+            }
         }
     }
 }
@@ -126,79 +136,20 @@ fun EmptySearchList() {
 }
 
 @Composable
-fun MemoItemCard(
-    memoTitle: String,
-    memoContent: String,
-    memoDate: String,
-) {
-    Card(
-        modifier =
-            Modifier
-                .fillMaxWidth()
-                .aspectRatio(328f / 111f)
-                .padding(vertical = 8.dp),
-        shape = RoundedCornerShape(8.dp),
-        elevation = CardDefaults.cardElevation(4.dp),
-    ) {
-        Column(
-            modifier =
-                Modifier
-                    .fillMaxSize()
-                    .background(Color.White)
-                    .padding(18.dp),
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        text = "|",
-                        style = MemoziTheme.typography.ngReg15,
-                        color = MemoziTheme.colors.gray07,
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-
-                    Text(
-                        text = memoTitle,
-                        style = MemoziTheme.typography.ngReg15,
-                        color = MemoziTheme.colors.black,
-                    )
-                }
-                Text(
-                    text = memoDate,
-                    style = MemoziTheme.typography.ngReg11,
-                    color = MemoziTheme.colors.black,
-                )
-            }
-
-            Spacer(modifier = Modifier.height(18.dp))
-            Text(
-                text = memoContent,
-                style = MemoziTheme.typography.ngReg13,
-                color = MemoziTheme.colors.black,
-            )
-        }
-    }
-}
-
-@Composable
 fun memoSearchList(searchResults: List<SearchResult>) {
     LazyColumn(
         modifier =
-            Modifier
-                .fillMaxSize()
-                .padding(vertical = 10.dp),
+        Modifier
+            .fillMaxSize()
     ) {
         searchResults.forEach { searchResult ->
             item {
                 Row(
                     modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(top = 30.dp),
-                    verticalAlignment = Alignment.CenterVertically,
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(top = 22.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         text = searchResult.name,
@@ -216,9 +167,7 @@ fun memoSearchList(searchResults: List<SearchResult>) {
 
             items(searchResult.memos) { memo ->
                 MemoItemCard(
-                    memoTitle = memo.title,
-                    memoContent = memo.content,
-                    memoDate = memo.dayOfWeek,
+                    memo = memo,
                 )
             }
         }
@@ -321,5 +270,6 @@ fun MemoTextField(
 @Composable
 fun PreviewMemoSearchScreenWithEmptyView() {
     MemoziTheme {
+        MemoSearchScreen()
     }
 }

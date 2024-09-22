@@ -49,4 +49,6 @@ interface MemoRemoteDataSource {
     suspend fun getCategorySearch(query: String): List<ResponseSearch>
 
     suspend fun getMemo(categoryId: Int, memoId: Int): ResponseMemo
+
+    suspend fun putCheckBox(checkBoxId: Int)
 }

@@ -9,3 +9,12 @@ data class Memo(
     val createdAt: String,
     val updatedAt: String
 )
+
+fun MemoDummy() =
+    Memo(
+        0, "title", "내용", "",
+        checkBoxes = listOf(
+            CheckBox(0, "할일 체크리스트", false),
+            CheckBox(0, "할일 체크리스트", false),
+        ), "", ""
+    )

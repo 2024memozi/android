@@ -56,6 +56,7 @@ import com.memozi.component.top.MemoziBackground
 import com.memozi.component.top.MemoziTopAppbar
 import com.memozi.designsystem.MemoziTheme
 import com.memozi.designsystem.R
+import com.memozi.memo.component.MemoItemCard
 import com.memozi.memo.model.Category
 import com.memozi.memo.model.Memo
 import com.memozi.ui.extension.customClickable
@@ -166,7 +167,8 @@ fun MemoRoute(
                 bottomPaddingValue = PaddingValues(bottom = 8.dp + navigationBarHeight),
                 clickEvnet = { categoryId, memoId ->
                     navigateMemoDetail(categoryId, memoId)
-                }
+                },
+                checkBoxClick = {viewModel.putCheck(it)}
             )
         }
     }
@@ -381,7 +383,8 @@ fun MemoList(
     categoryId: Int,
     memoItems: List<Memo>,
     bottomPaddingValue: PaddingValues,
-    clickEvnet: (Int, Int) -> Unit
+    clickEvnet: (Int, Int) -> Unit,
+    checkBoxClick: (Int) -> Unit = {}
 ) {
     Box(
         modifier = Modifier
@@ -399,9 +402,14 @@ fun MemoList(
             items(memoItems.size) { index ->
                 if (memoItems.size > 1 && index != memoItems.size - 1) {
                     MemoItemCard(
-                        Modifier.customClickable { clickEvnet(categoryId, memoItems[index].memoId) },
+                        Modifier.customClickable {
+                            clickEvnet(
+                                categoryId,
+                                memoItems[index].memoId
+                            )
+                        },
                         memoItems[index]
-                    )
+                    ) { checkBoxClick(it) }
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -411,48 +419,17 @@ fun MemoList(
                     )
                 } else {
                     MemoItemCard(
-                        Modifier.customClickable { clickEvnet(categoryId, memoItems[index].memoId) },
+                        Modifier.customClickable {
+                            clickEvnet(
+                                categoryId,
+                                memoItems[index].memoId
+                            )
+                        },
                         memoItems[index]
-                    )
+                    ){ checkBoxClick(it) }
                 }
             }
         }
-    }
-}
-
-@Composable
-fun MemoItemCard(modifier: Modifier, memo: Memo) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .background(color = MemoziTheme.colors.white, shape = RoundedCornerShape(8.dp))
-            .padding(16.dp)
-    ) {
-        Row {
-            Text(
-                text = "|",
-                style = MemoziTheme.typography.ngReg15,
-                color = MemoziTheme.colors.gray07
-            )
-            Spacer(modifier = Modifier.width(4.dp))
-            Text(
-                text = memo.title,
-                style = MemoziTheme.typography.ngReg15,
-                color = MemoziTheme.colors.black
-            )
-            Spacer(modifier = Modifier.weight(1f))
-            Text(
-                text = memo.dayOfWeek,
-                style = MemoziTheme.typography.ngReg11,
-                color = MemoziTheme.colors.gray03
-            )
-        }
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = memo.content,
-            style = MemoziTheme.typography.ssuLight12,
-            color = MemoziTheme.colors.gray05
-        )
     }
 }
 

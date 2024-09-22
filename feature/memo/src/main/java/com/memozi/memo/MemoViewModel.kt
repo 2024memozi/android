@@ -61,4 +61,13 @@ class MemoViewModel @Inject constructor(
     fun navigateSearch() {
         postSideEffect(MemoSideEffect.NavigateSearch)
     }
+
+    fun putCheck(checkboxId:Int){
+        viewModelScope.launch {
+            memoRepository.putCheckBox(checkboxId).onSuccess {
+
+            }
+        }
+
+    }
 }

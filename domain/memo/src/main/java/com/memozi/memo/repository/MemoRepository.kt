@@ -47,4 +47,6 @@ interface MemoRepository {
     ): Result<Memo>
 
     suspend fun getMemo(categoryId: Int, memoId: Int): Result<Memo>
+
+    suspend fun putCheckBox(checkBoxId:Int) :Result<Unit>
 }

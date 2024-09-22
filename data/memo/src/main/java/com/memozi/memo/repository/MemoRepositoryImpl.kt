@@ -137,4 +137,8 @@ class MemoRepositoryImpl @Inject constructor(
     }.mapCatching {
         it.toDomain()
     }
+
+    override suspend fun putCheckBox(checkBoxId: Int): Result<Unit> = runCatching {
+        memoRemoteDataSource.putCheckBox(checkBoxId)
+    }
 }
