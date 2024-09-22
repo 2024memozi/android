@@ -1,5 +1,6 @@
 package com.memozi.memo.detail
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.memozi.memo.model.CheckBox
@@ -26,11 +27,21 @@ class MemoDetailViewModel @Inject constructor(
         viewModelScope.launch {
             categoryId?.let {
                 memoId?.let {
-                    memoRepository.getMemo(categoryId, memoId)
+                    memoRepository.getMemo(categoryId, memoId).onSuccess {
+                        intent { copy(memo = it, editMode = true) }
+                    }
                 }?.onSuccess {
                     intent { copy(memo = it) }
                 }
             }
+        }
+    }
+
+    fun getCategory() {
+        viewModelScope.launch {
+            memoRepository.getCategory(0, 10, emptyList())
+                .onSuccess { categoryList -> intent { copy(categoryList = categoryList) } }
+                .onFailure { Log.d("api 실패", "memo detail - getCategory: ${it.message}") }
         }
     }
 
@@ -46,5 +57,13 @@ class MemoDetailViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun updateTitle(title: String) {
+        intent { copy(memo = memo.copy(title = title)) }
+    }
+
+    fun updateContent(content: String) {
+        intent { copy(memo = memo.copy(content = content)) }
     }
 }
