@@ -68,25 +68,22 @@ fun MemoItemCard(modifier: Modifier = Modifier, memo: Memo, checkBoxClick: (Int)
         if (checkBoxes.isEmpty()) {
             Text(
                 text = memo.content,
-                style = MemoziTheme.typography.ssuLight12,
+                style = MemoziTheme.typography.ngReg12_140,
                 color = MemoziTheme.colors.gray05
             )
         } else {
-            checkBoxes.take(2).forEach { checkBox ->
+            checkBoxes.take(2).forEachIndexed { index, checkBox ->
                 MemoCheckBox(
                     CheckBox = checkBox,
                     checkBoxClick = {
                         checkBoxes = checkBoxes.map {
-                            if (it.id == checkBox.id) {
-                                it.copy(checked = !it.checked)
-                            } else {
-                                it
-                            }
+                            if (it.id == checkBox.id) it.copy(checked = !it.checked)
+                            else it
                         }
                         checkBoxClick(checkBox.id)
                     }
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+                if (index == 0) Spacer(modifier = Modifier.height(8.dp))
             }
             if (checkBoxes.size == 1) {
                 Text(
@@ -103,7 +100,7 @@ fun MemoItemCard(modifier: Modifier = Modifier, memo: Memo, checkBoxClick: (Int)
 
 @Composable
 fun MemoCheckBox(CheckBox: CheckBox, checkBoxClick: () -> Unit = {}) {
-    Row {
+    Row(verticalAlignment = Alignment.CenterVertically) {
         if (CheckBox.checked) {
             Box(
                 modifier = Modifier
@@ -123,7 +120,7 @@ fun MemoCheckBox(CheckBox: CheckBox, checkBoxClick: () -> Unit = {}) {
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                style = MemoziTheme.typography.ssuLight12,
+                style = MemoziTheme.typography.ngReg12_140,
                 text = CheckBox.content
             )
         } else {
@@ -138,8 +135,8 @@ fun MemoCheckBox(CheckBox: CheckBox, checkBoxClick: () -> Unit = {}) {
             Text(
                 modifier = Modifier
                     .fillMaxWidth(),
-                style = MemoziTheme.typography.ssuLight12,
-                text = CheckBox.content
+                style = MemoziTheme.typography.ngReg12_140,
+                text = CheckBox.content,
             )
         }
     }
