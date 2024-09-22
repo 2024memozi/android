@@ -138,6 +138,19 @@ class MemoRepositoryImpl @Inject constructor(
         it.toDomain()
     }
 
+    override suspend fun deleteMemo(categoryId: Int, memoId: Int): Result<Unit> = runCatching {
+        memoRemoteDataSource.deleteMemo(categoryId,memoId)
+    }.recoverCatching { exception ->
+        when (exception) {
+            is HttpException -> {
+                throw ApiError(exception.message())
+            }
+
+            else -> {
+                throw exception
+            }
+        }
+    }
     override suspend fun putCheckBox(checkBoxId: Int): Result<Unit> = runCatching {
         memoRemoteDataSource.putCheckBox(checkBoxId)
     }

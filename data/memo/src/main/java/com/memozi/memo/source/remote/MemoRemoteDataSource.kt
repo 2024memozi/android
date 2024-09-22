@@ -51,4 +51,6 @@ interface MemoRemoteDataSource {
     suspend fun getMemo(categoryId: Int, memoId: Int): ResponseMemo
 
     suspend fun putCheckBox(checkBoxId: Int)
+
+    suspend fun deleteMemo(categoryId: Int, memoId: Int)
 }

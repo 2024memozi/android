@@ -47,6 +47,6 @@ interface MemoRepository {
     ): Result<Memo>
 
     suspend fun getMemo(categoryId: Int, memoId: Int): Result<Memo>
-
+    suspend fun deleteMemo(categoryId: Int, memoId: Int): Result<Unit>
     suspend fun putCheckBox(checkBoxId: Int): Result<Unit>
 }

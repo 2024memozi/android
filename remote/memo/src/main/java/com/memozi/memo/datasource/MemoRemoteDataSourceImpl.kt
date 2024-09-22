@@ -143,4 +143,10 @@ class MemoRemoteDataSourceImpl @Inject constructor(
     override suspend fun putCheckBox(checkBoxId: Int) {
         memoService.putCheck(checkBoxId)
     }
+
+    override suspend fun deleteMemo(categoryId: Int, memoId: Int) {
+        memoService.deleteMemo(categoryId,memoId)
+    }
+
+
 }

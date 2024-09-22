@@ -66,4 +66,16 @@ class MemoDetailViewModel @Inject constructor(
     fun updateContent(content: String) {
         intent { copy(memo = memo.copy(content = content)) }
     }
+
+    fun deleteMemo() {
+        viewModelScope.launch {
+            categoryId?.let {
+                memoId?.let {
+                    memoRepository.deleteMemo(categoryId, memoId).onSuccess {
+                        postSideEffect(MemoDetailSideEffect.NavigateMemo)
+                    }.onFailure { Log.d("deleteMemo error", "deleteMemo: ${it.message}") }
+                }
+            }
+        }
+    }
 }

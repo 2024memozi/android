@@ -385,7 +385,7 @@ fun MemoDetailScreen(
         DropDownMenu(
             modifier = Modifier.padding(end = 12.dp),
             onEditClick = { /*TODO*/ },
-            onDeleteClick = { /*todo*/ }
+            onDeleteClick = { viewmodel.deleteMemo() }
         )
     }
 }
