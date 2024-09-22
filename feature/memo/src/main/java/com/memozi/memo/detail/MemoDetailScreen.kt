@@ -137,11 +137,7 @@ fun MemoDetailScreen(
                 if (!state.editMode) {
                     Button(
                         onClick = {
-                            viewmodel.putmemo(
-                                title = state.memo.title,
-                                content = state.memo.content,
-                                checkBoxs = convertToCheckBoxList(checkBoxItems)
-                            )
+                            viewmodel.postmemo(checkBox = convertToCheckBoxList(checkBoxItems))
                         },
                         modifier =
                         Modifier
@@ -384,7 +380,9 @@ fun MemoDetailScreen(
     if (state.editMode) {
         DropDownMenu(
             modifier = Modifier.padding(end = 12.dp),
-            onEditClick = { /*TODO*/ },
+            onEditClick = {
+                viewmodel.putmemo(checkBox = convertToCheckBoxList(checkBoxItems))
+            },
             onDeleteClick = { viewmodel.deleteMemo() }
         )
     }

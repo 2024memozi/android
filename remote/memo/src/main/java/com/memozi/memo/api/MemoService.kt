@@ -22,6 +22,13 @@ interface MemoService {
         @Path("memoId") memoId: Int
     ): ResponseMemo
 
+    @PUT("/memo/{categoryId}/{memoId}")
+    suspend fun putMemo(
+        @Path("categoryId") categoryId: Int,
+        @Path("memoId") memoId: Int,
+        @Body requestMemo: RequestMemo
+    ): ResponseMemo
+
     @PUT("/{checkboxId}/check")
     suspend fun putCheck(
         @Path("checkboxId") checkboxId: Int
@@ -32,5 +39,4 @@ interface MemoService {
         @Path("categoryId") categoryId: Int,
         @Path("memoId") memoId: Int
     )
-
 }

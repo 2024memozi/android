@@ -116,14 +116,32 @@ class MemoRepositoryImpl @Inject constructor(
             }
         }
 
+    override suspend fun postMemo(
+        categoryId: Int,
+        title: String,
+        content: String,
+        checkBoxs: List<CheckBox>
+    ): Result<Memo> = runCatching {
+        memoRemoteDataSource.postMemo(
+            categoryId = categoryId,
+            title = title,
+            content = content,
+            checkBoxs = checkBoxs.map { RequestCheckBox(it.id, it.content, it.checked) }
+        )
+    }.mapCatching {
+        it.toDomain()
+    }
+
     override suspend fun putMemo(
         categoryId: Int,
+        memoId: Int,
         title: String,
         content: String,
         checkBoxs: List<CheckBox>
     ): Result<Memo> = runCatching {
         memoRemoteDataSource.putMemo(
             categoryId = categoryId,
+            memoId = memoId,
             title = title,
             content = content,
             checkBoxs = checkBoxs.map { RequestCheckBox(it.id, it.content, it.checked) }
@@ -139,7 +157,7 @@ class MemoRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteMemo(categoryId: Int, memoId: Int): Result<Unit> = runCatching {
-        memoRemoteDataSource.deleteMemo(categoryId,memoId)
+        memoRemoteDataSource.deleteMemo(categoryId, memoId)
     }.recoverCatching { exception ->
         when (exception) {
             is HttpException -> {
@@ -151,6 +169,7 @@ class MemoRepositoryImpl @Inject constructor(
             }
         }
     }
+
     override suspend fun putCheckBox(checkBoxId: Int): Result<Unit> = runCatching {
         memoRemoteDataSource.putCheckBox(checkBoxId)
     }

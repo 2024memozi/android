@@ -8,8 +8,16 @@ import com.memozi.memo.model.response.ResponseSearch
 
 interface MemoRemoteDataSource {
 
+    suspend fun postMemo(
+        categoryId: Int,
+        title: String,
+        content: String,
+        checkBoxs: List<RequestCheckBox>
+    ): ResponseMemo
+
     suspend fun putMemo(
         categoryId: Int,
+        memoId: Int,
         title: String,
         content: String,
         checkBoxs: List<RequestCheckBox>

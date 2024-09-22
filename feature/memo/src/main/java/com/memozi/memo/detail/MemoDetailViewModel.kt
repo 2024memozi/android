@@ -45,15 +45,34 @@ class MemoDetailViewModel @Inject constructor(
         }
     }
 
-    fun putmemo(
-        title: String,
-        content: String,
-        checkBoxs: List<CheckBox>
-    ) {
+    fun postmemo(checkBox: List<CheckBox>) {
         viewModelScope.launch {
             categoryId?.let {
-                memoRepository.putMemo(categoryId, title, content, checkBoxs).onSuccess {
+                memoRepository.postMemo(
+                    categoryId,
+                    uiState.value.memo.title,
+                    uiState.value.memo.content,
+                    checkBox
+                ).onSuccess {
                     postSideEffect(MemoDetailSideEffect.NavigateMemo)
+                }
+            }
+        }
+    }
+
+    fun putmemo(checkBox: List<CheckBox>) {
+        viewModelScope.launch {
+            categoryId?.let {
+                memoId?.let {
+                    memoRepository.putMemo(
+                        categoryId,
+                        memoId,
+                        uiState.value.memo.title,
+                        uiState.value.memo.content,
+                        checkBox
+                    ).onSuccess {
+                        postSideEffect(MemoDetailSideEffect.NavigateMemo)
+                    }
                 }
             }
         }
