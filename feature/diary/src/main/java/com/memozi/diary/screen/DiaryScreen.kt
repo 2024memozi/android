@@ -145,8 +145,11 @@ fun DiaryScreen(
         }
 
         if (isDiaryExist) {
-            DiaryFeedDisplayCard(diaryState.diaryList,
-                editEvent = {}, deleteEvent = { diaryViewModel.delteDiary(it) })
+            DiaryFeedDisplayCard(
+                diaryState.diaryList,
+                editEvent = {},
+                deleteEvent = { diaryViewModel.delteDiary(it) }
+            )
         }
     }
 
@@ -756,7 +759,7 @@ fun DiaryFeedDisplayCard(
                                 dayOfWeek = it.dayOfWeek,
                                 diaryContent = it.content,
                                 imageUrl = if (it.images.isNotEmpty()) it.images[0] else null,
-                                deleteEvent = { deleteEvent(it.diaryId) },
+                                deleteEvent = { deleteEvent(it.diaryId) }
                             )
                         }
                     }
@@ -776,17 +779,18 @@ fun DailyDiaryItem(
     imageUrl: String? = null,
     location: String? = null,
     editEvent: () -> Unit = {},
-    deleteEvent: () -> Unit = {},
+    deleteEvent: () -> Unit = {}
 ) {
     Box(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth()
     ) {
         Row {
             Spacer(modifier = Modifier.weight(1f))
             MoreOptionsMenu(
                 modifier = Modifier.padding(end = 10.dp),
                 onEditClick = { editEvent() },
-                onDeleteClick = { deleteEvent() })
+                onDeleteClick = { deleteEvent() }
+            )
         }
         Column(
             modifier = Modifier
@@ -841,7 +845,6 @@ fun DailyDiaryItem(
             )
         }
     }
-
 }
 
 @Preview(showBackground = true)

@@ -24,6 +24,6 @@ interface MemoService {
 
     @PUT("/{checkboxId}/check")
     suspend fun putCheck(
-        @Path("checkboxId") checkboxId:Int
+        @Path("checkboxId") checkboxId: Int
     )
 }
