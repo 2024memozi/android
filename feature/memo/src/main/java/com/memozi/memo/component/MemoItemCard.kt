@@ -17,6 +17,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,8 +29,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.memozi.component.button.CheckBoxSelected
-import com.memozi.component.button.CheckBoxUnSelected
 import com.memozi.designsystem.MemoziTheme
 import com.memozi.designsystem.R
 import com.memozi.memo.model.CheckBox
@@ -34,7 +36,9 @@ import com.memozi.memo.model.Memo
 import com.memozi.memo.model.MemoDummy
 
 @Composable
-fun MemoItemCard(modifier: Modifier= Modifier, memo: Memo, checkBoxClick: (Int) -> Unit={}) {
+fun MemoItemCard(modifier: Modifier = Modifier, memo: Memo, checkBoxClick: (Int) -> Unit = {}) {
+    var checkBoxes by remember { mutableStateOf(memo.checkBoxes) }
+
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -61,25 +65,30 @@ fun MemoItemCard(modifier: Modifier= Modifier, memo: Memo, checkBoxClick: (Int) 
             )
         }
         Spacer(modifier = Modifier.height(8.dp))
-        if (memo.checkBoxes.isEmpty())
+        if (checkBoxes.isEmpty()) {
             Text(
                 text = memo.content,
                 style = MemoziTheme.typography.ssuLight12,
                 color = MemoziTheme.colors.gray05
             )
-        else {
-            if (memo.checkBoxes.size >= 2) {
+        } else {
+            checkBoxes.take(2).forEach { checkBox ->
                 MemoCheckBox(
-                    CheckBox = memo.checkBoxes[0],
-                    checkBoxClick = { checkBoxClick(memo.checkBoxes[0].id) })
+                    CheckBox = checkBox,
+                    checkBoxClick = {
+                        checkBoxes = checkBoxes.map {
+                            if (it.id == checkBox.id) {
+                                it.copy(checked = !it.checked)
+                            } else {
+                                it
+                            }
+                        }
+                        checkBoxClick(checkBox.id)
+                    }
+                )
                 Spacer(modifier = Modifier.height(8.dp))
-                MemoCheckBox(
-                    CheckBox = memo.checkBoxes[1],
-                    checkBoxClick = { checkBoxClick(memo.checkBoxes[1].id) })
-            } else {
-                MemoCheckBox(
-                    CheckBox = memo.checkBoxes[0],
-                    checkBoxClick = { checkBoxClick(memo.checkBoxes[0].id) })
+            }
+            if (checkBoxes.size == 1) {
                 Text(
                     text = memo.content,
                     style = MemoziTheme.typography.ssuLight12,
@@ -115,7 +124,7 @@ fun MemoCheckBox(CheckBox: CheckBox, checkBoxClick: () -> Unit = {}) {
             Text(
                 modifier = Modifier.fillMaxWidth(),
                 style = MemoziTheme.typography.ssuLight12,
-                text = CheckBox.content,
+                text = CheckBox.content
             )
         } else {
             Box(
@@ -128,10 +137,9 @@ fun MemoCheckBox(CheckBox: CheckBox, checkBoxClick: () -> Unit = {}) {
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 1.dp),
+                    .fillMaxWidth(),
                 style = MemoziTheme.typography.ssuLight12,
-                text = CheckBox.content,
+                text = CheckBox.content
             )
         }
     }
