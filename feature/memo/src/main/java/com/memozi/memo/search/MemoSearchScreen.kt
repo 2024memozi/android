@@ -50,7 +50,7 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun MemoSearchScreen(
     viewModel: MemoSearchViewModel = hiltViewModel(),
-    navigateMemo: () -> Unit = {},
+    navigateMemo: () -> Unit = {}
 ) {
     MemoziBackground(topWeight = 1f, bottomWeight = 5f)
     val navigationBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
@@ -68,34 +68,41 @@ fun MemoSearchScreen(
 
     Column(
         modifier =
-            Modifier
-                .fillMaxSize()
-                .padding(horizontal = 16.dp)
-                .padding(top = 30.dp + navigationBarHeight),
+        Modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp)
     ) {
-        Row(
-            modifier =
-            Modifier
-                .fillMaxWidth()
+        Box(
+            modifier = Modifier
+                .padding(top = 30.dp + navigationBarHeight)
                 .weight(1f)
-                .padding(bottom = 15.dp),
-            verticalAlignment = Alignment.CenterVertically
         ) {
-            MemoTextField(
-                onValueChange = { viewModel.getResult(it) },
-                navigateMemo = { viewModel.navigateMemo() },
-            )
-            Spacer(modifier = Modifier.width(16.dp))
-            if(state.query.isNotEmpty()) Icon(
-                painter = painterResource(id = R.drawable.ic_x_white_13),
-                tint = Color.Unspecified,
-                contentDescription = "삭제버튼",
-                modifier = Modifier.customClickable {
-                    viewModel
+            Row(
+                modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 15.dp),
+                verticalAlignment = Alignment.Bottom
+            ) {
+                MemoTextField(
+                    onValueChange = { viewModel.getResult(it) },
+                    navigateMemo = { viewModel.navigateMemo() }
+                )
+                Spacer(modifier = Modifier.width(16.dp))
+                if (state.query.isNotEmpty()) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_x_white_13),
+                        tint = Color.Unspecified,
+                        contentDescription = "삭제버튼",
+                        modifier = Modifier.customClickable {
+                            viewModel
+                        }
+                    )
                 }
-            )
+            }
         }
-        Box(modifier = Modifier.weight(5f)){
+
+        Box(modifier = Modifier.weight(5f)) {
             if (state.result.isEmpty()) {
                 EmptySearchList()
             } else {
@@ -109,26 +116,26 @@ fun MemoSearchScreen(
 fun EmptySearchList() {
     Box(
         modifier =
-            Modifier
-                .fillMaxSize()
-                .padding(horizontal = 16.dp),
+        Modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp)
     ) {
         Column(
             modifier =
-                Modifier
-                    .align(Alignment.Center),
+            Modifier
+                .align(Alignment.Center),
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
                 painter = painterResource(id = R.drawable.ic_hing),
-                contentDescription = null,
+                contentDescription = null
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = "항목을 찾을 수 없어요ㅠ",
                 style = MemoziTheme.typography.ssuLight15,
-                color = MemoziTheme.colors.black,
+                color = MemoziTheme.colors.black
             )
         }
         MemoFloatingButton()
@@ -154,20 +161,20 @@ fun memoSearchList(searchResults: List<SearchResult>) {
                     Text(
                         text = searchResult.name,
                         style = MemoziTheme.typography.ngBold15,
-                        modifier = Modifier.alignByBaseline(),
+                        modifier = Modifier.alignByBaseline()
                     )
                     Spacer(modifier = Modifier.padding(end = 4.dp))
                     Text(
                         text = "카테고리에서 ${searchResult.count}개의 메모를 발견했습니다!",
                         style = MemoziTheme.typography.ngReg8,
-                        modifier = Modifier.alignByBaseline(),
+                        modifier = Modifier.alignByBaseline()
                     )
                 }
             }
 
             items(searchResult.memos) { memo ->
                 MemoItemCard(
-                    memo = memo,
+                    memo = memo
                 )
             }
         }
@@ -177,7 +184,7 @@ fun memoSearchList(searchResults: List<SearchResult>) {
 @Composable
 fun MemoTextField(
     onValueChange: (String) -> Unit = { _ -> },
-    navigateMemo: () -> Unit = {},
+    navigateMemo: () -> Unit = {}
 ) {
     var text by remember { mutableStateOf("") }
     val maxCharCount = 10
@@ -185,32 +192,32 @@ fun MemoTextField(
 
     Row(
         modifier =
-            Modifier
-                .fillMaxWidth()
-                .height(42.dp),
-        verticalAlignment = Alignment.CenterVertically,
+        Modifier
+            .fillMaxWidth()
+            .height(42.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
             modifier =
-                Modifier
-                    .weight(1f)
-                    .background(shape = shape, color = MemoziTheme.colors.white),
-            contentAlignment = Alignment.CenterEnd,
+            Modifier
+                .weight(1f)
+                .background(shape = shape, color = MemoziTheme.colors.white),
+            contentAlignment = Alignment.CenterEnd
         ) {
             Row(
                 modifier =
-                    Modifier
-                        .fillMaxHeight(),
-                verticalAlignment = Alignment.CenterVertically,
+                Modifier
+                    .fillMaxHeight(),
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
                     modifier =
-                        Modifier
-                            .height(24.dp)
-                            .width(24.dp)
-                            .padding(start = 10.dp),
+                    Modifier
+                        .height(24.dp)
+                        .width(24.dp)
+                        .padding(start = 10.dp),
                     painter = painterResource(id = R.drawable.ic_search),
-                    contentDescription = null,
+                    contentDescription = null
                 )
                 BasicTextField(
                     value = text,
@@ -222,22 +229,22 @@ fun MemoTextField(
                         }
                     },
                     modifier =
-                        Modifier
-                            .padding(start = 10.dp)
-                            .fillMaxSize()
-                            .wrapContentHeight(Alignment.CenterVertically)
-                            .background(shape = shape, color = MemoziTheme.colors.white),
+                    Modifier
+                        .padding(start = 10.dp)
+                        .fillMaxSize()
+                        .wrapContentHeight(Alignment.CenterVertically)
+                        .background(shape = shape, color = MemoziTheme.colors.white),
                     textStyle = MemoziTheme.typography.ssuLight12.copy(MemoziTheme.colors.black),
                     decorationBox = { innerTextField ->
                         if (text.isEmpty()) {
                             Text(
                                 modifier = Modifier.padding(start = 10.dp),
                                 text = "메모를 검색해 보세요!",
-                                style = MemoziTheme.typography.ssuLight12.copy(MemoziTheme.colors.gray05),
+                                style = MemoziTheme.typography.ssuLight12.copy(MemoziTheme.colors.gray05)
                             )
                         }
                         innerTextField()
-                    },
+                    }
                 )
             }
             if (text.isNotEmpty()) {
@@ -245,12 +252,12 @@ fun MemoTextField(
                     painter = painterResource(id = R.drawable.ic_x_white_13), // 원하는 아이콘을 사용하세요.
                     contentDescription = null,
                     modifier =
-                        Modifier
-                            .height(32.dp)
-                            .width(32.dp)
-                            .padding(end = 8.dp)
-                            .clickable { text = "" },
-                    tint = Color.Unspecified,
+                    Modifier
+                        .height(32.dp)
+                        .width(32.dp)
+                        .padding(end = 8.dp)
+                        .clickable { text = "" },
+                    tint = Color.Unspecified
                 )
             }
         }
@@ -259,9 +266,9 @@ fun MemoTextField(
             text = "취소",
             style = MemoziTheme.typography.ssuLight13.copy(color = MemoziTheme.colors.white),
             modifier =
-                Modifier.clickable {
-                    navigateMemo()
-                },
+            Modifier.clickable {
+                navigateMemo()
+            }
         )
     }
 }
