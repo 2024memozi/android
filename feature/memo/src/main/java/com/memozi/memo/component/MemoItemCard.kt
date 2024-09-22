@@ -77,8 +77,11 @@ fun MemoItemCard(modifier: Modifier = Modifier, memo: Memo, checkBoxClick: (Int)
                     CheckBox = checkBox,
                     checkBoxClick = {
                         checkBoxes = checkBoxes.map {
-                            if (it.id == checkBox.id) it.copy(checked = !it.checked)
-                            else it
+                            if (it.id == checkBox.id) {
+                                it.copy(checked = !it.checked)
+                            } else {
+                                it
+                            }
                         }
                         checkBoxClick(checkBox.id)
                     }
@@ -136,7 +139,7 @@ fun MemoCheckBox(CheckBox: CheckBox, checkBoxClick: () -> Unit = {}) {
                 modifier = Modifier
                     .fillMaxWidth(),
                 style = MemoziTheme.typography.ngReg12_140,
-                text = CheckBox.content,
+                text = CheckBox.content
             )
         }
     }
