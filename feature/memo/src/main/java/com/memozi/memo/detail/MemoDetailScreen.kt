@@ -54,7 +54,6 @@ import com.memozi.designsystem.MemoziTheme
 import com.memozi.designsystem.R
 import com.memozi.memo.detail.MemoDetailSideEffect
 import com.memozi.memo.detail.MemoDetailViewModel
-import com.memozi.memo.model.CheckBox
 import com.memozi.memo.model.dummyMemoCategoriesItems
 import com.memozi.ui.lifecycle.LaunchedEffectWithLifecycle
 import kotlinx.coroutines.flow.collectLatest
@@ -70,7 +69,6 @@ fun MemoDetailScreen(
     val scope = rememberCoroutineScope()
     var showBottomSheet by remember { mutableStateOf(false) }
     val navigationBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
-    var checkBoxItems by remember { mutableStateOf<List<Pair<Boolean, String>>>(listOf()) } // 상태와 텍스트를 저장
 
     val state = viewmodel.uiState.collectAsState().value
 
@@ -85,19 +83,8 @@ fun MemoDetailScreen(
             }
         }
     }
-
-    fun convertToCheckBoxList(checkBoxItems: List<Pair<Boolean, String>>): List<CheckBox> {
-        return checkBoxItems.mapIndexed { index, pair ->
-            CheckBox(
-                id = index,
-                content = pair.second,
-                checked = pair.first
-            )
-        }
-    }
-
     val isEnabled =
-        state.memo.title.isNotEmpty() && (checkBoxItems.isNotEmpty() || state.memo.content.isNotEmpty())
+        state.memo.title.isNotEmpty() && (state.memo.checkBoxes.isNotEmpty() || state.memo.content.isNotEmpty())
 
     Column(
         modifier = Modifier
@@ -137,7 +124,7 @@ fun MemoDetailScreen(
                 if (!state.editMode) {
                     Button(
                         onClick = {
-                            viewmodel.postmemo(checkBox = convertToCheckBoxList(checkBoxItems))
+                            viewmodel.postmemo()
                         },
                         modifier =
                         Modifier
@@ -220,7 +207,7 @@ fun MemoDetailScreen(
                     shape = RectangleShape
                 )
             }
-            itemsIndexed(checkBoxItems) { index, item ->
+            itemsIndexed(state.memo.checkBoxes) { index, item ->
                 Row(
                     modifier =
                     Modifier
@@ -229,34 +216,24 @@ fun MemoDetailScreen(
                         .padding(horizontal = 20.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    if (item.first) {
+                    if (item.checked) {
                         CheckBoxSelected {
-                            checkBoxItems =
-                                checkBoxItems.toMutableList().apply {
-                                    this[index] = item.copy(first = !item.first)
-                                }
+                            viewmodel.updateChecked(index)
                         }
                     } else {
                         CheckBoxUnSelected {
-                            checkBoxItems =
-                                checkBoxItems.toMutableList().apply {
-                                    this[index] = item.copy(first = !item.first)
-                                }
+                            viewmodel.updateChecked(index)
                         }
                     }
                     Spacer(modifier = Modifier.width(8.dp))
                     TextField(
-                        value = item.second,
-                        onValueChange = { newText ->
-                            checkBoxItems =
-                                checkBoxItems.toMutableList().apply {
-                                    this[index] = item.copy(second = newText)
-                                }
+                        value = item.content,
+                        onValueChange = {
+                            viewmodel.updateCheckContent(index, it)
                         },
                         modifier = Modifier.fillMaxWidth(),
                         textStyle = MemoziTheme.typography.ngReg12_170,
-                        colors =
-                        TextFieldDefaults.colors(
+                        colors = TextFieldDefaults.colors(
                             focusedContainerColor = Color.Transparent,
                             unfocusedContainerColor = Color.Transparent,
                             focusedIndicatorColor = Color.Transparent,
@@ -285,7 +262,7 @@ fun MemoDetailScreen(
                 contentDescription = null,
                 modifier =
                 Modifier.clickable {
-                    checkBoxItems = checkBoxItems + Pair(false, "")
+                    viewmodel.newCheckBox()
                 }
             )
         }
@@ -381,7 +358,7 @@ fun MemoDetailScreen(
         DropDownMenu(
             modifier = Modifier.padding(end = 12.dp),
             onEditClick = {
-                viewmodel.putmemo(checkBox = convertToCheckBoxList(checkBoxItems))
+                viewmodel.putmemo()
             },
             onDeleteClick = { viewmodel.deleteMemo() }
         )

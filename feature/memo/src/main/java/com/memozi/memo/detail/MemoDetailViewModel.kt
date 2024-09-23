@@ -45,14 +45,14 @@ class MemoDetailViewModel @Inject constructor(
         }
     }
 
-    fun postmemo(checkBox: List<CheckBox>) {
+    fun postmemo() {
         viewModelScope.launch {
             categoryId?.let {
                 memoRepository.postMemo(
                     categoryId,
                     uiState.value.memo.title,
                     uiState.value.memo.content,
-                    checkBox
+                    uiState.value.memo.checkBoxes
                 ).onSuccess {
                     postSideEffect(MemoDetailSideEffect.NavigateMemo)
                 }
@@ -60,7 +60,29 @@ class MemoDetailViewModel @Inject constructor(
         }
     }
 
-    fun putmemo(checkBox: List<CheckBox>) {
+    fun updateChecked(checkboxIndex: Int) {
+        val updatedCheckBoxes = uiState.value.memo.checkBoxes.mapIndexed { index, checkBox ->
+            if (index == checkboxIndex) {
+                checkBox.copy(checked = !checkBox.checked)
+            } else {
+                checkBox
+            }
+        }
+        intent { copy(memo = memo.copy(checkBoxes = updatedCheckBoxes)) }
+    }
+
+    fun updateCheckContent(checkboxIndex: Int, content: String) {
+        val updatedCheckBoxes = uiState.value.memo.checkBoxes.mapIndexed { index, checkBox ->
+            if (index == checkboxIndex) {
+                checkBox.copy(content = content)
+            } else {
+                checkBox
+            }
+        }
+        intent { copy(memo = memo.copy(checkBoxes = updatedCheckBoxes)) }
+    }
+
+    fun putmemo() {
         viewModelScope.launch {
             categoryId?.let {
                 memoId?.let {
@@ -69,7 +91,7 @@ class MemoDetailViewModel @Inject constructor(
                         memoId,
                         uiState.value.memo.title,
                         uiState.value.memo.content,
-                        checkBox
+                        uiState.value.memo.checkBoxes
                     ).onSuccess {
                         postSideEffect(MemoDetailSideEffect.NavigateMemo)
                     }
@@ -84,6 +106,10 @@ class MemoDetailViewModel @Inject constructor(
 
     fun updateContent(content: String) {
         intent { copy(memo = memo.copy(content = content)) }
+    }
+
+    fun newCheckBox() {
+        intent { copy(memo = memo.copy(checkBoxes = uiState.value.memo.checkBoxes + CheckBox(0, "", false))) }
     }
 
     fun deleteMemo() {
