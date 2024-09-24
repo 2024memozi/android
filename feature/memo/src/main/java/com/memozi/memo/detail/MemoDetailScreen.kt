@@ -1,3 +1,4 @@
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -83,6 +84,12 @@ fun MemoDetailScreen(
             }
         }
     }
+
+    BackHandler {
+        if (state.memo.checkBoxes.isNotEmpty()) viewmodel.putCheckBox()
+        navigateMemo()
+    }
+
     val isEnabled =
         state.memo.title.isNotEmpty() && (state.memo.checkBoxes.isNotEmpty() || state.memo.content.isNotEmpty())
 
