@@ -31,7 +31,7 @@ class MemoDetailViewModel @Inject constructor(
                         intent { copy(memo = it, editMode = true) }
                     }
                 }?.onSuccess {
-                    intent { copy(memo = it) }
+                    intent { copy(memo = it, beforeCheckList = it.checkBoxes) }
                 }
             }
         }
@@ -55,6 +55,22 @@ class MemoDetailViewModel @Inject constructor(
                     uiState.value.memo.checkBoxes
                 ).onSuccess {
                     postSideEffect(MemoDetailSideEffect.NavigateMemo)
+                }
+            }
+        }
+    }
+
+    fun putCheckBox() {
+        viewModelScope.launch {
+            val updatedCheckBoxes = uiState.value.beforeCheckList.filter { newCheckBox ->
+                uiState.value.memo.checkBoxes.any { oldCheckBox ->
+                    oldCheckBox.id == newCheckBox.id && oldCheckBox.checked != newCheckBox.checked
+                }
+            }
+            updatedCheckBoxes.forEach {
+                memoRepository.putCheckBox(it.id).onSuccess {
+                }.onFailure {
+                    Log.d("putcheckbox 실패", "putCheckBox: ${it.message}")
                 }
             }
         }
@@ -94,6 +110,7 @@ class MemoDetailViewModel @Inject constructor(
                         uiState.value.memo.checkBoxes
                     ).onSuccess {
                         postSideEffect(MemoDetailSideEffect.NavigateMemo)
+                        putCheckBox()
                     }
                 }
             }
@@ -109,7 +126,17 @@ class MemoDetailViewModel @Inject constructor(
     }
 
     fun newCheckBox() {
-        intent { copy(memo = memo.copy(checkBoxes = uiState.value.memo.checkBoxes + CheckBox(0, "", false))) }
+        intent {
+            copy(
+                memo = memo.copy(
+                    checkBoxes = uiState.value.memo.checkBoxes + CheckBox(
+                        0,
+                        "",
+                        false
+                    )
+                )
+            )
+        }
     }
 
     fun deleteMemo() {
