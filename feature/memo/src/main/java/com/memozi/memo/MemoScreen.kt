@@ -168,7 +168,7 @@ fun MemoRoute(
                 clickEvnet = { categoryId, memoId ->
                     navigateMemoDetail(categoryId, memoId)
                 },
-                checkBoxClick = {viewModel.putCheck(it)}
+                checkBoxClick = { viewModel.putCheck(it) }
             )
         }
     }
@@ -426,7 +426,7 @@ fun MemoList(
                             )
                         },
                         memoItems[index]
-                    ){ checkBoxClick(it) }
+                    ) { checkBoxClick(it) }
                 }
             }
         }

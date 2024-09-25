@@ -3,6 +3,7 @@ package com.memozi.memo.api
 import com.memozi.memo.model.request.RequestMemo
 import com.memozi.memo.model.response.ResponseMemo
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.PUT
@@ -19,11 +20,23 @@ interface MemoService {
     suspend fun getMemo(
         @Path("categoryId") categoryId: Int,
         @Path("memoId") memoId: Int
+    ): ResponseMemo
 
+    @PUT("/memo/{categoryId}/{memoId}")
+    suspend fun putMemo(
+        @Path("categoryId") categoryId: Int,
+        @Path("memoId") memoId: Int,
+        @Body requestMemo: RequestMemo
     ): ResponseMemo
 
     @PUT("/{checkboxId}/check")
     suspend fun putCheck(
-        @Path("checkboxId") checkboxId:Int
+        @Path("checkboxId") checkboxId: Int
+    )
+
+    @DELETE("/memo/{categoryId}/{memoId}")
+    suspend fun deleteMemo(
+        @Path("categoryId") categoryId: Int,
+        @Path("memoId") memoId: Int
     )
 }

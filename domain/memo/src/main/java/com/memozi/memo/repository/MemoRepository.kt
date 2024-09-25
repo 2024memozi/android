@@ -39,14 +39,21 @@ interface MemoRepository {
 
     suspend fun getCategorySearch(query: String): Result<List<SearchResult>>
 
-    suspend fun putMemo(
+    suspend fun postMemo(
         categoryId: Int,
         title: String,
         content: String,
         checkBoxs: List<CheckBox>
     ): Result<Memo>
 
+    suspend fun putMemo(
+        categoryId: Int,
+        memoId: Int,
+        title: String,
+        content: String,
+        checkBoxs: List<CheckBox>
+    ): Result<Memo>
     suspend fun getMemo(categoryId: Int, memoId: Int): Result<Memo>
-
-    suspend fun putCheckBox(checkBoxId:Int) :Result<Unit>
+    suspend fun deleteMemo(categoryId: Int, memoId: Int): Result<Unit>
+    suspend fun putCheckBox(checkBoxId: Int): Result<Unit>
 }

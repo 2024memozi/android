@@ -1,3 +1,4 @@
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -18,27 +19,21 @@ import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -53,13 +48,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.memozi.component.DropDownMenu
 import com.memozi.component.button.CheckBoxSelected
 import com.memozi.component.button.CheckBoxUnSelected
 import com.memozi.designsystem.MemoziTheme
 import com.memozi.designsystem.R
 import com.memozi.memo.detail.MemoDetailSideEffect
 import com.memozi.memo.detail.MemoDetailViewModel
-import com.memozi.memo.model.CheckBox
 import com.memozi.memo.model.dummyMemoCategoriesItems
 import com.memozi.ui.lifecycle.LaunchedEffectWithLifecycle
 import kotlinx.coroutines.flow.collectLatest
@@ -73,34 +68,30 @@ fun MemoDetailScreen(
 ) {
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
-    var showBottomSheet by remember { mutableStateOf(true) }
+    var showBottomSheet by remember { mutableStateOf(false) }
     val navigationBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
-    var titleValue by remember { mutableStateOf("") }
-    var memoValue by remember { mutableStateOf("") }
-    var checkBoxItems by remember { mutableStateOf<List<Pair<Boolean, String>>>(listOf()) } // 상태와 텍스트를 저장
-    var isVisible by remember { mutableStateOf(true) }
+
+    val state = viewmodel.uiState.collectAsState().value
 
     LaunchedEffectWithLifecycle {
         viewmodel.getMemo()
+        viewmodel.getCategory()
         viewmodel.sideEffect.collectLatest { sideeffect ->
             when (sideeffect) {
-                MemoDetailSideEffect.NavigateMemo -> { navigateMemo() }
+                MemoDetailSideEffect.NavigateMemo -> {
+                    navigateMemo()
+                }
             }
         }
     }
 
-    fun convertToCheckBoxList(checkBoxItems: List<Pair<Boolean, String>>): List<CheckBox> {
-        return checkBoxItems.mapIndexed { index, pair ->
-            CheckBox(
-                id = index,
-                content = pair.second,
-                checked = pair.first
-            )
-        }
+    BackHandler {
+        if (state.memo.checkBoxes.isNotEmpty()) viewmodel.putCheckBox()
+        navigateMemo()
     }
 
     val isEnabled =
-        titleValue.isNotEmpty() && (checkBoxItems.isNotEmpty() || memoValue.isNotEmpty())
+        state.memo.title.isNotEmpty() && (state.memo.checkBoxes.isNotEmpty() || state.memo.content.isNotEmpty())
 
     Column(
         modifier = Modifier
@@ -123,7 +114,7 @@ fun MemoDetailScreen(
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = "카테고리",
+                        text = state.categoryName,
                         style = MemoziTheme.typography.ssuLight19,
                         color = MemoziTheme.colors.black
                     )
@@ -137,14 +128,10 @@ fun MemoDetailScreen(
                         }
                     )
                 }
-                if (isVisible) {
+                if (!state.editMode) {
                     Button(
                         onClick = {
-                            viewmodel.putmemo(
-                                title = titleValue,
-                                content = memoValue,
-                                checkBoxs = convertToCheckBoxList(checkBoxItems)
-                            )
+                            viewmodel.postmemo()
                         },
                         modifier =
                         Modifier
@@ -172,8 +159,8 @@ fun MemoDetailScreen(
         }
 
         TextField(
-            value = titleValue,
-            onValueChange = { newValue -> titleValue = newValue },
+            value = state.memo.title,
+            onValueChange = { viewmodel.updateTitle(it) },
             placeholder = {
                 Text(
                     text = "제목",
@@ -187,8 +174,7 @@ fun MemoDetailScreen(
                 .padding(top = 16.dp)
                 .padding(horizontal = 16.dp),
             textStyle = MemoziTheme.typography.ngReg15,
-            colors =
-            TextFieldDefaults.colors(
+            colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.Transparent,
                 unfocusedContainerColor = Color.Transparent,
                 focusedIndicatorColor = MemoziTheme.colors.gray02,
@@ -206,8 +192,8 @@ fun MemoDetailScreen(
         ) {
             item {
                 TextField(
-                    value = memoValue,
-                    onValueChange = { newValue -> memoValue = newValue },
+                    value = state.memo.content,
+                    onValueChange = { viewmodel.updateContent(it) },
                     placeholder = {
                         Text(
                             text = "메모 내용을 입력하세요!",
@@ -219,9 +205,7 @@ fun MemoDetailScreen(
                     Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp),
-                    // 텍스트 필드 패딩
-                    colors =
-                    TextFieldDefaults.colors(
+                    colors = TextFieldDefaults.colors(
                         focusedContainerColor = Color.Transparent,
                         unfocusedContainerColor = Color.Transparent,
                         focusedIndicatorColor = Color.Transparent,
@@ -230,7 +214,7 @@ fun MemoDetailScreen(
                     shape = RectangleShape
                 )
             }
-            itemsIndexed(checkBoxItems) { index, item ->
+            itemsIndexed(state.memo.checkBoxes) { index, item ->
                 Row(
                     modifier =
                     Modifier
@@ -239,34 +223,24 @@ fun MemoDetailScreen(
                         .padding(horizontal = 20.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    if (item.first) {
+                    if (item.checked) {
                         CheckBoxSelected {
-                            checkBoxItems =
-                                checkBoxItems.toMutableList().apply {
-                                    this[index] = item.copy(first = !item.first)
-                                }
+                            viewmodel.updateChecked(index)
                         }
                     } else {
                         CheckBoxUnSelected {
-                            checkBoxItems =
-                                checkBoxItems.toMutableList().apply {
-                                    this[index] = item.copy(first = !item.first)
-                                }
+                            viewmodel.updateChecked(index)
                         }
                     }
                     Spacer(modifier = Modifier.width(8.dp))
                     TextField(
-                        value = item.second,
-                        onValueChange = { newText ->
-                            checkBoxItems =
-                                checkBoxItems.toMutableList().apply {
-                                    this[index] = item.copy(second = newText)
-                                }
+                        value = item.content,
+                        onValueChange = {
+                            viewmodel.updateCheckContent(index, it)
                         },
                         modifier = Modifier.fillMaxWidth(),
                         textStyle = MemoziTheme.typography.ngReg12_170,
-                        colors =
-                        TextFieldDefaults.colors(
+                        colors = TextFieldDefaults.colors(
                             focusedContainerColor = Color.Transparent,
                             unfocusedContainerColor = Color.Transparent,
                             focusedIndicatorColor = Color.Transparent,
@@ -295,7 +269,7 @@ fun MemoDetailScreen(
                 contentDescription = null,
                 modifier =
                 Modifier.clickable {
-                    checkBoxItems = checkBoxItems + Pair(false, "")
+                    viewmodel.newCheckBox()
                 }
             )
         }
@@ -334,7 +308,7 @@ fun MemoDetailScreen(
                         textAlign = TextAlign.Center
                     )
                     Image(
-                        painter = painterResource(id = com.memozi.designsystem.R.drawable.ic_close),
+                        painter = painterResource(id = R.drawable.ic_close),
                         contentDescription = null,
                         modifier =
                         Modifier
@@ -386,47 +360,15 @@ fun MemoDetailScreen(
             }
         }
     }
-}
 
-@Composable
-fun dropdownMenu(
-    onEditClick: () -> Unit,
-    onDeleteClick: () -> Unit
-) {
-    var expanded by remember { mutableStateOf(false) }
-
-    Box(
-        modifier =
-        Modifier
-            .wrapContentSize(Alignment.TopEnd)
-    ) {
-        IconButton(onClick = { expanded = true }) {
-            Icon(Icons.Default.MoreVert, contentDescription = "More Options")
-        }
-
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-            modifier =
-            Modifier
-                .width(84.dp)
-                .height(60.dp)
-        ) {
-            DropdownMenuItem(
-                text = { Text("수정하기") },
-                onClick = {
-                    expanded = false
-                    onEditClick()
-                }
-            )
-            DropdownMenuItem(
-                text = { Text("삭제하기") },
-                onClick = {
-                    expanded = false
-                    onDeleteClick()
-                }
-            )
-        }
+    if (state.editMode) {
+        DropDownMenu(
+            modifier = Modifier.padding(end = 12.dp),
+            onEditClick = {
+                viewmodel.putmemo()
+            },
+            onDeleteClick = { viewmodel.deleteMemo() }
+        )
     }
 }
 
@@ -437,5 +379,13 @@ private fun PrviewMemoziBackGround() {
         Box(modifier = Modifier.background(color = MemoziTheme.colors.white)) {
             MemoDetailScreen()
         }
+    }
+}
+
+@Preview
+@Composable
+private fun test() {
+    var expanded by remember { mutableStateOf(true) }
+    MemoziTheme {
     }
 }

@@ -6,7 +6,7 @@ import com.memozi.ui.base.UiState
 
 data class MemoSearchState(
     var result: List<SearchResult> = emptyList(),
-    val query: String = "",
+    val query: String = ""
 ) : UiState
 
 sealed interface MemoSearchEffect : SideEffect {

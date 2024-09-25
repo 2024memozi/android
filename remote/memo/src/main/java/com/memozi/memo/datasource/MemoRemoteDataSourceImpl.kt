@@ -26,13 +26,29 @@ class MemoRemoteDataSourceImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ) : MemoRemoteDataSource {
 
-    override suspend fun putMemo(
+    override suspend fun postMemo(
         categoryId: Int,
         title: String,
         content: String,
         checkBoxs: List<RequestCheckBox>
     ): ResponseMemo = memoService.postMemo(
         categoryId = categoryId,
+        requestMemo = RequestMemo(
+            title = title,
+            content = content,
+            checkBoxes = checkBoxs
+        )
+    )
+
+    override suspend fun putMemo(
+        categoryId: Int,
+        memoId: Int,
+        title: String,
+        content: String,
+        checkBoxs: List<RequestCheckBox>
+    ): ResponseMemo = memoService.putMemo(
+        categoryId = categoryId,
+        memoId = memoId,
         requestMemo = RequestMemo(
             title = title,
             content = content,
@@ -142,5 +158,9 @@ class MemoRemoteDataSourceImpl @Inject constructor(
 
     override suspend fun putCheckBox(checkBoxId: Int) {
         memoService.putCheck(checkBoxId)
+    }
+
+    override suspend fun deleteMemo(categoryId: Int, memoId: Int) {
+        memoService.deleteMemo(categoryId, memoId)
     }
 }
