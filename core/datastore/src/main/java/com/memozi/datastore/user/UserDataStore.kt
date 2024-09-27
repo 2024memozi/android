@@ -6,13 +6,13 @@ import java.io.IOException
 import javax.inject.Inject
 
 class UserDataStore @Inject constructor(
-    private val tokenPreferences: DataStore<User>
+    private val userPreferences: DataStore<User>
 ) {
-    val token = tokenPreferences.data
+    val user = userPreferences.data
 
     suspend fun setUser(user: User) {
         try {
-            tokenPreferences.updateData {
+            userPreferences.updateData {
                 it.copy(email = user.email, nickname = user.nickname)
             }
         } catch (ioException: IOException) {
