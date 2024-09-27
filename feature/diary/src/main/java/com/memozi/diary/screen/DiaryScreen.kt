@@ -86,7 +86,6 @@ fun DiaryScreen(
     val onChangedLocationDialogState: (Boolean) -> Unit =
         { newValue -> locationDialogState = newValue }
     val isDiaryAvailable by remember(diaryContent) { mutableStateOf(diaryContent.isNotEmpty()) }
-    val userName by remember { mutableStateOf("홍길동") }
     var isDiaryWritten by remember { mutableStateOf(false) }
     val isDiaryExist by remember { mutableStateOf(true) }
     val navigationBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
@@ -101,6 +100,7 @@ fun DiaryScreen(
 
     LaunchedEffectWithLifecycle {
         diaryViewModel.getDiary()
+        diaryViewModel.getName()
     }
 
     MemoziBackground()
@@ -116,7 +116,7 @@ fun DiaryScreen(
             navigateToSetting = navigateToSetting
         )
 
-        DiaryFeedGreeting(userName = userName)
+        DiaryFeedGreeting(userName = diaryState.name)
 
         SelectDisplayType(
             listSelectedState = listSelectedState,
