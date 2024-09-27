@@ -2,9 +2,12 @@ package com.memozi.auth.repository
 
 import com.memozi.auth.model.response.toModel
 import com.memozi.auth.source.local.AuthLocalDataSource
+import com.memozi.auth.source.local.UserLocalDataSource
 import com.memozi.auth.source.remote.AuthRemoteDataSource
 import com.memozi.datastore.token.AuthToken
+import com.memozi.datastore.user.User
 import com.memozi.model.AuthEntity
+import com.memozi.model.UserEntity
 import com.memozi.model.exception.ApiError
 import kotlinx.coroutines.flow.first
 import java.io.IOException
@@ -12,6 +15,7 @@ import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
     private val authRemoteDataSource: AuthRemoteDataSource,
+    private val userLocalDataSource: UserLocalDataSource,
     private val authLocalDataSoruce: AuthLocalDataSource
 ) : AuthRepository {
     override suspend fun signIn(accessToken: String): Result<AuthEntity> = runCatching {
@@ -74,4 +78,38 @@ class AuthRepositoryImpl @Inject constructor(
                 }
             }
         }
+
+    override suspend fun saveUserData(userEntity: UserEntity): Result<Unit> = runCatching {
+        userLocalDataSource.setUserLocalData(User(userEntity.email, userEntity.nickname))
+    }.recoverCatching { exception ->
+        when (exception) {
+            is IOException -> {
+                throw ApiError("IOException")
+            }
+
+            else -> {
+                throw exception
+            }
+        }
+
+    }
+
+
+    override suspend fun getUserData(userEntity: UserEntity): Result<UserEntity> = runCatching {
+        UserEntity(
+            userLocalDataSource.userLocalData.first().email,
+            userLocalDataSource.userLocalData.first().nickname
+        )
+    }.recoverCatching { exception ->
+        when (exception) {
+            is IOException -> {
+                throw ApiError("IOException")
+            }
+
+            else -> {
+                throw exception
+            }
+        }
+
+    }
 }
