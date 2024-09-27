@@ -61,11 +61,11 @@ fun SettingMainScreen() {
 fun PersonalInfoBox(isIconVisible: Boolean = true) {
     Box(
         modifier =
-        Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .padding(top = 24.dp)
-            .border(1.dp, color = MemoziTheme.colors.gray02, shape = RoundedCornerShape(8.dp)),
+            Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .padding(top = 24.dp)
+                .border(1.dp, color = MemoziTheme.colors.gray02, shape = RoundedCornerShape(8.dp)),
     ) {
         Column(
             Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
@@ -73,9 +73,9 @@ fun PersonalInfoBox(isIconVisible: Boolean = true) {
             Text(text = "내 가입정보", style = MemoziTheme.typography.ngBold14)
             Row(
                 modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(top = 10.dp),
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(top = 10.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -89,24 +89,24 @@ fun PersonalInfoBox(isIconVisible: Boolean = true) {
                         contentDescription = null,
                     )
                 } else {
-                    Spacer(modifier = Modifier.size(24.dp)) // 공간을 확보하기 위해 Spacer 사용
+                    Spacer(modifier = Modifier.size(24.dp))
                 }
             }
             Row(
                 modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(top = 4.dp),
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(top = 4.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Box(
                     modifier =
-                    Modifier
-                        .size(11.dp)
-                        .background(
-                            color = Color(0xFFFEE500),
-                            shape = RoundedCornerShape(50),
-                        ),
+                        Modifier
+                            .size(11.dp)
+                            .background(
+                                color = Color(0xFFFEE500),
+                                shape = RoundedCornerShape(50),
+                            ),
                     contentAlignment = Alignment.Center,
                 ) {
                     Icon(
@@ -124,7 +124,6 @@ fun PersonalInfoBox(isIconVisible: Boolean = true) {
         }
     }
 }
-
 
 @Composable
 fun AlarmSettingsSection() {

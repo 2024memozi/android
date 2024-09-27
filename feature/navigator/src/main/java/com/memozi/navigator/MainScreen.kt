@@ -15,11 +15,12 @@ import com.memozi.diary.navigation.diaryNavGraph
 import com.memozi.login.navigation.loginNavGraph
 import com.memozi.memo.navigation.memoNavGraph
 import com.memozi.onboarding.navigation.onboardingNavGraph
+import com.memozi.setting.navigation.settingNavGraph
 
 @Composable
 internal fun MainScreen(
     modifier: Modifier = Modifier,
-    navigator: MainNavigator = rememberMainNavigator()
+    navigator: MainNavigator = rememberMainNavigator(),
 ) {
     val context = LocalContext.current
     val navBackStackEntry by navigator.navController.currentBackStackEntryAsState()
@@ -34,15 +35,15 @@ internal fun MainScreen(
                 navController = navigator.navController,
                 startDestination = navigator.startDestination,
                 enterTransition = { EnterTransition.None },
-                exitTransition = { ExitTransition.None }
+                exitTransition = { ExitTransition.None },
             ) {
                 loginNavGraph(
                     padding = innerPadding,
-                    navigateMemo = navigator::navigateMemo
+                    navigateMemo = navigator::navigateMemo,
                 )
                 onboardingNavGraph(
                     padding = innerPadding,
-                    navigateHome = navigator::navigateMemo
+                    navigateHome = navigator::navigateMemo,
                 )
                 memoNavGraph(
                     padding = innerPadding,
@@ -54,13 +55,17 @@ internal fun MainScreen(
                     navigateToCategoryAdd = navigator::navigateCategoryAdd,
                     navigateToSetting = navigator::navigateSetting,
                     navigateSearch = navigator::navigateSearch,
-                    navController = navigator.navController
+                    navController = navigator.navController,
                 )
                 diaryNavGraph(
                     navigateToMemo = navigator::navigateMemo,
-                    navigateToSetting = navigator::navigateSetting
+                    navigateToSetting = navigator::navigateSetting,
+                )
+                settingNavGraph(
+                    navigateToSettingDelete = navigator::navigateSettingDelete,
+                    navigateToSettingInfo = navigator::navigateSettingInfo,
                 )
             }
-        }
+        },
     )
 }
