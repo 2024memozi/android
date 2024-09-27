@@ -95,7 +95,7 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
 
-    override suspend fun getUserData(userEntity: UserEntity): Result<UserEntity> = runCatching {
+    override suspend fun getUserData(): Result<UserEntity> = runCatching {
         UserEntity(
             userLocalDataSource.userLocalData.first().email,
             userLocalDataSource.userLocalData.first().nickname

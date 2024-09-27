@@ -11,5 +11,5 @@ interface AuthRepository {
     suspend fun getLocalData(): Result<AuthEntity>
 
     suspend fun saveUserData(userEntity: UserEntity): Result<Unit>
-    suspend fun getUserData(userEntity: UserEntity): Result<UserEntity>
+    suspend fun getUserData(): Result<UserEntity>
 }
