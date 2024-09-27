@@ -66,7 +66,6 @@ fun LoginRoute(
                         }
                         Log.d("카카오 메인", "LoginRoute: $it")
                         viewModel.signIn(it.accessToken)
-
                     }
                 }
             }

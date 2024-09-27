@@ -91,9 +91,7 @@ class AuthRepositoryImpl @Inject constructor(
                 throw exception
             }
         }
-
     }
-
 
     override suspend fun getUserData(): Result<UserEntity> = runCatching {
         UserEntity(
@@ -110,6 +108,5 @@ class AuthRepositoryImpl @Inject constructor(
                 throw exception
             }
         }
-
     }
 }

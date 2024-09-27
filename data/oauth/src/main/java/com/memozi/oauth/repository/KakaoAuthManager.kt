@@ -5,9 +5,9 @@ import android.util.Log
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
+import com.memozi.model.UserEntity
 import com.memozi.oauth.OAuthInteractor
 import com.memozi.oauth.model.KakaoToken
-import com.memozi.model.UserEntity
 import dagger.hilt.android.qualifiers.ActivityContext
 import kotlinx.coroutines.suspendCancellableCoroutine
 import timber.log.Timber
@@ -106,6 +106,4 @@ class KakaoAuthManager @Inject constructor(
             }
         }
     }
-
-
 }

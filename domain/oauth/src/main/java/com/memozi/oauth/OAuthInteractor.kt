@@ -7,5 +7,5 @@ interface OAuthInteractor {
     suspend fun loginByKakao(): Result<KakaoToken>
     fun logout()
     fun withdraw()
-    suspend fun getUser() : Result<UserEntity>
+    suspend fun getUser(): Result<UserEntity>
 }
