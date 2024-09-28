@@ -4,7 +4,6 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.memozi.setting.SettingDeleteAccount
-import com.memozi.setting.SettingMainScreen
 import com.memozi.setting.SettingMyInfo
 
 fun NavGraphBuilder.settingNavGraph(

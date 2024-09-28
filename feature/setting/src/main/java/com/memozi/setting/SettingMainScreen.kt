@@ -36,7 +36,7 @@ import com.memozi.ui.extension.customClickable
 fun SettingMainScreen(
     navigateToSettingDelete: () -> Unit = {},
     navigateToSettingInfo: () -> Unit = {},
-    viewmodel:SettingViewmodel = hiltViewModel()
+    viewmodel: SettingViewmodel = hiltViewModel()
 ) {
     val navigationBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
     val state = viewmodel.uiState.collectAsStateWithLifecycle().value
@@ -68,7 +68,7 @@ fun SettingMainScreen(
 fun PersonalInfoBox(
     isIconVisible: Boolean = true,
     onclickEvent: () -> Unit = {},
-    email: String,
+    email: String
 ) {
     Box(
         modifier =

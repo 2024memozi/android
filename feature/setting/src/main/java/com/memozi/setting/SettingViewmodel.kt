@@ -12,10 +12,10 @@ class SettingViewmodel @Inject constructor(
     private val authRepository: AuthRepository
 ) : BaseViewModel<SettingState, SettingSideEffect>(SettingState()) {
 
-    init{
-        viewModelScope.launch{
+    init {
+        viewModelScope.launch {
             authRepository.getUserData().onSuccess {
-                intent { copy(email=it.email, name= it.nickname) }
+                intent { copy(email = it.email, name = it.nickname) }
             }
         }
     }
@@ -23,7 +23,6 @@ class SettingViewmodel @Inject constructor(
     fun navigateDelete() {
         postSideEffect(SettingSideEffect.Delete)
     }
-
 
     fun logOut() {
         viewModelScope.launch {
