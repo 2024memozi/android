@@ -43,11 +43,13 @@ include(":data:diary")
 // local
 include(":local:memozi")
 include(":local:auth")
+include(":local:user")
 
 // remote
 include(":remote:memozi")
 include(":remote:auth")
 include(":remote:memo")
+include(":remote:diary")
 
 // feature
 include(":feature:memo")
@@ -55,5 +57,4 @@ include(":feature:login")
 include(":feature:navigator")
 include(":feature:diary")
 include(":feature:onboarding")
-include(":remote:diary")
-include(":local:user")
+include(":feature:setting")

@@ -15,6 +15,7 @@ import com.memozi.diary.navigation.diaryNavGraph
 import com.memozi.login.navigation.loginNavGraph
 import com.memozi.memo.navigation.memoNavGraph
 import com.memozi.onboarding.navigation.onboardingNavGraph
+import com.memozi.setting.navigation.settingNavGraph
 
 @Composable
 internal fun MainScreen(
@@ -59,6 +60,11 @@ internal fun MainScreen(
                 diaryNavGraph(
                     navigateToMemo = navigator::navigateMemo,
                     navigateToSetting = navigator::navigateSetting
+                )
+                settingNavGraph(
+                    navigateToSettingDelete = navigator::navigateSettingDelete,
+                    navigateToSettingInfo = navigator::navigateSettingInfo,
+                    navigateToLogin = navigator::navigateLogin
                 )
             }
         }

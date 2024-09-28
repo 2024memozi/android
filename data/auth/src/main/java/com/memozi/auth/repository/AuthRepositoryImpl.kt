@@ -34,12 +34,22 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun delete(): Result<Unit> {
-        TODO("Not yet implemented")
+    override suspend fun delete(): Result<Unit> = runCatching {
+        authRemoteDataSource.delete()
     }
 
-    override suspend fun logout(): Result<Unit> {
-        TODO("Not yet implemented")
+    override suspend fun logout(): Result<Unit> = runCatching {
+        authLocalDataSoruce.setAuthLocalData(AuthToken("", ""))
+    }.recoverCatching { exception ->
+        when (exception) {
+            is IOException -> {
+                throw ApiError("IOException")
+            }
+
+            else -> {
+                throw exception
+            }
+        }
     }
 
     override suspend fun saveLocalData(authToken: AuthEntity): Result<Unit> = runCatching {

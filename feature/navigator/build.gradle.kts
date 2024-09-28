@@ -12,4 +12,7 @@ dependencies {
     implementation(projects.feature.memo)
     implementation(projects.feature.diary)
     implementation(projects.feature.onboarding)
+    implementation(projects.feature.setting)
+
+    implementation(project(":feature:setting"))
 }
