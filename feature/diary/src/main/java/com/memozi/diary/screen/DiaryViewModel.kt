@@ -2,6 +2,7 @@ package com.memozi.diary.screen
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.memozi.auth.repository.AuthRepository
 import com.memozi.diary.repository.DiaryRepository
 import com.memozi.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -10,11 +11,16 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DiaryViewModel @Inject constructor(
+    private val authRepository: AuthRepository,
     private val diaryRepository: DiaryRepository
 ) : BaseViewModel<DiaryState, DiaryEffect>(DiaryState()) {
 
-    fun getName(name: String) {
-        intent { copy(name = name) }
+    fun getName() {
+        viewModelScope.launch {
+            authRepository.getUserData().onSuccess {
+                intent { copy(name = it.nickname) }
+            }
+        }
     }
 
     fun getDiary() {

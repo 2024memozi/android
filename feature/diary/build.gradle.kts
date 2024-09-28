@@ -8,4 +8,5 @@ android {
 
 dependencies {
     implementation(projects.domain.diary)
+    implementation(projects.domain.auth)
 }

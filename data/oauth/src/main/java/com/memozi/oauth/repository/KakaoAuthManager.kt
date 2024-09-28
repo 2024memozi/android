@@ -5,6 +5,7 @@ import android.util.Log
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
+import com.memozi.model.UserEntity
 import com.memozi.oauth.OAuthInteractor
 import com.memozi.oauth.model.KakaoToken
 import dagger.hilt.android.qualifiers.ActivityContext
@@ -91,16 +92,17 @@ class KakaoAuthManager @Inject constructor(
         client.unlink(Timber::e)
     }
 
-    override suspend fun getUser(): String {
-        return suspendCancellableCoroutine { continuation ->
-            client.me { user, error ->
-                if (error != null) {
-                    Log.e("카카오로그인 test", "사용자 정보 요청 실패", error)
-                    continuation.resumeWithException(error)
-                } else if (user != null) {
-                    val nickname = user.kakaoAccount?.profile?.nickname ?: ""
-                    continuation.resume(nickname)
-                }
+    override suspend fun getUser(): Result<UserEntity> = suspendCancellableCoroutine { continuation ->
+        client.me { user, error ->
+            if (error != null) {
+                Log.e("카카오로그인 test", "사용자 정보 요청 실패", error)
+                continuation.resumeWithException(error)
+            } else if (user != null) {
+                val nickname = user.kakaoAccount?.profile?.nickname ?: ""
+                val email = user.kakaoAccount?.email ?: ""
+                continuation.resume(Result.success(UserEntity(email = email, nickname = nickname)))
+            } else {
+                continuation.resume(Result.failure(Exception("User is null")))
             }
         }
     }

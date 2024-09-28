@@ -8,6 +8,8 @@ import com.memozi.datastore.MemoziLocalData
 import com.memozi.datastore.MemoziLocalDataSerializer
 import com.memozi.datastore.token.AuthToken
 import com.memozi.datastore.token.TokenDataSerializer
+import com.memozi.datastore.user.User
+import com.memozi.datastore.user.UserDataSerializer
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,7 +22,7 @@ import javax.inject.Singleton
 object DataStoreModule {
     @Provides
     @Singleton
-    fun providesUserDataStore(
+    fun providesMemoziDataStore(
         @ApplicationContext context: Context,
         userDataSerializer: MemoziLocalDataSerializer
     ): DataStore<MemoziLocalData> =
@@ -40,5 +42,17 @@ object DataStoreModule {
             serializer = tokenDataSerializer
         ) {
             context.dataStoreFile("token.json")
+        }
+
+    @Provides
+    @Singleton
+    fun providesUserDataStore(
+        @ApplicationContext context: Context,
+        userDataSerializer: UserDataSerializer
+    ): DataStore<User> =
+        DataStoreFactory.create(
+            serializer = userDataSerializer
+        ) {
+            context.dataStoreFile("user.json")
         }
 }

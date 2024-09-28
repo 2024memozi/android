@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.memozi.auth.repository.AuthRepository
 import com.memozi.model.AuthEntity
+import com.memozi.model.UserEntity
 import com.memozi.model.exception.ApiError
 import com.memozi.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -40,6 +41,17 @@ class LoginViewModel @Inject constructor(
                     }
                     postSideEffect(LoginSideEffect.LoginError(errorMessage = it.message.toString()))
                 }
+        }
+    }
+
+    fun setUser(user: UserEntity) {
+        viewModelScope.launch {
+            authRepository.saveUserData(user).onFailure {
+                when (it) {
+                    is ApiError -> Log.e("실패", it.message)
+                    else -> Log.e("실패", it.message.toString())
+                }
+            }
         }
     }
 }
