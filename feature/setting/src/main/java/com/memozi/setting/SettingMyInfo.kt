@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.memozi.designsystem.MemoziTheme
 import com.memozi.ui.extension.customClickable
 import com.memozi.ui.lifecycle.LaunchedEffectWithLifecycle
@@ -27,7 +28,7 @@ fun SettingMyInfo(
     navigateLogin: () -> Unit = {}
 ) {
     val navigationBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
-
+    val state = viewmodel.uiState.collectAsStateWithLifecycle().value
     LaunchedEffectWithLifecycle {
         viewmodel.sideEffect.collectLatest {
             when (it) {
@@ -52,7 +53,7 @@ fun SettingMyInfo(
                 .padding(top = 32.dp + navigationBarHeight)
                 .align(Alignment.CenterHorizontally)
         )
-        PersonalInfoBox(isIconVisible = false)
+        PersonalInfoBox(isIconVisible = false, email = state.email)
         Text(
             text = "로그아웃",
             style = MemoziTheme.typography.ngReg15.copy(color = Color.Red),
