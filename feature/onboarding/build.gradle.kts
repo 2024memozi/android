@@ -5,3 +5,7 @@ plugins {
 android {
     namespace = "com.memozi.onboarding"
 }
+
+dependencies {
+    implementation(projects.domain.auth)
+}

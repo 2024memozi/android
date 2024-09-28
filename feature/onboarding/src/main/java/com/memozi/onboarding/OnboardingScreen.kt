@@ -27,7 +27,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
@@ -48,7 +47,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.memozi.designsystem.MemoziTheme
 import com.memozi.designsystem.R
-import com.memozi.ui.extension.customClickable
 import com.memozi.ui.lifecycle.LaunchedEffectWithLifecycle
 import kotlinx.coroutines.flow.collectLatest
 
@@ -59,7 +57,7 @@ fun OnboardingRoute(
     navigateHome: () -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    val pagerState = rememberPagerState(initialPage = 0, pageCount = { 4 })
+    val pagerState = rememberPagerState(initialPage = 0, pageCount = { 3 })
     LaunchedEffectWithLifecycle {
         viewModel.sideEffect.collectLatest { sideEffect ->
             when (sideEffect) {
@@ -77,9 +75,9 @@ fun OnboardingRoute(
             .background(color = MemoziTheme.colors.white)
     ) { page ->
         when (page) {
-            0 -> OnboardingOne()
+            0 -> OnboardingOne(state.name)
             1 -> OnboardingTwo()
-            2 -> OnboardingThree()
+            2 -> OnboardingThree(navigateHome = { viewModel.navigateHome() })
             3 -> OnboardingFour(
                 selectedAmPm = state.selectedAmPm,
                 selectedHour = state.selectedHour,
@@ -105,7 +103,7 @@ fun OnboardingRoute(
 }
 
 @Composable
-fun OnboardingOne() {
+fun OnboardingOne(name: String) {
     Column {
         Box(
             modifier = Modifier
@@ -127,7 +125,7 @@ fun OnboardingOne() {
             )
             Spacer(modifier = Modifier.height(7.dp))
             Text(
-                text = "환영해요, 차혜빈님!\n회원가입이 완료 되었어요:)",
+                text = "환영해요, ${name}님!\n회원가입이 완료 되었어요:)",
                 style = MemoziTheme.typography.ssuLight16,
                 color = MemoziTheme.colors.black
             )
@@ -192,7 +190,7 @@ fun OnboardingTwo() {
 }
 
 @Composable
-fun OnboardingThree() {
+fun OnboardingThree(navigateHome: () -> Unit = {}) {
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -227,6 +225,14 @@ fun OnboardingThree() {
                     style = MemoziTheme.typography.ssuLight16,
                     color = MemoziTheme.colors.black
                 )
+            }
+            Button(
+                onClick = { navigateHome() },
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(containerColor = MemoziTheme.colors.mainPurple),
+                shape = RoundedCornerShape(8.dp)
+            ) {
+                Text(text = "MEMO : Zi 시작하기", color = MemoziTheme.colors.white)
             }
             Spacer(
                 modifier = Modifier
@@ -465,7 +471,6 @@ fun NumberPicker(
 @Composable
 fun MemoziHorizontalPagerIndicator(
     pagerState: PagerState,
-    navigateToEdit: () -> Unit = {},
     pageCount: Int = pagerState.pageCount,
     modifier: Modifier = Modifier,
     activeColor: Color = MemoziTheme.colors.mainPurple,
@@ -494,11 +499,6 @@ fun MemoziHorizontalPagerIndicator(
                     .background(if (isSelected) activeColor else inactiveColor)
             )
         }
-        Icon(
-            painter = painterResource(id = R.drawable.ic_edit),
-            contentDescription = "edit",
-            modifier = Modifier.customClickable(onClick = navigateToEdit)
-        )
     }
 }
 
@@ -517,7 +517,7 @@ fun PreviewOnboarding() {
 fun PreviewOnboardingFour() {
     MemoziTheme {
         Box(modifier = Modifier.background(color = MemoziTheme.colors.white)) {
-            OnboardingFour()
+            OnboardingThree()
         }
     }
 }
