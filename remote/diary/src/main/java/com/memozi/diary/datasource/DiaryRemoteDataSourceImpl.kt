@@ -11,7 +11,6 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import retrofit2.http.Part
 import javax.inject.Inject
 
 class DiaryRemoteDataSourceImpl @Inject constructor(
@@ -36,7 +35,6 @@ class DiaryRemoteDataSourceImpl @Inject constructor(
         image?.let {
             val imageUri = image.toUri()
             val file = FileConverter.uriToFile(context, imageUri)
-
             file?.let {
                 val requestFile = it.asRequestBody("image/*".toMediaTypeOrNull())
                 val multipartBody =

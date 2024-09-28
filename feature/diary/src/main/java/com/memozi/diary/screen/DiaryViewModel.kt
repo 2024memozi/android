@@ -49,12 +49,6 @@ class DiaryViewModel @Inject constructor(
         }
     }
 
-    fun postDiary() {
-        viewModelScope.launch {
-            diaryRepository.postDiary("123", "", "")
-        }
-    }
-
     fun navigateToMemo() {
         postSideEffect(DiaryEffect.navigateMemo)
     }

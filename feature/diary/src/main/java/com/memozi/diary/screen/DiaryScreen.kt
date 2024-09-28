@@ -642,10 +642,10 @@ fun DiaryFeedWriteCard(
                             id = R.drawable.ic_diary_feed_pin,
                             onClick = { onChangedLocationDialogState(true) }
                         )
-                        DiaryFeedWriteOption(
-                            id = R.drawable.ic_diary_feed_random,
-                            onClick = {}
-                        )
+//                        DiaryFeedWriteOption(
+//                            id = R.drawable.ic_diary_feed_random,
+//                            onClick = {}
+//                        )
                         Spacer(modifier = Modifier.weight(1f))
                         Text(
                             text = buildAnnotatedString {
@@ -756,6 +756,7 @@ fun DiaryFeedDisplayCard(
                                 year = it.createdAt.substring(0, 4).toInt(),
                                 month = it.createdAt.substring(5, 7).toInt(),
                                 day = it.createdAt.substring(8, 10).toInt(),
+                                location = it.location,
                                 dayOfWeek = it.dayOfWeek,
                                 diaryContent = it.content,
                                 imageUrl = if (it.images.isNotEmpty()) it.images[0] else null,
@@ -790,7 +791,8 @@ fun DailyDiaryItem(
                 modifier = Modifier.padding(end = 10.dp),
                 topPaddingValues = PaddingValues(0.dp),
                 onEditClick = { editEvent() },
-                onDeleteClick = { deleteEvent() }
+                onDeleteClick = { deleteEvent() },
+                onlyDelete = true
             )
         }
         Column(
