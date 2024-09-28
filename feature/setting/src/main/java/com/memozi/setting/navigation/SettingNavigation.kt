@@ -13,10 +13,14 @@ fun NavGraphBuilder.settingNavGraph(
     navigateToLogin: () -> Unit = {}
 ) {
     composable(route = SettingRoute.settingMain) {
-        SettingMainScreen(
-            navigateToSettingDelete = navigateToSettingDelete,
-            navigateToSettingInfo = navigateToSettingInfo
+        SettingMyInfo(
+            navigateDelete = navigateToSettingDelete,
+            navigateLogin = navigateToLogin
         )
+//        SettingMainScreen(
+//            navigateToSettingDelete = navigateToSettingDelete,
+//            navigateToSettingInfo = navigateToSettingInfo
+//        )
     }
     composable(route = SettingRoute.settingInfo) {
         SettingMyInfo(
