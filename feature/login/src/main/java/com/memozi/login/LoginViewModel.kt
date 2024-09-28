@@ -22,7 +22,7 @@ class LoginViewModel @Inject constructor(
     fun getUser() {
         viewModelScope.launch {
             authRepository.getLocalData().onSuccess {
-                if (it.accessToken.isNotEmpty()) postSideEffect(LoginSideEffect.LoginSuccess)
+//                if (it.accessToken.isNotEmpty()) postSideEffect(LoginSideEffect.LoginSuccess)
             }
         }
     }

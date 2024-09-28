@@ -3,18 +3,29 @@ package com.memozi.setting.navigation
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import com.memozi.setting.SettingDeleteAccount
 import com.memozi.setting.SettingMainScreen
 import com.memozi.setting.SettingMyInfo
 
 fun NavGraphBuilder.settingNavGraph(
     navigateToSettingDelete: () -> Unit = {},
     navigateToSettingInfo: () -> Unit = {},
+    navigateToLogin: () -> Unit = {}
 ) {
     composable(route = SettingRoute.settingMain) {
-        SettingMainScreen()
+        SettingMainScreen(
+            navigateToSettingDelete = navigateToSettingDelete,
+            navigateToSettingInfo = navigateToSettingInfo
+        )
     }
     composable(route = SettingRoute.settingInfo) {
-        SettingMyInfo()
+        SettingMyInfo(
+            navigateDelete = navigateToSettingDelete,
+            navigateLogin = navigateToLogin
+        )
+    }
+    composable(route = SettingRoute.settingDelete) {
+        SettingDeleteAccount(navigateToLogin)
     }
 }
 

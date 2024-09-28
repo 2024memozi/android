@@ -28,65 +28,70 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.memozi.designsystem.MemoziTheme
 import com.memozi.designsystem.R
+import com.memozi.ui.extension.customClickable
 
 @Composable
-fun SettingMainScreen() {
+fun SettingMainScreen(
+    navigateToSettingDelete: () -> Unit = {},
+    navigateToSettingInfo: () -> Unit = {}
+) {
     val navigationBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
     Column(
         modifier =
-            Modifier
-                .fillMaxSize()
-                .padding(horizontal = 16.dp)
-                .background(color = MemoziTheme.colors.white),
+        Modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp)
+            .background(color = MemoziTheme.colors.white)
     ) {
         Text(
             text = "설정",
             style = MemoziTheme.typography.ssuLight19,
             modifier =
-                Modifier
-                    .padding(top = 32.dp + navigationBarHeight)
-                    .align(Alignment.CenterHorizontally),
+            Modifier
+                .padding(top = 32.dp + navigationBarHeight)
+                .align(Alignment.CenterHorizontally)
         )
 
-        PersonalInfoBox()
-
-        AlarmSettingsSection()
-
-        CustomerCenterSection()
+        PersonalInfoBox(onclickEvent = navigateToSettingInfo)
+//
+//        AlarmSettingsSection()
+//
+//        CustomerCenterSection()
     }
 }
 
 @Composable
-fun PersonalInfoBox(isIconVisible: Boolean = true) {
+fun PersonalInfoBox(isIconVisible: Boolean = true, onclickEvent: () -> Unit = {}) {
     Box(
         modifier =
-            Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
-                .padding(top = 24.dp)
-                .border(1.dp, color = MemoziTheme.colors.gray02, shape = RoundedCornerShape(8.dp)),
+        Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .customClickable { onclickEvent() }
+            .padding(top = 24.dp)
+            .border(1.dp, color = MemoziTheme.colors.gray02, shape = RoundedCornerShape(8.dp))
     ) {
         Column(
-            Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
+            Modifier.padding(horizontal = 16.dp, vertical = 16.dp)
         ) {
             Text(text = "내 가입정보", style = MemoziTheme.typography.ngBold14)
             Row(
                 modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(top = 10.dp),
+                Modifier
+                    .fillMaxWidth()
+                    .padding(top = 10.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = "hyoeun@memo.com",
-                    style = MemoziTheme.typography.ngReg15,
+                    style = MemoziTheme.typography.ngReg15
                 )
                 if (isIconVisible) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_calendar_bottomsheet_forward),
-                        contentDescription = null,
+                        contentDescription = null
                     )
                 } else {
                     Spacer(modifier = Modifier.size(24.dp))
@@ -94,31 +99,31 @@ fun PersonalInfoBox(isIconVisible: Boolean = true) {
             }
             Row(
                 modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(top = 4.dp),
-                verticalAlignment = Alignment.CenterVertically,
+                Modifier
+                    .fillMaxWidth()
+                    .padding(top = 4.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Box(
                     modifier =
-                        Modifier
-                            .size(11.dp)
-                            .background(
-                                color = Color(0xFFFEE500),
-                                shape = RoundedCornerShape(50),
-                            ),
-                    contentAlignment = Alignment.Center,
+                    Modifier
+                        .size(11.dp)
+                        .background(
+                            color = Color(0xFFFEE500),
+                            shape = RoundedCornerShape(50)
+                        ),
+                    contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         modifier = Modifier.size(8.dp),
                         painter = painterResource(id = R.drawable.ic_kakako),
-                        contentDescription = null,
+                        contentDescription = null
                     )
                 }
                 Text(
                     text = "카카오 로그인 사용중",
                     style = MemoziTheme.typography.ngReg8,
-                    modifier = Modifier.padding(start = 6.dp),
+                    modifier = Modifier.padding(start = 6.dp)
                 )
             }
         }
@@ -130,59 +135,59 @@ fun AlarmSettingsSection() {
     Text(
         text = "일기 알람",
         style = MemoziTheme.typography.ngBold14.copy(MemoziTheme.colors.gray07),
-        modifier = Modifier.padding(top = 16.dp),
+        modifier = Modifier.padding(top = 16.dp)
     )
     Box(
         modifier =
-            Modifier
-                .padding(top = 8.dp)
-                .fillMaxWidth()
-                .height(1.dp)
-                .background(MemoziTheme.colors.gray07),
+        Modifier
+            .padding(top = 8.dp)
+            .fillMaxWidth()
+            .height(1.dp)
+            .background(MemoziTheme.colors.gray07)
     )
     Row(
         modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(top = 16.dp),
+        Modifier
+            .fillMaxWidth()
+            .padding(top = 16.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Text(text = "시간 수정", style = MemoziTheme.typography.ngReg15)
         Icon(
             painter = painterResource(id = R.drawable.ic_calendar_bottomsheet_forward),
-            contentDescription = null,
+            contentDescription = null
         )
     }
     Box(
         modifier =
-            Modifier
-                .padding(top = 14.dp)
-                .fillMaxWidth()
-                .height(1.dp)
-                .background(MemoziTheme.colors.gray02),
+        Modifier
+            .padding(top = 14.dp)
+            .fillMaxWidth()
+            .height(1.dp)
+            .background(MemoziTheme.colors.gray02)
     )
     Row(
         modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(top = 16.dp),
+        Modifier
+            .fillMaxWidth()
+            .padding(top = 16.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Text(text = "시간 팝업 알림", style = MemoziTheme.typography.ngReg15)
         Icon(
             painter = painterResource(id = R.drawable.ic_calendar_bottomsheet_forward),
-            contentDescription = null,
+            contentDescription = null
         )
     }
     Box(
         modifier =
-            Modifier
-                .padding(top = 14.dp)
-                .fillMaxWidth()
-                .height(1.dp)
-                .background(MemoziTheme.colors.gray02),
+        Modifier
+            .padding(top = 14.dp)
+            .fillMaxWidth()
+            .height(1.dp)
+            .background(MemoziTheme.colors.gray02)
     )
 }
 
@@ -191,59 +196,59 @@ fun CustomerCenterSection() {
     Text(
         text = "고객 센터",
         style = MemoziTheme.typography.ngBold14.copy(MemoziTheme.colors.gray07),
-        modifier = Modifier.padding(top = 78.dp),
+        modifier = Modifier.padding(top = 78.dp)
     )
     Box(
         modifier =
-            Modifier
-                .padding(top = 8.dp)
-                .fillMaxWidth()
-                .height(1.dp)
-                .background(MemoziTheme.colors.gray07),
+        Modifier
+            .padding(top = 8.dp)
+            .fillMaxWidth()
+            .height(1.dp)
+            .background(MemoziTheme.colors.gray07)
     )
     Row(
         modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(top = 16.dp),
+        Modifier
+            .fillMaxWidth()
+            .padding(top = 16.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Text(text = "공지사항", style = MemoziTheme.typography.ngReg15)
         Icon(
             painter = painterResource(id = R.drawable.ic_calendar_bottomsheet_forward),
-            contentDescription = null,
+            contentDescription = null
         )
     }
     Box(
         modifier =
-            Modifier
-                .padding(top = 14.dp)
-                .fillMaxWidth()
-                .height(1.dp)
-                .background(MemoziTheme.colors.gray02),
+        Modifier
+            .padding(top = 14.dp)
+            .fillMaxWidth()
+            .height(1.dp)
+            .background(MemoziTheme.colors.gray02)
     )
     Row(
         modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(top = 16.dp),
+        Modifier
+            .fillMaxWidth()
+            .padding(top = 16.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Text(text = "문제신고", style = MemoziTheme.typography.ngReg15)
         Icon(
             painter = painterResource(id = R.drawable.ic_calendar_bottomsheet_forward),
-            contentDescription = null,
+            contentDescription = null
         )
     }
     Box(
         modifier =
-            Modifier
-                .padding(top = 14.dp)
-                .fillMaxWidth()
-                .height(1.dp)
-                .background(MemoziTheme.colors.gray02),
+        Modifier
+            .padding(top = 14.dp)
+            .fillMaxWidth()
+            .height(1.dp)
+            .background(MemoziTheme.colors.gray02)
     )
 }
 

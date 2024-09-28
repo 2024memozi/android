@@ -10,7 +10,7 @@ class AuthRemoteDataSourceImpl @Inject constructor(
 ) : AuthRemoteDataSource {
     override suspend fun signIn(accessToken: String) = authService.signIn(RequestSignInDto(accessToken))
     override suspend fun delete() {
-        TODO("Not yet implemented")
+        authService.delete()
     }
 
     override suspend fun logout() {

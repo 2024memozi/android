@@ -20,7 +20,7 @@ import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
 internal class MainNavigator(
-    val navController: NavHostController,
+    val navController: NavHostController
 ) {
     val startDestination = LoginRoute.route
     private val currentDestination: NavDestination?
@@ -58,7 +58,7 @@ internal class MainNavigator(
         img: String,
         categoryId: Int,
         name: String,
-        txtColor: String,
+        txtColor: String
     ) {
         val encodedImg = URLEncoder.encode(img, StandardCharsets.UTF_8.toString())
         navController.navigateCategory(encodedImg, categoryId, name, txtColor)
@@ -66,7 +66,7 @@ internal class MainNavigator(
 
     fun navigateMemoDetail(
         categoryId: Int,
-        memoId: Int,
+        memoId: Int
     ) {
         navController.navgateMemoEdit(categoryId, memoId)
     }
