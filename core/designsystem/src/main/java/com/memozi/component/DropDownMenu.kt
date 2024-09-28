@@ -34,7 +34,7 @@ fun DropDownMenu(
     topPaddingValues: PaddingValues = PaddingValues(top = 32.dp),
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit,
-    onlyDelete: Boolean = false,
+    onlyDelete: Boolean = false
 ) {
     var expanded by remember { mutableStateOf(false) }
     Column(
@@ -67,7 +67,6 @@ fun DropDownMenu(
                         modifier = Modifier.fillMaxWidth(0.2f),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-
                         if (!onlyDelete) {
                             Text(
                                 text = "수정하기",

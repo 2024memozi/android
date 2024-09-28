@@ -8,7 +8,7 @@ data class DiaryState(
     var name: String = "",
     var location: String? = null,
     var content: String = "",
-    var image: String = "",
+    var image: String? = null,
     var diaryList: List<Diary> = emptyList()
 ) : UiState
 
