@@ -38,7 +38,8 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     override suspend fun delete(): Result<Unit> = runCatching {
-        userRemoteDataSource.delete()
+        Log.d("delete call", "delete: ${authLocalDataSoruce.authLocalData.first().kakaoToken}")
+        userRemoteDataSource.delete(authLocalDataSoruce.authLocalData.first().kakaoToken)
     }.onFailure { Log.d("딜리트 실패 - ", "delete: ${it.message}") }
 
     override suspend fun logout(): Result<Unit> = runCatching {
@@ -59,7 +60,8 @@ class AuthRepositoryImpl @Inject constructor(
         authLocalDataSoruce.setAuthLocalData(
             AuthToken(
                 authToken.accessToken,
-                authToken.refreshToken
+                authToken.refreshToken,
+                authToken.kakaoToken
             )
         )
     }.recoverCatching { exception ->
@@ -78,7 +80,8 @@ class AuthRepositoryImpl @Inject constructor(
         runCatching {
             AuthEntity(
                 authLocalDataSoruce.authLocalData.first().accessToken,
-                authLocalDataSoruce.authLocalData.first().refreshToken
+                authLocalDataSoruce.authLocalData.first().refreshToken,
+                authLocalDataSoruce.authLocalData.first().kakaoToken
             )
         }.recoverCatching { exception ->
             when (exception) {

@@ -1,8 +1,12 @@
 package com.memozi.user
 
-import retrofit2.http.DELETE
+import com.memozi.auth.model.request.RequestSignInDto
+import retrofit2.http.Body
+import retrofit2.http.HTTP
 
 interface UserService {
-    @DELETE("/deleteMember")
-    suspend fun delete()
+    @HTTP(method = "DELETE", path = "/deleteMember", hasBody = true)
+    suspend fun delete(
+        @Body accessToken: RequestSignInDto
+    )
 }

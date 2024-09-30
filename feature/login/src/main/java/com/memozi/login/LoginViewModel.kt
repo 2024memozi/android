@@ -20,14 +20,6 @@ class LoginViewModel @Inject constructor(
         postSideEffect(LoginSideEffect.StartLogin)
     }
 
-    fun getUser() {
-        viewModelScope.launch {
-            authRepository.getLocalData().onSuccess {
-                if (it.accessToken.isNotEmpty()) postSideEffect(LoginSideEffect.LoginToSignUp)
-            }
-        }
-    }
-
     fun signIn(socialToken: String) {
         viewModelScope.launch {
             authRepository.signIn(socialToken)
@@ -35,7 +27,7 @@ class LoginViewModel @Inject constructor(
                     authRepository.getLocalData().onSuccess { user ->
                         if (user.accessToken == "") postSideEffect(LoginSideEffect.LoginToSignUp)
                     }
-                    authRepository.saveLocalData(AuthEntity(it.accessToken, it.refreshToken))
+                    authRepository.saveLocalData(AuthEntity(it.accessToken, it.refreshToken, socialToken))
                     postSideEffect(LoginSideEffect.LoginSuccess)
                 }.onFailure {
                     when (it) {

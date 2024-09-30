@@ -22,6 +22,10 @@ class SettingViewmodel @Inject constructor(
     }
 
     fun navigateDelete() {
+        postSideEffect(SettingSideEffect.Delete)
+    }
+
+    fun delete() {
         viewModelScope.launch {
             authRepository.delete().onSuccess {
                 postSideEffect(SettingSideEffect.Delete)
