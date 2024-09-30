@@ -148,8 +148,8 @@ fun DiaryScreen(
                 isLocationExist = isLocationExist,
                 isDiaryAvailable = isDiaryAvailable,
                 onChangedDiaryWritten = { isDiaryWritten = it },
-                postDiary = { content, location, Image ->
-                    diaryViewModel.postDiary(content = content, location = location, image = Image)
+                postDiary = { content ->
+                    diaryViewModel.postDiary(content = content)
                 },
                 updateUrl = { diaryViewModel.updateUri(it.toString()) },
                 imageURL = diaryState.image
@@ -244,6 +244,7 @@ fun DiaryScreen(
                                     onClick = {
                                         onChangedLocationDialogState(false)
                                         onChangedLocationExist(true)
+                                        diaryViewModel.updateLocation(location = location)
                                     }
                                 ),
                             contentAlignment = Alignment.Center
@@ -567,7 +568,7 @@ fun DiaryFeedWriteCard(
     isLocationExist: Boolean = false,
     isDiaryAvailable: Boolean,
     onChangedDiaryWritten: (Boolean) -> Unit,
-    postDiary: (String, String, String?) -> Unit,
+    postDiary: (String) -> Unit,
     updateUrl: (Uri?) -> Unit,
     imageURL: String? = null
 ) {
@@ -721,7 +722,7 @@ fun DiaryFeedWriteCard(
                         Button(
                             onClick = {
                                 onChangedDiaryWritten(true) /* 일기 작성 완료 */
-                                postDiary(diaryContent, location, null)
+                                postDiary(diaryContent)
                             },
                             modifier = Modifier
                                 .width(68.dp)

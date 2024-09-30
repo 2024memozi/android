@@ -44,7 +44,7 @@ class DiaryRemoteDataSourceImpl @Inject constructor(
                 return diaryService.postDiary(
                     title = title.toRequestBody("text/plain".toMediaTypeOrNull()),
                     content = content.toRequestBody("text/plain".toMediaTypeOrNull()),
-                    location = content.toRequestBody("text/plain".toMediaTypeOrNull()),
+                    location = location?.toRequestBody("text/plain".toMediaTypeOrNull()),
                     images = multipartBody
                 )
             }
@@ -52,7 +52,7 @@ class DiaryRemoteDataSourceImpl @Inject constructor(
         return diaryService.postDiary(
             title = title.toRequestBody("text/plain".toMediaTypeOrNull()),
             content = content.toRequestBody("text/plain".toMediaTypeOrNull()),
-            location = content.toRequestBody("text/plain".toMediaTypeOrNull()),
+            location = location?.toRequestBody("text/plain".toMediaTypeOrNull()),
             images = null
         )
     }

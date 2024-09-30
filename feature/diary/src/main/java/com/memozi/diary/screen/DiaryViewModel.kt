@@ -33,9 +33,9 @@ class DiaryViewModel @Inject constructor(
         }
     }
 
-    fun postDiary(content: String, image: String?, location: String?) {
+    fun postDiary(content: String) {
         viewModelScope.launch {
-            diaryRepository.postDiary(content, uiState.value.image, location).onSuccess {
+            diaryRepository.postDiary(content = content, uiState.value.image, location = uiState.value.location).onSuccess {
                 getDiary()
             }
         }
@@ -51,6 +51,10 @@ class DiaryViewModel @Inject constructor(
 
     fun updateUri(uri: String) {
         intent { copy(image = uri) }
+    }
+
+    fun updateLocation(location: String?) {
+        intent { copy(location = location) }
     }
 
     fun navigateToMemo() {
