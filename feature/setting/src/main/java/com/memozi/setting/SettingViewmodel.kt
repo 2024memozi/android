@@ -1,5 +1,6 @@
 package com.memozi.setting
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.memozi.auth.repository.AuthRepository
 import com.memozi.ui.base.BaseViewModel
@@ -21,7 +22,13 @@ class SettingViewmodel @Inject constructor(
     }
 
     fun navigateDelete() {
-        postSideEffect(SettingSideEffect.Delete)
+        viewModelScope.launch {
+            authRepository.delete().onSuccess {
+                postSideEffect(SettingSideEffect.Delete)
+            }.onFailure {
+                Log.d("delete fail", "navigateDelete: ${it.message}")
+            }
+        }
     }
 
     fun logOut() {

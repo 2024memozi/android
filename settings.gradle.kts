@@ -50,6 +50,7 @@ include(":remote:memozi")
 include(":remote:auth")
 include(":remote:memo")
 include(":remote:diary")
+include(":remote:user")
 
 // feature
 include(":feature:memo")
