@@ -1,9 +1,11 @@
 package com.memozi.auth.repository
 
+import android.util.Log
 import com.memozi.auth.model.response.toModel
 import com.memozi.auth.source.local.AuthLocalDataSource
 import com.memozi.auth.source.local.UserLocalDataSource
 import com.memozi.auth.source.remote.AuthRemoteDataSource
+import com.memozi.auth.source.remote.UserRemoteDataSource
 import com.memozi.datastore.token.AuthToken
 import com.memozi.datastore.user.User
 import com.memozi.model.AuthEntity
@@ -15,6 +17,7 @@ import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
     private val authRemoteDataSource: AuthRemoteDataSource,
+    private val userRemoteDataSource: UserRemoteDataSource,
     private val userLocalDataSource: UserLocalDataSource,
     private val authLocalDataSoruce: AuthLocalDataSource
 ) : AuthRepository {
@@ -35,8 +38,9 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     override suspend fun delete(): Result<Unit> = runCatching {
-        authRemoteDataSource.delete()
-    }
+        Log.d("delete call", "delete: ${authLocalDataSoruce.authLocalData.first().kakaoToken}")
+        userRemoteDataSource.delete(authLocalDataSoruce.authLocalData.first().kakaoToken)
+    }.onFailure { Log.d("딜리트 실패 - ", "delete: ${it.message}") }
 
     override suspend fun logout(): Result<Unit> = runCatching {
         authLocalDataSoruce.setAuthLocalData(AuthToken("", ""))
@@ -56,7 +60,8 @@ class AuthRepositoryImpl @Inject constructor(
         authLocalDataSoruce.setAuthLocalData(
             AuthToken(
                 authToken.accessToken,
-                authToken.refreshToken
+                authToken.refreshToken,
+                authToken.kakaoToken
             )
         )
     }.recoverCatching { exception ->
@@ -75,7 +80,8 @@ class AuthRepositoryImpl @Inject constructor(
         runCatching {
             AuthEntity(
                 authLocalDataSoruce.authLocalData.first().accessToken,
-                authLocalDataSoruce.authLocalData.first().refreshToken
+                authLocalDataSoruce.authLocalData.first().refreshToken,
+                authLocalDataSoruce.authLocalData.first().kakaoToken
             )
         }.recoverCatching { exception ->
             when (exception) {

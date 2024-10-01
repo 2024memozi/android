@@ -6,6 +6,7 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navOptions
 import com.memozi.diary.navigation.navigateDiary
 import com.memozi.login.navigation.LoginRoute
 import com.memozi.memo.navigation.MemoRoute
@@ -13,6 +14,7 @@ import com.memozi.memo.navigation.navgateMemoEdit
 import com.memozi.memo.navigation.navigateCategory
 import com.memozi.memo.navigation.navigateMemoAdd
 import com.memozi.memo.navigation.navigateSearch
+import com.memozi.onboarding.navigation.navigateOnboarding
 import com.memozi.setting.navigation.SettingRoute
 import com.memozi.setting.navigation.navigateSettingDelete
 import com.memozi.setting.navigation.navigateSettingInfo
@@ -44,6 +46,16 @@ internal class MainNavigator(
                 inclusive = true
             }
         }
+    }
+
+    fun navigateOnboarding() {
+        navController.navigateOnboarding(
+            navOptions {
+                popUpTo(navController.graph.id) {
+                    inclusive = true
+                }
+            }
+        )
     }
 
     fun navigateDiary() {
@@ -97,7 +109,8 @@ internal class MainNavigator(
         }
     }
 
-    private fun isSameCurrentDestination(route: String) = navController.currentDestination?.route == route
+    private fun isSameCurrentDestination(route: String) =
+        navController.currentDestination?.route == route
 }
 
 @Composable

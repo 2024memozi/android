@@ -6,6 +6,16 @@ plugins {
 
 android {
     namespace = "com.memozi.memozi"
+    buildTypes {
+        release {
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+
+            )
+        }
+    }
 }
 
 dependencies {
@@ -27,5 +37,6 @@ dependencies {
     implementation(projects.remote.auth)
     implementation(projects.remote.memo)
     implementation(projects.remote.diary)
+    implementation(projects.remote.user)
     implementation(libs.kakao.login)
 }

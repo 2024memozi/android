@@ -26,6 +26,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.memozi.designsystem.MemoziTheme
 import com.memozi.designsystem.R
 import com.memozi.ui.extension.customClickable
@@ -33,10 +35,11 @@ import com.memozi.ui.extension.customClickable
 @Composable
 fun SettingMainScreen(
     navigateToSettingDelete: () -> Unit = {},
-    navigateToSettingInfo: () -> Unit = {}
+    navigateToSettingInfo: () -> Unit = {},
+    viewmodel: SettingViewmodel = hiltViewModel()
 ) {
     val navigationBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
-
+    val state = viewmodel.uiState.collectAsStateWithLifecycle().value
     Column(
         modifier =
         Modifier
@@ -53,7 +56,7 @@ fun SettingMainScreen(
                 .align(Alignment.CenterHorizontally)
         )
 
-        PersonalInfoBox(onclickEvent = navigateToSettingInfo)
+        PersonalInfoBox(onclickEvent = navigateToSettingInfo, email = state.email)
 //
 //        AlarmSettingsSection()
 //
@@ -62,7 +65,11 @@ fun SettingMainScreen(
 }
 
 @Composable
-fun PersonalInfoBox(isIconVisible: Boolean = true, onclickEvent: () -> Unit = {}) {
+fun PersonalInfoBox(
+    isIconVisible: Boolean = true,
+    onclickEvent: () -> Unit = {},
+    email: String
+) {
     Box(
         modifier =
         Modifier
@@ -85,7 +92,7 @@ fun PersonalInfoBox(isIconVisible: Boolean = true, onclickEvent: () -> Unit = {}
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "hyoeun@memo.com",
+                    text = email,
                     style = MemoziTheme.typography.ngReg15
                 )
                 if (isIconVisible) {

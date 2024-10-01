@@ -33,18 +33,34 @@
             <option value="$PROJECT_DIR$/core/network" />
             <option value="$PROJECT_DIR$/core/ui" />
             <option value="$PROJECT_DIR$/data" />
+            <option value="$PROJECT_DIR$/data/auth" />
+            <option value="$PROJECT_DIR$/data/diary" />
+            <option value="$PROJECT_DIR$/data/memo" />
             <option value="$PROJECT_DIR$/data/memozi" />
+            <option value="$PROJECT_DIR$/data/oauth" />
             <option value="$PROJECT_DIR$/domain" />
+            <option value="$PROJECT_DIR$/domain/auth" />
+            <option value="$PROJECT_DIR$/domain/diary" />
+            <option value="$PROJECT_DIR$/domain/memo" />
             <option value="$PROJECT_DIR$/domain/memozi" />
+            <option value="$PROJECT_DIR$/domain/oauth" />
             <option value="$PROJECT_DIR$/feature" />
-            <option value="$PROJECT_DIR$/feature/diaryfeed" />
+            <option value="$PROJECT_DIR$/feature/diary" />
             <option value="$PROJECT_DIR$/feature/login" />
             <option value="$PROJECT_DIR$/feature/memo" />
             <option value="$PROJECT_DIR$/feature/navigator" />
+            <option value="$PROJECT_DIR$/feature/onboarding" />
+            <option value="$PROJECT_DIR$/feature/setting" />
             <option value="$PROJECT_DIR$/local" />
+            <option value="$PROJECT_DIR$/local/auth" />
             <option value="$PROJECT_DIR$/local/memozi" />
+            <option value="$PROJECT_DIR$/local/user" />
             <option value="$PROJECT_DIR$/remote" />
+            <option value="$PROJECT_DIR$/remote/auth" />
+            <option value="$PROJECT_DIR$/remote/diary" />
+            <option value="$PROJECT_DIR$/remote/memo" />
             <option value="$PROJECT_DIR$/remote/memozi" />
+            <option value="$PROJECT_DIR$/remote/user" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="false" />

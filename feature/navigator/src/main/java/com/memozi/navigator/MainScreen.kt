@@ -39,7 +39,8 @@ internal fun MainScreen(
             ) {
                 loginNavGraph(
                     padding = innerPadding,
-                    navigateMemo = navigator::navigateMemo
+                    navigateMemo = navigator::navigateMemo,
+                    navigateOnboarding = navigator::navigateOnboarding
                 )
                 onboardingNavGraph(
                     padding = innerPadding,

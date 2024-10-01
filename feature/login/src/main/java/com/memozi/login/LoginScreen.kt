@@ -40,7 +40,8 @@ fun LoginRoute(
     padding: PaddingValues,
     modifier: Modifier = Modifier,
     viewModel: LoginViewModel = hiltViewModel(),
-    navigateMemo: () -> Unit = {}
+    navigateMemo: () -> Unit = {},
+    navigateOnboarding: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current as ComponentActivity
@@ -48,17 +49,18 @@ fun LoginRoute(
     val oAuthInteractor = entryPoint.getOAuthInteractor()
 
     LaunchedEffect(Unit) {
-        viewModel.getUser()
         viewModel.sideEffect.collectLatest { sideeffect ->
             when (sideeffect) {
                 is LoginSideEffect.LoginError -> {
                     Log.d("로그인 에러", "LoginRoute: ")
                 }
+
                 LoginSideEffect.LoginSuccess -> {
                     navigateMemo()
                 }
 
-                LoginSideEffect.LoginToSignUp -> TODO()
+                LoginSideEffect.LoginToSignUp -> navigateOnboarding()
+
                 LoginSideEffect.StartLogin -> {
                     oAuthInteractor.loginByKakao().onSuccess {
                         oAuthInteractor.getUser().onSuccess {

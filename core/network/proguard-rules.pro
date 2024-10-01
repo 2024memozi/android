@@ -19,3 +19,18 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+
+# Hilt 관련 클래스 유지
+-keep class dagger.hilt.** { *; }
+-keep class javax.inject.** { *; }
+-keep class dagger.** { *; }
+-keep class com.memozi.ui.base.BaseViewModel { *; }
+
+# Hilt가 생성하는 클래스 유지
+-keep class **_HiltModules { *; }
+-keep class **_HiltComponents { *; }
+
+# ViewModel 관련 클래스 유지
+-keep class androidx.lifecycle.ViewModel { *; }
+-keep class com.memozi.memo.category.CategoryViewModel { *; }

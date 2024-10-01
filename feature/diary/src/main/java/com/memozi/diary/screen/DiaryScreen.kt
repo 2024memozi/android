@@ -1,5 +1,13 @@
 package com.memozi.diary.screen
 
+import android.app.Activity
+import android.content.ContentValues
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.provider.MediaStore
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -11,6 +19,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -64,6 +73,7 @@ import com.memozi.diary.model.Diary
 import com.memozi.diary.screen.component.DiaryScreenDialog
 import com.memozi.diary.screen.component.WeekHeader
 import com.memozi.diary.utils.CalendarUtils
+import com.memozi.ui.extension.customClickable
 import com.memozi.ui.lifecycle.LaunchedEffectWithLifecycle
 import java.time.LocalDate
 import java.time.YearMonth
@@ -138,9 +148,11 @@ fun DiaryScreen(
                 isLocationExist = isLocationExist,
                 isDiaryAvailable = isDiaryAvailable,
                 onChangedDiaryWritten = { isDiaryWritten = it },
-                postDiary = { content, location, Image ->
-                    diaryViewModel.postDiary(content = content, location = location, image = Image)
-                }
+                postDiary = { content ->
+                    diaryViewModel.postDiary(content = content)
+                },
+                updateUrl = { diaryViewModel.updateUri(it.toString()) },
+                imageURL = diaryState.image
             )
         }
 
@@ -232,6 +244,7 @@ fun DiaryScreen(
                                     onClick = {
                                         onChangedLocationDialogState(false)
                                         onChangedLocationExist(true)
+                                        diaryViewModel.updateLocation(location = location)
                                     }
                                 ),
                             contentAlignment = Alignment.Center
@@ -555,8 +568,28 @@ fun DiaryFeedWriteCard(
     isLocationExist: Boolean = false,
     isDiaryAvailable: Boolean,
     onChangedDiaryWritten: (Boolean) -> Unit,
-    postDiary: (String, String, String?) -> Unit
+    postDiary: (String) -> Unit,
+    updateUrl: (Uri?) -> Unit,
+    imageURL: String? = null
 ) {
+    val context = LocalContext.current
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val uri: Uri? = result.data?.data
+            updateUrl(uri)
+        }
+    }
+    val uriState = remember { mutableStateOf<Uri?>(null) }
+
+    val takePicture =
+        rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { result ->
+            if (result) {
+                updateUrl(uriState.value)
+            }
+        }
+
     ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
@@ -598,6 +631,20 @@ fun DiaryFeedWriteCard(
                         .padding(horizontal = 16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    if (imageURL != null) {
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(imageURL)
+                                .crossfade(true)
+                                .build(),
+                            contentDescription = "일기사진",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxWidth(0.26f)
+                                .aspectRatio(1f)
+                                .clip(RoundedCornerShape(14.dp))
+                        )
+                    }
                     if (isLocationExist) {
                         Row(
                             modifier = Modifier.padding(vertical = 8.dp),
@@ -626,26 +673,39 @@ fun DiaryFeedWriteCard(
                         textStyle = MemoziTheme.typography.ngReg12_140.copy(color = Color.Black)
                     )
                     Spacer(modifier = Modifier.height(20.dp))
+
                     Row(
                         modifier = Modifier.align(Alignment.Start),
                         verticalAlignment = Alignment.Bottom
                     ) {
                         DiaryFeedWriteOption(
                             id = R.drawable.ic_diary_feed_camera,
-                            onClick = {}
+                            onClick = {
+                                val photoUri = createImageUri(context)
+                                uriState.value = photoUri
+                                if (photoUri != null) takePicture.launch(photoUri)
+                            }
                         )
                         DiaryFeedWriteOption(
                             id = R.drawable.ic_diary_feed_gallery,
-                            onClick = {}
+                            onClick = {
+                                val intent = Intent(
+                                    Intent.ACTION_PICK,
+                                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                                ).apply {
+                                    type = "image/*"
+                                }
+                                launcher.launch(intent)
+                            }
                         )
                         DiaryFeedWriteOption(
                             id = R.drawable.ic_diary_feed_pin,
                             onClick = { onChangedLocationDialogState(true) }
                         )
-                        DiaryFeedWriteOption(
-                            id = R.drawable.ic_diary_feed_random,
-                            onClick = {}
-                        )
+//                        DiaryFeedWriteOption(
+//                            id = R.drawable.ic_diary_feed_random,
+//                            onClick = {}
+//                        )
                         Spacer(modifier = Modifier.weight(1f))
                         Text(
                             text = buildAnnotatedString {
@@ -662,7 +722,7 @@ fun DiaryFeedWriteCard(
                         Button(
                             onClick = {
                                 onChangedDiaryWritten(true) /* 일기 작성 완료 */
-                                postDiary(diaryContent, location, null)
+                                postDiary(diaryContent)
                             },
                             modifier = Modifier
                                 .width(68.dp)
@@ -691,6 +751,16 @@ fun DiaryFeedWriteCard(
     )
 }
 
+fun createImageUri(context: Context): Uri? {
+    val contentResolver = context.contentResolver
+    val contentValues = ContentValues().apply {
+        put(MediaStore.Images.Media.DISPLAY_NAME, "new_image_${System.currentTimeMillis()}.jpg")
+        put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+        put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/Memozi") // 원하는 경로 설정
+    }
+    return contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+}
+
 @Composable
 fun DiaryFeedWriteOption(
     id: Int,
@@ -699,7 +769,9 @@ fun DiaryFeedWriteOption(
     Image(
         painter = painterResource(id = id),
         contentDescription = null,
-        modifier = Modifier.clickable { onClick() }
+        modifier = Modifier.customClickable {
+            onClick()
+        }
     )
 }
 
@@ -756,6 +828,7 @@ fun DiaryFeedDisplayCard(
                                 year = it.createdAt.substring(0, 4).toInt(),
                                 month = it.createdAt.substring(5, 7).toInt(),
                                 day = it.createdAt.substring(8, 10).toInt(),
+                                location = it.location,
                                 dayOfWeek = it.dayOfWeek,
                                 diaryContent = it.content,
                                 imageUrl = if (it.images.isNotEmpty()) it.images[0] else null,
@@ -790,7 +863,8 @@ fun DailyDiaryItem(
                 modifier = Modifier.padding(end = 10.dp),
                 topPaddingValues = PaddingValues(0.dp),
                 onEditClick = { editEvent() },
-                onDeleteClick = { deleteEvent() }
+                onDeleteClick = { deleteEvent() },
+                onlyDelete = true
             )
         }
         Column(

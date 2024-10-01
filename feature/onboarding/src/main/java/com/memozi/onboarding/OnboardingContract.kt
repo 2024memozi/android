@@ -4,6 +4,7 @@ import com.memozi.ui.base.SideEffect
 import com.memozi.ui.base.UiState
 
 data class OnboardingState(
+    val name: String = "",
     val selectedAmPm: String = "오전",
     val selectedHour: Int = 1,
     val selectedMinute: Int = 1,

@@ -11,7 +11,6 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import retrofit2.http.Part
 import javax.inject.Inject
 
 class DiaryRemoteDataSourceImpl @Inject constructor(
@@ -36,7 +35,6 @@ class DiaryRemoteDataSourceImpl @Inject constructor(
         image?.let {
             val imageUri = image.toUri()
             val file = FileConverter.uriToFile(context, imageUri)
-
             file?.let {
                 val requestFile = it.asRequestBody("image/*".toMediaTypeOrNull())
                 val multipartBody =
@@ -46,7 +44,7 @@ class DiaryRemoteDataSourceImpl @Inject constructor(
                 return diaryService.postDiary(
                     title = title.toRequestBody("text/plain".toMediaTypeOrNull()),
                     content = content.toRequestBody("text/plain".toMediaTypeOrNull()),
-                    location = content.toRequestBody("text/plain".toMediaTypeOrNull()),
+                    location = location?.toRequestBody("text/plain".toMediaTypeOrNull()),
                     images = multipartBody
                 )
             }
@@ -54,7 +52,7 @@ class DiaryRemoteDataSourceImpl @Inject constructor(
         return diaryService.postDiary(
             title = title.toRequestBody("text/plain".toMediaTypeOrNull()),
             content = content.toRequestBody("text/plain".toMediaTypeOrNull()),
-            location = content.toRequestBody("text/plain".toMediaTypeOrNull()),
+            location = location?.toRequestBody("text/plain".toMediaTypeOrNull()),
             images = null
         )
     }

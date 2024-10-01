@@ -117,7 +117,7 @@ fun SettingDeleteAccount(
         }
 
         Button(
-            onClick = { viewmodel.navigateDelete() },
+            onClick = { viewmodel.delete() },
             modifier =
             Modifier
                 .fillMaxWidth()

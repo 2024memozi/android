@@ -14,5 +14,6 @@ data class ResponseSignInDto(
 
 fun ResponseSignInDto.toModel() = AuthEntity(
     accessToken,
-    refreshToken
+    refreshToken,
+    ""
 )

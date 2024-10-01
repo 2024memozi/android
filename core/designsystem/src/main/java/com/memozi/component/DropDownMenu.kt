@@ -33,7 +33,8 @@ fun DropDownMenu(
     modifier: Modifier,
     topPaddingValues: PaddingValues = PaddingValues(top = 32.dp),
     onEditClick: () -> Unit,
-    onDeleteClick: () -> Unit
+    onDeleteClick: () -> Unit,
+    onlyDelete: Boolean = false
 ) {
     var expanded by remember { mutableStateOf(false) }
     Column(
@@ -53,26 +54,34 @@ fun DropDownMenu(
             Row {
                 Box(
                     modifier = Modifier
-                        .shadow(4.dp, shape = RoundedCornerShape(8.dp)) // elevation 효과를 위해 shadow 추가
-                        .background(color = MemoziTheme.colors.white, shape = RoundedCornerShape(8.dp))
+                        .shadow(
+                            4.dp,
+                            shape = RoundedCornerShape(8.dp)
+                        ) // elevation 효과를 위해 shadow 추가
+                        .background(
+                            color = MemoziTheme.colors.white,
+                            shape = RoundedCornerShape(8.dp)
+                        )
                 ) {
                     Column(
                         modifier = Modifier.fillMaxWidth(0.2f),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(
-                            text = "수정하기",
-                            style = MemoziTheme.typography.ngReg13,
-                            modifier = Modifier
-                                .padding(vertical = 7.dp)
-                                .clickable { onEditClick() }
-                        )
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(1.dp)
-                                .background(MemoziTheme.colors.gray02)
-                        )
+                        if (!onlyDelete) {
+                            Text(
+                                text = "수정하기",
+                                style = MemoziTheme.typography.ngReg13,
+                                modifier = Modifier
+                                    .padding(vertical = 7.dp)
+                                    .clickable { onEditClick() }
+                            )
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(1.dp)
+                                    .background(MemoziTheme.colors.gray02)
+                            )
+                        }
                         Text(
                             text = "삭제하기",
                             style = MemoziTheme.typography.ngReg13,
