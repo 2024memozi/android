@@ -5,6 +5,16 @@ plugins {
 
 android {
     namespace = "com.memozi.navigator"
+    buildTypes {
+        release {
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+
+            )
+        }
+    }
 }
 
 dependencies {
@@ -13,6 +23,4 @@ dependencies {
     implementation(projects.feature.diary)
     implementation(projects.feature.onboarding)
     implementation(projects.feature.setting)
-
-    implementation(project(":feature:setting"))
 }
