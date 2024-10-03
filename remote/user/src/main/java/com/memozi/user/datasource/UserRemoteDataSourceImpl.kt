@@ -9,6 +9,6 @@ class UserRemoteDataSourceImpl @Inject constructor(
     private val userService: UserService
 ) : UserRemoteDataSource {
     override suspend fun delete(acessToken: String) {
-        userService.delete( RequestSignInDto(accessToken = acessToken))
+        userService.delete(RequestSignInDto(accessToken = acessToken))
     }
 }
